@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ScalaCompilerConfiguration">
-    <profile name="sbt 1" modules="core-old,scafi-xc" />
+    <profile name="sbt 1" modules="core-old,coreJVM,scafi-xc,simulatorJVM" />
     <profile name="sbt 2" modules="core,simulator">
       <parameters>
         <parameter value="-encoding" />
@@ -11,6 +11,16 @@
         <parameter value="-Yexplicit-nulls" />
         <parameter value="-Ycheck-reentrant" />
       </parameters>
+    </profile>
+    <profile name="sbt 3" modules="coreJS,simulatorJS">
+      <parameters>
+        <parameter value="-scalajs" />
+      </parameters>
+    </profile>
+    <profile name="sbt 4" modules="coreNative,simulatorNative">
+      <plugins>
+        <plugin path="C:\Users\lucad\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scala-native\nscplugin_3.3.1\0.4.16\nscplugin_3.3.1-0.4.16.jar" />
+      </plugins>
     </profile>
   </component>
 </project>

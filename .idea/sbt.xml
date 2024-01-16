@@ -9,8 +9,14 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/core" />
+            <option value="$PROJECT_DIR$/core/.js" />
+            <option value="$PROJECT_DIR$/core/.jvm" />
+            <option value="$PROJECT_DIR$/core/.native" />
             <option value="$PROJECT_DIR$/project" />
             <option value="$PROJECT_DIR$/simulator" />
+            <option value="$PROJECT_DIR$/simulator/.js" />
+            <option value="$PROJECT_DIR$/simulator/.jvm" />
+            <option value="$PROJECT_DIR$/simulator/.native" />
           </set>
         </option>
         <option name="resolveSbtClassifiers" value="true" />

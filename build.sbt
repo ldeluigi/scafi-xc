@@ -2,6 +2,8 @@ ThisBuild / version := "0.1.0-SNAPSHOT"
 
 ThisBuild / scalaVersion := "3.3.1"
 
+Global / onChangedBuildSource := ReloadOnSourceChanges
+
 lazy val commonSettings = Seq(
   scalacOptions ++= Seq(
     "-encoding",
@@ -27,4 +29,6 @@ lazy val simulator = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   )
   .dependsOn(core)
 
-Global / onChangedBuildSource := ReloadOnSourceChanges
+
+// Conventional commits
+Global / onLoad ~= (_ andThen ("conventionalCommits" :: _))
