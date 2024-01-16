@@ -11,7 +11,8 @@ lazy val commonSettings = Seq(
     "-Ywarn-unused",
     "-Ywarn-unused-import",
     "-Yexplicit-nulls",
-    "-Ycheck-reentrant"
+    "-Ycheck-reentrant",
+    "-language:strictEquality",
   )
 )
 
@@ -32,3 +33,6 @@ lazy val simulator = crossProject(JSPlatform, JVMPlatform, NativePlatform)
 
 // Conventional commits
 Global / onLoad ~= (_ andThen ("conventionalCommits" :: _))
+
+// ScalaFix
+ThisBuild / scalafixOnCompile := true
