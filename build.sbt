@@ -1,5 +1,3 @@
-import org.scalajs.linker.interface.ModuleSplitStyle
-
 ThisBuild / version := "0.1.0-SNAPSHOT"
 
 ThisBuild / scalaVersion := "3.3.1"
@@ -15,15 +13,16 @@ lazy val commonSettings = Seq(
   )
 )
 
-lazy val core = (project in file("core"))
+lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
+  .crossType(CrossType.Pure)
   .settings(
-    commonSettings,
-    name := "core"
+    name := "core",
+    libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.17" % Test
   )
 
-lazy val simulator = (project in file("simulator"))
+lazy val simulator = crossProject(JSPlatform, JVMPlatform, NativePlatform)
+  .crossType(CrossType.Pure)
   .settings(
-    commonSettings,
     name := "simulator"
   )
   .dependsOn(core)
