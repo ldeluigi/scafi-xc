@@ -17,25 +17,30 @@ lazy val commonSettings = Seq(
     "-Yexplicit-nulls",
     "-Ycheck-reentrant",
     "-language:strictEquality",
-  )
+  ),
 )
+
+nativeConfig ~= { c =>
+  if (scala.util.Properties.isWin) {
+    c.withCompileOptions(c.compileOptions ++ Seq("-D_CRT_SECURE_NO_WARNINGS"))
+  } else c
+}
 
 lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Pure)
   .settings(
     commonSettings,
     name := "core",
-    libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.17" % Test
+    libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.17" % Test,
   )
 
 lazy val simulator = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Pure)
   .settings(
     commonSettings,
-    name := "simulator"
+    name := "simulator",
   )
   .dependsOn(core)
-
 
 // Conventional commits
 Global / onLoad ~= (_ andThen ("conventionalCommits" :: _))
