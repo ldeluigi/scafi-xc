@@ -10,7 +10,10 @@ Global / onChangedBuildSource := ReloadOnSourceChanges
 lazy val commonSettings = Seq(
   scalacOptions ++= Seq(
     "-no-indent",
-    "-Wunused",
+    "-Werror",
+    "-Wunused:all",
+    "-Wvalue-discard",
+    "-Wnonunit-statement",
     "-Yexplicit-nulls",
     "-Ycheck-reentrant",
     "-language:strictEquality",
