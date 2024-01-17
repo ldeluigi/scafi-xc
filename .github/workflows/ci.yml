@@ -21,7 +21,10 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         java-version: [11, 21]
-        distributions: [temurin, oracle]
+        distribution: [temurin, oracle]
+        exclude:
+          - distribution: oracle
+            java-version: 11
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout current branch (full)
@@ -33,7 +36,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: ${{ matrix.java-version }}
-          distribution: ${{ matrix.distributions }}
+          distribution: ${{ matrix.distribution }}
           cache: sbt
 
       - name: Lint with scalafmt
