@@ -1,0 +1,46 @@
+name: CI/CD
+
+on:
+  push:
+    branches-ignore:
+      - 'autodelivery**'
+      - 'bump-**'
+      - 'renovate/**'
+      - 'feature/**'
+      - 'fix/**'
+    paths-ignore:
+      - '*.md'
+      - 'renovate.json'
+  pull_request:
+
+jobs:
+  build:
+    name: Build and Test
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        java-version: [11, 21]
+        distributions: [temurin, oracle]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout current branch (full)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: ${{ matrix.distributions }}
+          cache: sbt
+
+      - name: Lint with scalafmt
+        run: sbt scalafmtCheckAll
+
+      - name: Check with scalafix
+        run: sbt 'scalafixAll --check'
+
+      - name: Test on all platforms
+        run: sbt -v +test
