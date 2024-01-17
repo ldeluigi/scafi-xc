@@ -16,12 +16,6 @@ lazy val commonSettings = Seq(
   ),
 )
 
-nativeConfig ~= { c =>
-  if (scala.util.Properties.isWin) {
-    c.withCompileOptions(c.compileOptions ++ Seq("-D_CRT_SECURE_NO_WARNINGS"))
-  } else c
-}
-
 // projects
 lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Pure)
