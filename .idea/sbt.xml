@@ -10,6 +10,10 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/commons" />
+            <option value="$PROJECT_DIR$/commons/.js" />
+            <option value="$PROJECT_DIR$/commons/.jvm" />
+            <option value="$PROJECT_DIR$/commons/.native" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/core/.js" />
             <option value="$PROJECT_DIR$/core/.jvm" />
@@ -30,6 +34,10 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/commons" />
+            <option value="$PROJECT_DIR$/commons/.js" />
+            <option value="$PROJECT_DIR$/commons/.jvm" />
+            <option value="$PROJECT_DIR$/commons/.native" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/core/.js" />
             <option value="$PROJECT_DIR$/core/.jvm" />

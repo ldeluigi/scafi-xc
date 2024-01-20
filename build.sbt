@@ -17,6 +17,13 @@ lazy val commonSettings = Seq(
 )
 
 // projects
+lazy val commons = crossProject(JSPlatform, JVMPlatform, NativePlatform)
+  .crossType(CrossType.Pure)
+  .settings(
+    commonSettings,
+    name := "commons",
+  )
+
 lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Pure)
   .settings(
@@ -24,6 +31,7 @@ lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     name := "core",
     libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.17" % Test,
   )
+  .dependsOn(commons)
 
 lazy val simulator = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Pure)
