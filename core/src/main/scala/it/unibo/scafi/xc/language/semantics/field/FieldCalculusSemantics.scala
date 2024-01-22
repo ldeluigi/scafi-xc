@@ -1,27 +1,28 @@
 package it.unibo.scafi.xc.language.semantics.field
 
-import it.unibo.scafi.xc.language.Language
-import it.unibo.scafi.xc.language.syntax.formal.FieldCalculusSyntax
+import it.unibo.scafi.xc.language.AggregateLanguage
+import it.unibo.scafi.xc.language.syntax.formal.ClassicFieldCalculusSyntax
 
-trait FieldCalculusSemantics extends Language {
+trait FieldCalculusSemantics extends AggregateLanguage {
   type Field[T]
   type ID
   type CNAME
-  override type Value[T] = Field[T]
+  override type AggregateValue[T] = Field[T]
 
   def nbr[A](expr: => Field[A]): Field[A]
   def rep[A](init: => A)(fun: A => A): A
-  def mid(): Field[ID]
+  def share[A](init: => A)(fun: A => A): A
+  def foldhood[A](init: => A)(fun: (A, A) => A)(expr: => Field[A]): Field[A]
+  protected def mid(): Field[ID]
 }
 
 object FieldCalculusSemantics {
-  given FieldCalculusSyntax[FieldCalculusSemantics] with {
-    extension (language: FieldCalculusSemantics) {
-      override def neighbouring[T](expr: => language.Field[T]): language.Field[T] = {
+  given ClassicFieldCalculusSyntax[FieldCalculusSemantics] with {
+    extension (language: FieldCalculusSemantics) override def nbr[A](expr: => language.Field[A]): language.Field[A] =
         language.nbr(expr)
-      }
-      override def repeating[A](init: language.Field[A])(f: language.Field[A] => language.Field[A]): language.Field[A] =
+    extension (language: FieldCalculusSemantics) override def rep[A](init: => A)(f: A => A): A =
         language.rep(init)(f)
-    }
+    extension (language: FieldCalculusSemantics) override def share[A](init: => A)(f: A => A): A =
+        language.share(init)(f)
   }
 }
