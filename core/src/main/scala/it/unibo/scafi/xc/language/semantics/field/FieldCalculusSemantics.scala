@@ -17,12 +17,19 @@ trait FieldCalculusSemantics extends AggregateLanguage {
 }
 
 object FieldCalculusSemantics {
+
   given ClassicFieldCalculusSyntax[FieldCalculusSemantics] with {
-    extension (language: FieldCalculusSemantics) override def nbr[A](expr: => language.Field[A]): language.Field[A] =
+
+    extension (language: FieldCalculusSemantics) {
+
+      override def nbr[A](expr: => language.Field[A]): language.Field[A] =
         language.nbr(expr)
-    extension (language: FieldCalculusSemantics) override def rep[A](init: => A)(f: A => A): A =
+
+      override def rep[A](init: => A)(f: A => A): A =
         language.rep(init)(f)
-    extension (language: FieldCalculusSemantics) override def share[A](init: => A)(f: A => A): A =
+
+      override def share[A](init: => A)(f: A => A): A =
         language.share(init)(f)
+    }
   }
 }
