@@ -55,4 +55,4 @@ jobs:
         run: sbt 'scalafixAll --check'
 
       - name: Test on all platforms
-        run: sbt -v +test
+        run: sbt -J-Xmx2G -v +test

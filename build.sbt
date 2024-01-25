@@ -22,11 +22,6 @@ lazy val commonSettings = Seq(
   ),
 )
 
-lazy val commonJvmSettings = Seq(
-  Test / fork := true,
-  Test / javaOptions := Seq("-Xmx3G"),
-)
-
 // projects
 lazy val commons = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Pure)
@@ -34,7 +29,6 @@ lazy val commons = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     commonSettings,
     name := "commons",
   )
-  .jvmSettings(commonJvmSettings)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
   .crossType(CrossType.Pure)
@@ -43,7 +37,6 @@ lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     name := "core",
     libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.17" % Test,
   )
-  .jvmSettings(commonJvmSettings)
   .dependsOn(commons)
 
 lazy val simulator = crossProject(JSPlatform, JVMPlatform, NativePlatform)
@@ -52,7 +45,6 @@ lazy val simulator = crossProject(JSPlatform, JVMPlatform, NativePlatform)
     commonSettings,
     name := "simulator",
   )
-  .jvmSettings(commonJvmSettings)
   .dependsOn(core)
 
 // conventional commits
