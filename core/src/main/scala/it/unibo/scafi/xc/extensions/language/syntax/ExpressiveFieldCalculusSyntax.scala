@@ -1,6 +1,6 @@
-package it.unibo.scafi.xc.language.extensions.syntax
+package it.unibo.scafi.xc.extensions.language.syntax
 
-import it.unibo.scafi.xc.language.extensions.AggregateFoundation
+import it.unibo.scafi.xc.extensions.language.AggregateFoundation
 
 trait ExpressiveFieldCalculusSyntax[L <: AggregateFoundation] {
 

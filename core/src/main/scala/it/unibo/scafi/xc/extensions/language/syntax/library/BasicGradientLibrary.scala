@@ -1,11 +1,11 @@
-package it.unibo.scafi.xc.language.extensions.syntax.library
+package it.unibo.scafi.xc.extensions.language.syntax.library
 
 import scala.math.Numeric.Implicits.*
 
 import it.unibo.scafi.xc.abstractions.Liftable
 import it.unibo.scafi.xc.abstractions.boundaries.UpperBounded
-import it.unibo.scafi.xc.language.extensions.AggregateFoundation
-import it.unibo.scafi.xc.language.extensions.syntax.{ BranchingSyntax, ClassicFieldCalculusSyntax }
+import it.unibo.scafi.xc.extensions.language.AggregateFoundation
+import it.unibo.scafi.xc.extensions.language.syntax.{BranchingSyntax, ClassicFieldCalculusSyntax}
 
 object BasicGradientLibrary {
 

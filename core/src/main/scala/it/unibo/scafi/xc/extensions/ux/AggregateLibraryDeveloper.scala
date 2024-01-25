@@ -1,9 +1,9 @@
-package it.unibo.scafi.xc.ux.extensions
+package it.unibo.scafi.xc.extensions.ux
 
 import it.unibo.scafi.xc.abstractions.boundaries.UpperBounded
-import it.unibo.scafi.xc.language.extensions.AggregateFoundation
-import it.unibo.scafi.xc.language.extensions.semantics.exchange.ExchangeCalculusSemantics
-import it.unibo.scafi.xc.language.extensions.syntax.{ BranchingSyntax, ClassicFieldCalculusSyntax }
+import it.unibo.scafi.xc.extensions.language.AggregateFoundation
+import it.unibo.scafi.xc.extensions.language.semantics.exchange.ExchangeCalculusSemantics
+import it.unibo.scafi.xc.extensions.language.syntax.{BranchingSyntax, ClassicFieldCalculusSyntax}
 
 import scala.util.Random
 
@@ -13,7 +13,7 @@ object AggregateLibraryDeveloper {
   // syntactic library just rely on common syntax between semantics
 
   // if any library is needed, the import must be explicit:
-  import it.unibo.scafi.xc.language.extensions.syntax.library.BasicGradientLibrary._
+  import it.unibo.scafi.xc.extensions.language.syntax.library.BasicGradientLibrary.*
 
   // example of syntactic library that works for many foundations:
   extension [L <: AggregateFoundation: ClassicFieldCalculusSyntax: BranchingSyntax](lang: L) {

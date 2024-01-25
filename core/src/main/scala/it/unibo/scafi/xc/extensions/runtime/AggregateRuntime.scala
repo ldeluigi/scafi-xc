@@ -1,4 +1,4 @@
-package it.unibo.scafi.xc.runtime
+package it.unibo.scafi.xc.extensions.runtime
 
 trait AggregateRuntime extends Core {
   type DeviceID

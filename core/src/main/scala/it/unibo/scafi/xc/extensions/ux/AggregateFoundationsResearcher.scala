@@ -1,9 +1,9 @@
-package it.unibo.scafi.xc.ux.extensions
+package it.unibo.scafi.xc.extensions.ux
 
 import it.unibo.scafi.xc.abstractions.boundaries.UpperBounded
-import it.unibo.scafi.xc.language.extensions.AggregateFoundation
-import it.unibo.scafi.xc.language.extensions.syntax.library.BasicGradientLibrary.distanceTo
-import it.unibo.scafi.xc.language.extensions.syntax.{ BranchingSyntax, ClassicFieldCalculusSyntax }
+import it.unibo.scafi.xc.extensions.language.AggregateFoundation
+import it.unibo.scafi.xc.extensions.language.syntax.library.BasicGradientLibrary.distanceTo
+import it.unibo.scafi.xc.extensions.language.syntax.{BranchingSyntax, ClassicFieldCalculusSyntax}
 
 object AggregateFoundationsResearcher {
 
@@ -47,7 +47,8 @@ object AggregateFoundationsResearcher {
   }
 
   // after which they can use their semantics with classic libraries
-  import it.unibo.scafi.xc.language.extensions.syntax.library.BasicGradientLibrary
+
+  import it.unibo.scafi.xc.extensions.language.syntax.library.BasicGradientLibrary
 
   extension (language: NewSemantics) {
 

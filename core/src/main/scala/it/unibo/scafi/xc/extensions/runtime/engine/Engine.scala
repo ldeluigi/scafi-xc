@@ -1,6 +1,6 @@
-package it.unibo.scafi.xc.runtime.engine
+package it.unibo.scafi.xc.extensions.runtime.engine
 
-import it.unibo.scafi.xc.runtime.AggregateRuntime
+import it.unibo.scafi.xc.extensions.runtime.AggregateRuntime
 
 trait Engine {
   this: AggregateRuntime =>

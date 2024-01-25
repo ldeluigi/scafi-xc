@@ -1,10 +1,10 @@
-package it.unibo.scafi.xc.ux.extensions
+package it.unibo.scafi.xc.extensions.ux
 
-import it.unibo.scafi.xc.runtime.engine.Engine
-import it.unibo.scafi.xc.runtime.implementations.ExchangeCalculusRuntime
+import it.unibo.scafi.xc.extensions.runtime.engine.Engine
+import it.unibo.scafi.xc.extensions.runtime.implementations.ExchangeCalculusRuntime
 
 // here we decide the syntax(es) to use
-import it.unibo.scafi.xc.language.extensions.semantics.exchange.ExchangeCalculusSemantics.classicSyntax
+import it.unibo.scafi.xc.extensions.language.semantics.exchange.ExchangeCalculusSemantics.classicSyntax
 
 // the runtime defines the vm implementations
 // while the engine defines context and exchange implementations

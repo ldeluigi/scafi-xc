@@ -1,7 +1,7 @@
-package it.unibo.scafi.xc.runtime.implementations
+package it.unibo.scafi.xc.extensions.runtime.implementations
 
-import it.unibo.scafi.xc.language.extensions.semantics.exchange.{ ExchangeCalculusSemantics, NValues }
-import it.unibo.scafi.xc.runtime.AggregateRuntime
+import it.unibo.scafi.xc.extensions.language.semantics.exchange.{ ExchangeCalculusSemantics, NValues }
+import it.unibo.scafi.xc.extensions.runtime.AggregateRuntime
 
 trait ExchangeCalculusRuntime extends AggregateRuntime {
   override type VM = ExchangeVM

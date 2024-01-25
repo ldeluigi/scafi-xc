@@ -1,7 +1,7 @@
-package it.unibo.scafi.xc.language.extensions.semantics.field
+package it.unibo.scafi.xc.extensions.language.semantics.field
 
-import it.unibo.scafi.xc.language.extensions.AggregateFoundation
-import it.unibo.scafi.xc.language.extensions.syntax.ClassicFieldCalculusSyntax
+import it.unibo.scafi.xc.extensions.language.AggregateFoundation
+import it.unibo.scafi.xc.extensions.language.syntax.ClassicFieldCalculusSyntax
 
 trait FieldCalculusSemantics extends AggregateFoundation {
   type Field[T]
