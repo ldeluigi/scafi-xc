@@ -33,7 +33,8 @@ trait ExchangeCalculusSemantics extends AggregateFoundation {
       f: AggregateValue[T] => (AggregateValue[T], AggregateValue[T]),
   ): AggregateValue[T]
 
-  protected def self: ID
+  def self: ID
+  def neighbors: AggregateValue[ID]
 
   override def lift: Liftable[AggregateValue] = NValues.given_Liftable_NValues
 
@@ -96,7 +97,7 @@ object ExchangeCalculusSemantics {
     }
   }
 
-  given ClassicFieldCalculusSyntax[ExchangeCalculusSemantics] with {
+  given classicSyntax: ClassicFieldCalculusSyntax[ExchangeCalculusSemantics] with {
 
     extension (language: ExchangeCalculusSemantics) {
 

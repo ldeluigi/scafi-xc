@@ -5,6 +5,12 @@ trait AggregateRuntime extends Core {
   type VM <: RoundVM
   override type Context <: BasicContext
 
+  def factory: AbstractFactory
+
+  protected trait AbstractFactory {
+    def createExport: Export
+  }
+
   protected trait BasicContext {
     def selfId: DeviceID
     def neighbors: Map[DeviceID, Export]
@@ -25,12 +31,13 @@ trait AggregateRuntime extends Core {
     def context: Context
     def self: DeviceID = context.selfId
     def exporting: Export
+    def alignedNeighbors: List[DeviceID]
   }
 
   protected def startRound(c: Context): VM
 
   @SuppressWarnings(Array("scalafix:DisableSyntax.var"))
-  protected trait ExecutionTemplate extends (Context => Export), SemanticsImplementation, AggregateProgram {
+  trait ExecutionTemplate extends (Context => Export), SemanticsImplementation, AggregateProgram {
     this: Language =>
     var vm: VM = _
 
@@ -40,12 +47,5 @@ trait AggregateRuntime extends Core {
       vm.registerRoot(result)
       vm.exporting
     }
-  }
-
-  protected class LambdaInterpreter(val e: Language ?=> Any) extends ExecutionTemplate {
-    this: Language =>
-    given Language = this
-
-    override def main(): Any = e
   }
 }

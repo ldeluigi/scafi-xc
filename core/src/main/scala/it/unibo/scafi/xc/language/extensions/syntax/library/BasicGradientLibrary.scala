@@ -7,7 +7,7 @@ import it.unibo.scafi.xc.abstractions.boundaries.UpperBounded
 import it.unibo.scafi.xc.language.extensions.AggregateFoundation
 import it.unibo.scafi.xc.language.extensions.syntax.{ BranchingSyntax, ClassicFieldCalculusSyntax }
 
-trait BasicGradientLibrary {
+object BasicGradientLibrary {
 
   extension [L <: AggregateFoundation: ClassicFieldCalculusSyntax: BranchingSyntax](language: L) {
 
