@@ -1,8 +1,8 @@
-package it.unibo.scafi.xc.language.extensions.formal.semantics.exchange
+package it.unibo.scafi.xc.language.extensions.semantics.exchange
 
 import it.unibo.scafi.xc.abstractions.{ Foldable, Liftable }
 import it.unibo.scafi.xc.language.extensions.AggregateFoundation
-import it.unibo.scafi.xc.language.extensions.formal.syntax._
+import it.unibo.scafi.xc.language.extensions.syntax._
 
 trait ExchangeCalculusSemantics extends AggregateFoundation {
   type ID
@@ -38,6 +38,8 @@ trait ExchangeCalculusSemantics extends AggregateFoundation {
   override def lift: Liftable[AggregateValue] = NValues.given_Liftable_NValues
 
   override def fold: Foldable[AggregateValue] = NValues.given_Foldable_NValues
+
+  override def convert[T]: Conversion[T, NValues[ID, T]] = NValues.given_Conversion_V_NValues
 
   extension [T](av: NValues[ID, T]) {
     override def onlySelf: T = av(self)

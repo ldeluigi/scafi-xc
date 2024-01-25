@@ -1,4 +1,4 @@
-package it.unibo.scafi.xc.language.extensions.formal.syntax
+package it.unibo.scafi.xc.language.extensions.syntax
 
 import it.unibo.scafi.xc.language.extensions.AggregateFoundation
 
