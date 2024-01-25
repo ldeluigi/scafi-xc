@@ -1,14 +1,14 @@
-package it.unibo.scafi.xc.language.semantics.exchange
+package it.unibo.scafi.xc.language.extensions.formal.semantics.exchange
 
-import it.unibo.scafi.xc.language.AggregateLanguage
-import it.unibo.scafi.xc.language.semantics.exchange
-import it.unibo.scafi.xc.language.syntax.formal.{ ExchangeCalculusSyntax, ExpressiveFieldCalculusSyntax }
+import it.unibo.scafi.xc.abstractions.{ Foldable, Liftable }
+import it.unibo.scafi.xc.language.extensions.AggregateFoundation
+import it.unibo.scafi.xc.language.extensions.formal.syntax._
 
-trait ExchangeCalculusSemantics extends AggregateLanguage {
+trait ExchangeCalculusSemantics extends AggregateFoundation {
   type ID
-  override type AggregateValue[T] = NValues[ID, T]
-
   given idEquality: CanEqual[ID, ID] = CanEqual.derived
+
+  override type AggregateValue[T] = NValues[ID, T]
 
   /**
    * This operator branches the computation into `th` or `el` according to `cond`.
@@ -35,8 +35,13 @@ trait ExchangeCalculusSemantics extends AggregateLanguage {
 
   protected def self: ID
 
-  extension [V](nv: NValues[ID, V]) {
-    def onlySelf: NValues[ID, V] = nv.copy(values = nv.values.filter(_._1 == self))
+  override def lift: Liftable[AggregateValue] = NValues.given_Liftable_NValues
+
+  override def fold: Foldable[AggregateValue] = NValues.given_Foldable_NValues
+
+  extension [T](av: NValues[ID, T]) {
+    override def onlySelf: T = av(self)
+    override def withoutSelf: NValues[ID, T] = av.copy(values = av.values.filterKeys(_ != self))
   }
 }
 
@@ -75,6 +80,35 @@ object ExchangeCalculusSemantics {
           f: language.AggregateValue[A] => language.AggregateValue[A],
       ): language.AggregateValue[A] =
         language.exchange(init.onlySelf)(f)
+    }
+  }
+
+  given BranchingSyntax[ExchangeCalculusSemantics] with {
+
+    extension (language: ExchangeCalculusSemantics) {
+
+      override def branch[T](cond: NValues[language.ID, Boolean])(th: => NValues[language.ID, T])(
+          el: => NValues[language.ID, T],
+      ): NValues[language.ID, T] =
+        language.xcbranch(cond)(th)(el)
+    }
+  }
+
+  given ClassicFieldCalculusSyntax[ExchangeCalculusSemantics] with {
+
+    extension (language: ExchangeCalculusSemantics) {
+
+      override def nbr[V](expr: => NValues[language.ID, V]): NValues[language.ID, V] =
+        summon[ExpressiveFieldCalculusSyntax[ExchangeCalculusSemantics]]
+          .nbr(language)(expr)
+
+      override def rep[A](init: => A)(f: A => A): A =
+        summon[ExpressiveFieldCalculusSyntax[ExchangeCalculusSemantics]]
+          .rep(language)(init)(nv => nv.map(f))(language.self)
+
+      override def share[A](init: => A)(f: A => A): A =
+        summon[ExpressiveFieldCalculusSyntax[ExchangeCalculusSemantics]]
+          .share(language)(init)(nv => nv.map(f))(language.self)
     }
   }
 }

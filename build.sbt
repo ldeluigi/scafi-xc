@@ -8,13 +8,15 @@ val ci = scala.sys.env.get("CI").contains("true")
 lazy val commonSettings = Seq(
   scalacOptions ++= Seq(
     "-no-indent",
+    "-feature",
     "-Werror",
     "-Wunused:all",
     "-Wvalue-discard",
     "-Wnonunit-statement",
-    "-Yexplicit-nulls",
+    // "-Yexplicit-nulls",
     "-Ycheck-reentrant",
     "-language:strictEquality",
+    "-language:implicitConversions",
   ),
 )
 

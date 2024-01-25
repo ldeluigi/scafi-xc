@@ -1,8 +1,8 @@
-package it.unibo.scafi.xc.language.semantics.exchange
+package it.unibo.scafi.xc.language.extensions.formal.semantics.exchange
 
 import scala.collection.MapView
 
-import it.unibo.scafi.xc.abstractions.Liftable
+import it.unibo.scafi.xc.abstractions.{ Foldable, Liftable }
 
 case class NValues[ID, +V](default: V, values: MapView[ID, V]) {
   def apply(id: ID): V = values.getOrElse(id, default)
@@ -40,5 +40,14 @@ object NValues {
           id -> f(a(id), b(id), c(id))
         }.toMap.view,
       )
+  }
+
+  given [ID]: Foldable[[V] =>> NValues[ID, V]] with {
+
+    extension [A](a: NValues[ID, A]) {
+
+      override def fold[B](base: B)(acc: (B, A) => B): B =
+        a.values.values.foldLeft(base)(acc)
+    }
   }
 }

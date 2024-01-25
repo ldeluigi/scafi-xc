@@ -1,19 +1,17 @@
-package it.unibo.scafi.xc.language.semantics.field
+package it.unibo.scafi.xc.language.extensions.formal.semantics.field
 
-import it.unibo.scafi.xc.language.AggregateLanguage
-import it.unibo.scafi.xc.language.syntax.formal.ClassicFieldCalculusSyntax
+import it.unibo.scafi.xc.language.extensions.AggregateFoundation
+import it.unibo.scafi.xc.language.extensions.formal.syntax.ClassicFieldCalculusSyntax
 
-trait FieldCalculusSemantics extends AggregateLanguage {
+trait FieldCalculusSemantics extends AggregateFoundation {
   type Field[T]
-  type ID
-  type CNAME
   override type AggregateValue[T] = Field[T]
 
-  def nbr[A](expr: => Field[A]): Field[A]
-  def rep[A](init: => A)(fun: A => A): A
-  def share[A](init: => A)(fun: A => A): A
-  def foldhood[A](init: => A)(fun: (A, A) => A)(expr: => Field[A]): Field[A]
-  protected def mid(): Field[ID]
+  protected def nbr[A](expr: => Field[A]): Field[A]
+
+  protected def rep[A](init: => A)(fun: A => A): A
+
+  protected def share[A](init: => A)(fun: A => A): A
 }
 
 object FieldCalculusSemantics {

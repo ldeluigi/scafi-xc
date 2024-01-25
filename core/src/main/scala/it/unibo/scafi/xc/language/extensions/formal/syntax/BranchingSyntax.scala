@@ -1,8 +1,8 @@
-package it.unibo.scafi.xc.language.syntax.formal
+package it.unibo.scafi.xc.language.extensions.formal.syntax
 
-import it.unibo.scafi.xc.language.AggregateLanguage
+import it.unibo.scafi.xc.language.extensions.AggregateFoundation
 
-trait BranchingSyntax[L <: AggregateLanguage] {
+trait BranchingSyntax[L <: AggregateFoundation] {
 
   extension (language: L) {
 
