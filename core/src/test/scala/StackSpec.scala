@@ -1,7 +1,6 @@
-import org.scalatest.flatspec.AnyFlatSpec
-
-import collection.mutable.Stack
 import scala.collection.mutable
+
+import org.scalatest.flatspec.AnyFlatSpec
 
 class StackSpec extends AnyFlatSpec {
 
