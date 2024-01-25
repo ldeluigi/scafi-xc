@@ -1,11 +1,11 @@
 package it.unibo.scafi.xc.extensions.ux
 
+import scala.util.Random
+
 import it.unibo.scafi.xc.abstractions.boundaries.UpperBounded
 import it.unibo.scafi.xc.extensions.language.AggregateFoundation
 import it.unibo.scafi.xc.extensions.language.semantics.exchange.ExchangeCalculusSemantics
-import it.unibo.scafi.xc.extensions.language.syntax.{BranchingSyntax, ClassicFieldCalculusSyntax}
-
-import scala.util.Random
+import it.unibo.scafi.xc.extensions.language.syntax.{ BranchingSyntax, ClassicFieldCalculusSyntax }
 
 object AggregateLibraryDeveloper {
   // libraries can either be syntactic or semantic

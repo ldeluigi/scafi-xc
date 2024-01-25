@@ -3,7 +3,7 @@ package it.unibo.scafi.xc.extensions.ux
 import it.unibo.scafi.xc.abstractions.boundaries.UpperBounded
 import it.unibo.scafi.xc.extensions.language.AggregateFoundation
 import it.unibo.scafi.xc.extensions.language.syntax.library.BasicGradientLibrary.distanceTo
-import it.unibo.scafi.xc.extensions.language.syntax.{BranchingSyntax, ClassicFieldCalculusSyntax}
+import it.unibo.scafi.xc.extensions.language.syntax.{ BranchingSyntax, ClassicFieldCalculusSyntax }
 
 object AggregateFoundationsResearcher {
 

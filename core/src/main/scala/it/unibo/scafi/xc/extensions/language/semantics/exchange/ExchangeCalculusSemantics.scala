@@ -2,12 +2,7 @@ package it.unibo.scafi.xc.extensions.language.semantics.exchange
 
 import it.unibo.scafi.xc.abstractions.{ Foldable, Liftable }
 import it.unibo.scafi.xc.extensions.language.AggregateFoundation
-import it.unibo.scafi.xc.extensions.language.syntax.{
-  BranchingSyntax,
-  ClassicFieldCalculusSyntax,
-  ExchangeCalculusSyntax,
-  ExpressiveFieldCalculusSyntax,
-}
+import it.unibo.scafi.xc.extensions.language.syntax._
 
 trait ExchangeCalculusSemantics extends AggregateFoundation {
   type ID

@@ -5,7 +5,7 @@ import scala.math.Numeric.Implicits.*
 import it.unibo.scafi.xc.abstractions.Liftable
 import it.unibo.scafi.xc.abstractions.boundaries.UpperBounded
 import it.unibo.scafi.xc.extensions.language.AggregateFoundation
-import it.unibo.scafi.xc.extensions.language.syntax.{BranchingSyntax, ClassicFieldCalculusSyntax}
+import it.unibo.scafi.xc.extensions.language.syntax.{ BranchingSyntax, ClassicFieldCalculusSyntax }
 
 object BasicGradientLibrary {
 
