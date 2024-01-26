@@ -28,32 +28,6 @@
         <option name="resolveSbtClassifiers" value="true" />
         <option name="sbtVersion" value="1.9.8" />
       </SbtProjectSettings>
-      <SbtProjectSettings>
-        <option name="enableDebugSbtShell" value="true" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/core" />
-        <option name="modules">
-          <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/commons" />
-            <option value="$PROJECT_DIR$/commons/.js" />
-            <option value="$PROJECT_DIR$/commons/.jvm" />
-            <option value="$PROJECT_DIR$/commons/.native" />
-            <option value="$PROJECT_DIR$/core" />
-            <option value="$PROJECT_DIR$/core/.js" />
-            <option value="$PROJECT_DIR$/core/.jvm" />
-            <option value="$PROJECT_DIR$/core/.native" />
-            <option value="$PROJECT_DIR$/project" />
-            <option value="$PROJECT_DIR$/simulator" />
-            <option value="$PROJECT_DIR$/simulator/.js" />
-            <option value="$PROJECT_DIR$/simulator/.jvm" />
-            <option value="$PROJECT_DIR$/simulator/.native" />
-          </set>
-        </option>
-        <option name="resolveSbtClassifiers" value="true" />
-        <option name="sbtVersion" value="1.9.8" />
-        <option name="useSbtShellForBuild" value="true" />
-        <option name="useSbtShellForImport" value="true" />
-      </SbtProjectSettings>
     </option>
   </component>
 </project>
