@@ -14,9 +14,11 @@ object BasicGradientLibrary {
     def distanceEstimate[D: Numeric: UpperBounded](
         estimates: language.AggregateValue[D],
         distances: language.AggregateValue[D],
-    ): D = language.nfold(Liftable.lift(estimates, distances)(_ + _))(summon[UpperBounded[D]].upperBound)(
-      summon[Numeric[D]].min,
-    )
+    ): D = Liftable
+      .lift(estimates, distances)(_ + _)
+      .nfold(summon[UpperBounded[D]].upperBound)(
+        summon[Numeric[D]].min,
+      )
 
     def distanceTo[D: Numeric: UpperBounded](
         source: Boolean,

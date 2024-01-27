@@ -17,6 +17,7 @@ lazy val commonSettings = Seq(
     "-Wnonunit-statement",
     // "-Yexplicit-nulls",
     "-Ycheck-reentrant",
+    "-Ysafe-init",
     "-language:strictEquality",
     "-language:implicitConversions",
   ),

@@ -1,4 +1,4 @@
-package it.unibo.scafi.xc.extensions.language
+package it.unibo.scafi.xc.implicits.language
 
 import it.unibo.scafi.xc.abstractions.{ Foldable, Liftable }
 
