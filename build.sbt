@@ -62,3 +62,5 @@ ThisBuild / scalafmtPrintDiff := true
 
 // sbt
 Global / onChangedBuildSource := ReloadOnSourceChanges
+Global / autoStartServer := !ci
+Global / excludeLintKeys += autoStartServer
