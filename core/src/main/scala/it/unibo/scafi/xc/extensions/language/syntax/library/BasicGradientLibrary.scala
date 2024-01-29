@@ -23,14 +23,12 @@ object BasicGradientLibrary {
     def distanceTo[D: Numeric: UpperBounded](
         source: Boolean,
         distances: language.AggregateValue[D],
-    ): language.AggregateValue[D] =
+    ): D =
       language.rep[D](summon[UpperBounded[D]].upperBound)(n =>
-        language.onlySelf(language.branch(source)(summon[Numeric[D]].zero)(distanceEstimate[D](n, distances))),
+        language.branch(source)(summon[Numeric[D]].zero)(distanceEstimate[D](n, distances)).onlySelf,
       )
 
-    def hopDistance(source: Boolean): language.AggregateValue[Double] = {
-      import it.unibo.scafi.xc.implementations.boundaries.CommonBoundaries.given_Bounded_Double
-      distanceTo[Double](source, 1.0)
-    }
+    def hopDistance[D: Numeric: UpperBounded](source: Boolean): D =
+      distanceTo(source, summon[Numeric[D]].one)
   }
 }

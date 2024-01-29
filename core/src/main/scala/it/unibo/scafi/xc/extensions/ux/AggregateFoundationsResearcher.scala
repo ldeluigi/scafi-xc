@@ -53,6 +53,6 @@ object AggregateFoundationsResearcher {
   extension (language: NewSemantics) {
 
     def magicGradient[D: Numeric: UpperBounded](distances: language.AggregateValue[D]): language.AggregateValue[D] =
-      language.distanceTo(true, distances)
+      language.distanceTo[D](true, distances)
   }
 }

@@ -2,14 +2,10 @@ package it.unibo.scafi.xc.implicits.language.syntax
 
 import it.unibo.scafi.xc.implicits.language.AggregateFoundation
 
-trait ExpressiveFieldCalculusSyntax[L <: AggregateFoundation] {
-  def nbr[V](using language: L)(expr: => language.AggregateValue[V]): language.AggregateValue[V]
+trait ExpressiveFieldCalculusSyntax[AV[_], L <: AggregateFoundation[AV]](using L) {
+  def nbr[V](expr: => AV[V]): AV[V]
 
-  def rep[A](using language: L)(init: => language.AggregateValue[A])(
-      f: language.AggregateValue[A] => language.AggregateValue[A],
-  ): language.AggregateValue[A]
+  def rep[A](init: => AV[A])(f: AV[A] => AV[A]): AV[A]
 
-  def share[A](using language: L)(init: => language.AggregateValue[A])(
-      f: language.AggregateValue[A] => language.AggregateValue[A],
-  ): language.AggregateValue[A]
+  def share[A](init: => AV[A])(f: AV[A] => AV[A]): AV[A]
 }

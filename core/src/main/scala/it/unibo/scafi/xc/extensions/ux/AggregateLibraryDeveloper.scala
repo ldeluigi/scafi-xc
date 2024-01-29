@@ -22,8 +22,9 @@ object AggregateLibraryDeveloper {
         local: Boolean,
         gateway: Boolean,
         distances: lang.AggregateValue[D],
-    ): lang.AggregateValue[D] =
-      lang.branch(local)(summon[UpperBounded[D]].upperBound)(lang.distanceTo(gateway, distances))
+    ): lang.AggregateValue[D] = {
+      lang.branch(local)(summon[UpperBounded[D]].upperBound)(lang.distanceTo[D](gateway, distances))
+    }
   }
 
   // example of semantic library which only works for one foundation
