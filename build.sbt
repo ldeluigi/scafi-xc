@@ -15,6 +15,7 @@ lazy val commonSettings = Seq(
     "-Wunused:all",
     "-Wvalue-discard",
     "-Wnonunit-statement",
+    "-explain",
     // "-Yexplicit-nulls",
     "-Ycheck-reentrant",
     "-Ysafe-init",
