@@ -107,11 +107,13 @@ object ExchangeCalculusSemantics {
 
       override def rep[A](init: => A)(f: A => A): A =
         summon[ExpressiveFieldCalculusSyntax[ExchangeCalculusSemantics]]
-          .rep(language)(init)(nv => nv.map(f))(language.self)
+          .rep(language)(init)(nv => nv.map(f))
+          .onlySelf
 
       override def share[A](init: => A)(f: A => A): A =
         summon[ExpressiveFieldCalculusSyntax[ExchangeCalculusSemantics]]
-          .share(language)(init)(nv => nv.map(f))(language.self)
+          .share(language)(init)(nv => nv.map(f))
+          .onlySelf
     }
   }
 }

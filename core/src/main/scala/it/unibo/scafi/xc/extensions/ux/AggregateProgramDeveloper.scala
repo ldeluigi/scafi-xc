@@ -16,21 +16,9 @@ object AggregateProgramDeveloper extends ExchangeCalculusRuntime with Engine {
     }
   }
 
-  // or use an instance of language
-  // benefit: protected/internal methods and stuff are all hidden
-  def myProgram(l: Language): Any = {
-    l.rep(1)(_ + 1)
-  }
-
   // the following tests simulate a single round of execution
   @main def test1(): Unit = {
     val p = MyProgram()
-    val c: Context = EngineContext()
-    println(p(c))
-  }
-
-  @main def test2(): Unit = {
-    val p = ExchangeCalculusLambda(myProgram)
     val c: Context = EngineContext()
     println(p(c))
   }

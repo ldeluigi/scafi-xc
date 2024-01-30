@@ -47,12 +47,14 @@ object AggregateFoundationsResearcher {
   }
 
   // after which they can use their semantics with classic libraries
+  object LibraryThatCaresAboutSemantics {
+    import it.unibo.scafi.xc.extensions.language.syntax.library.BasicGradientLibrary
 
-  import it.unibo.scafi.xc.extensions.language.syntax.library.BasicGradientLibrary
+    extension (language: NewSemantics) {
 
-  extension (language: NewSemantics) {
-
-    def magicGradient[D: Numeric: UpperBounded](distances: language.AggregateValue[D]): language.AggregateValue[D] =
-      language.distanceTo[D](true, distances)
+      def magicGradient[D: Numeric: UpperBounded](distances: language.AggregateValue[D]): language.AggregateValue[D] =
+        language.distanceTo[D](true, distances)
+    }
   }
+
 }
