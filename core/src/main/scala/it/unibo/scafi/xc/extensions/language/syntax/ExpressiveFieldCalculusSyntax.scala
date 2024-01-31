@@ -15,5 +15,7 @@ trait ExpressiveFieldCalculusSyntax[L <: AggregateFoundation] {
     def share[A](init: => language.AggregateValue[A])(
         f: language.AggregateValue[A] => language.AggregateValue[A],
     ): language.AggregateValue[A]
+
   }
+
 }
