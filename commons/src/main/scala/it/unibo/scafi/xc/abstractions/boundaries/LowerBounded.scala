@@ -1,5 +1,5 @@
 package it.unibo.scafi.xc.abstractions.boundaries
 
-trait LowerBounded[T] extends Ordering[T] {
+trait LowerBounded[T: Ordering] {
   def lowerBound: T
 }
