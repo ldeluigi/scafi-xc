@@ -1,33 +1,29 @@
 package it.unibo.scafi.xc.implicitsinmethods.runtime
 
-trait AggregateRuntime extends Core {
+trait AggregateRuntime extends Core:
   type DeviceID
   type VM <: RoundVM
   override type Context <: BasicContext
 
   def factory: AbstractFactory
 
-  protected trait AbstractFactory {
+  protected trait AbstractFactory:
     def createExport: Export
-  }
 
-  protected trait BasicContext {
+  protected trait BasicContext:
     def selfId: DeviceID
 
     def neighbors: Map[DeviceID, Export]
-  }
 
-  protected trait AggregateProgram {
+  protected trait AggregateProgram:
     this: Language =>
     def main(): Any
-  }
 
-  protected trait SemanticsImplementation {
+  protected trait SemanticsImplementation:
     this: Language =>
     def vm: VM
-  }
 
-  protected trait RoundVM {
+  protected trait RoundVM:
     def registerRoot(v: Any): Unit
 
     def context: Context
@@ -37,20 +33,17 @@ trait AggregateRuntime extends Core {
     def exporting: Export
 
     def alignedNeighbors: List[DeviceID]
-  }
 
   protected def startRound(c: Context): VM
 
   @SuppressWarnings(Array("scalafix:DisableSyntax.var"))
-  trait ExecutionTemplate extends (Context => Export), SemanticsImplementation, AggregateProgram {
+  trait ExecutionTemplate extends (Context => Export), SemanticsImplementation, AggregateProgram:
     this: Language =>
     var vm: VM = _
 
-    override def apply(c: Context): Export = {
+    override def apply(c: Context): Export =
       vm = startRound(c)
       val result = main()
       vm.registerRoot(result)
       vm.exporting
-    }
-  }
-}
+end AggregateRuntime

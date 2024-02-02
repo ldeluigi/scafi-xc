@@ -1,8 +1,8 @@
 package it.unibo.scafi.xc.language.semantics.exchange
 
-import it.unibo.scafi.xc.language.DeviceAwareAggregateFoundation
+import it.unibo.scafi.xc.language.foundation.{ AggregateFoundation, DeviceAwareAggregateFoundation }
 
-trait ExchangeCalculusSemantics extends DeviceAwareAggregateFoundation {
+trait ExchangeCalculusSemantics extends AggregateFoundation with DeviceAwareAggregateFoundation:
 
   /**
    * NValues are maps from aligned neighbouring device identifiers to values, with a default value.
@@ -30,4 +30,4 @@ trait ExchangeCalculusSemantics extends DeviceAwareAggregateFoundation {
   protected def xc[T](init: AggregateValue[T])(
       f: AggregateValue[T] => (AggregateValue[T], AggregateValue[T]),
   ): AggregateValue[T]
-}
+end ExchangeCalculusSemantics

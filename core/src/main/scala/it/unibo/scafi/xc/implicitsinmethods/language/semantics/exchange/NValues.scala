@@ -4,24 +4,21 @@ import scala.collection.MapView
 
 import it.unibo.scafi.xc.abstractions.{ Foldable, Liftable }
 
-case class NValues[ID, +V](default: V, values: MapView[ID, V]) {
+case class NValues[ID, +V](default: V, values: MapView[ID, V]):
   def apply(id: ID): V = values.getOrElse(id, default)
-}
 
-object NValues {
+object NValues:
 
-  given [ID, V]: Conversion[V, NValues[ID, V]] with {
+  given [ID, V]: Conversion[V, NValues[ID, V]] with
 
     def apply(v: V): NValues[ID, V] = NValues[ID, V](default = v, values = MapView.empty)
-  }
 
-  given [ID]: Liftable[[V] =>> NValues[ID, V]] with {
+  given [ID]: Liftable[[V] =>> NValues[ID, V]] with
 
-    extension [A](a: NValues[ID, A]) {
+    extension [A](a: NValues[ID, A])
 
       override def map[B](f: A => B): NValues[ID, B] =
         NValues[ID, B](default = f(a.default), values = a.values.mapValues(f))
-    }
 
     override def lift[A, B, C](a: NValues[ID, A], b: NValues[ID, B])(f: (A, B) => C): NValues[ID, C] =
       NValues[ID, C](
@@ -40,14 +37,13 @@ object NValues {
           id -> f(a(id), b(id), c(id))
         }.toMap.view,
       )
-  }
 
-  given [ID]: Foldable[[V] =>> NValues[ID, V]] with {
+  end given
 
-    extension [A](a: NValues[ID, A]) {
+  given [ID]: Foldable[[V] =>> NValues[ID, V]] with
+
+    extension [A](a: NValues[ID, A])
 
       override def fold[B](base: B)(acc: (B, A) => B): B =
         a.values.values.foldLeft(base)(acc)
-    }
-  }
-}
+end NValues

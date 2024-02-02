@@ -12,7 +12,7 @@ class BasicGradientLibrary[AV[_], L <: AggregateFoundation[AV]](using
     lang: L,
     syntax: ClassicFieldCalculusSyntax[AV, L],
     branching: BranchingSyntax[AV, L],
-) extends AggregateLibrary {
+) extends AggregateLibrary:
 
   import syntax._
   import branching._
@@ -31,4 +31,4 @@ class BasicGradientLibrary[AV[_], L <: AggregateFoundation[AV]](using
 
   def hopDistance[D: Numeric: UpperBounded](source: Boolean): D =
     distanceTo(source, summon[Numeric[D]].one)
-}
+end BasicGradientLibrary

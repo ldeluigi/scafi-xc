@@ -3,7 +3,7 @@ package it.unibo.scafi.xc.extensions.language.semantics.field
 import it.unibo.scafi.xc.extensions.language.AggregateFoundation
 import it.unibo.scafi.xc.extensions.language.syntax.ClassicFieldCalculusSyntax
 
-trait FieldCalculusSemantics extends AggregateFoundation {
+trait FieldCalculusSemantics extends AggregateFoundation:
   type Field[T]
   override type AggregateValue[T] = Field[T]
 
@@ -12,13 +12,12 @@ trait FieldCalculusSemantics extends AggregateFoundation {
   protected def rep[A](init: => A)(fun: A => A): A
 
   protected def share[A](init: => A)(fun: A => A): A
-}
 
-object FieldCalculusSemantics {
+object FieldCalculusSemantics:
 
-  given ClassicFieldCalculusSyntax[FieldCalculusSemantics] with {
+  given ClassicFieldCalculusSyntax[FieldCalculusSemantics] with
 
-    extension (language: FieldCalculusSemantics) {
+    extension (language: FieldCalculusSemantics)
 
       override def nbr[A](expr: => language.Field[A]): language.Field[A] =
         language.nbr(expr)
@@ -28,6 +27,3 @@ object FieldCalculusSemantics {
 
       override def share[A](init: => A)(f: A => A): A =
         language.share(init)(f)
-    }
-  }
-}

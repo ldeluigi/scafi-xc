@@ -8,7 +8,7 @@ import it.unibo.scafi.xc.implicitsinconstructor.language.semantics.exchange.{ Ex
 import it.unibo.scafi.xc.implicitsinconstructor.language.syntax.library.BasicGradientLibrary
 import it.unibo.scafi.xc.implicitsinconstructor.language.syntax.{ BranchingSyntax, ClassicFieldCalculusSyntax }
 
-object AggregateLibraryDeveloper {
+object AggregateLibraryDeveloper:
   // libraries can either be syntactic or semantic
   // semantic library make sense only for a specific semantics
   // syntactic library just rely on common syntax between semantics
@@ -20,7 +20,7 @@ object AggregateLibraryDeveloper {
       lang: L,
       dependency: BasicGradientLibrary[AV, L],
       branching: BranchingSyntax[AV, L],
-  ) {
+  ):
 
     import branching._
     import dependency._
@@ -30,17 +30,15 @@ object AggregateLibraryDeveloper {
         local: Boolean,
         gateway: Boolean,
         distances: lang.AggregateValue[D],
-    ): lang.AggregateValue[D] = {
+    ): lang.AggregateValue[D] =
       branch(local)(summon[UpperBounded[D]].upperBound)(distanceTo[D](gateway, distances))
-    }
-  }
 
   // alternative example of syntactic library that instantiate the dependencies itself:
   class MyLibrary1b[AV[_], L <: AggregateFoundation[AV]](using
       lang: L,
       calculus: ClassicFieldCalculusSyntax[AV, L],
       branching: BranchingSyntax[AV, L],
-  ) {
+  ):
     private val dependency = BasicGradientLibrary[AV, L]()
 
     import dependency._
@@ -51,16 +49,13 @@ object AggregateLibraryDeveloper {
         local: Boolean,
         gateway: Boolean,
         distances: lang.AggregateValue[D],
-    ): lang.AggregateValue[D] = {
+    ): lang.AggregateValue[D] =
       branch(local)(summon[UpperBounded[D]].upperBound)(distanceTo[D](gateway, distances))
-    }
-  }
 
   // example of semantic library that works only for a specific foundation:
-  class MyLibrary2[ID](using lang: ExchangeCalculusSemantics[ID]) {
+  class MyLibrary2[ID](using lang: ExchangeCalculusSemantics[ID]):
     import lang._
 
     def randomMessages(): NValues[ID, Int] =
       neighbors.map(_ => Random.nextInt())
-  }
-}
+end AggregateLibraryDeveloper

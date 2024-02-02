@@ -3,7 +3,7 @@ package it.unibo.scafi.xc.cake.language.semantics.exchange
 import it.unibo.scafi.xc.abstractions.{ Foldable, Liftable }
 import it.unibo.scafi.xc.extensions.language.AggregateFoundation
 
-trait ExchangeCalculusSemantics extends AggregateFoundation {
+trait ExchangeCalculusSemantics extends AggregateFoundation:
   type ID
   given idEquality: CanEqual[ID, ID] = CanEqual.derived
 
@@ -41,8 +41,7 @@ trait ExchangeCalculusSemantics extends AggregateFoundation {
 
   override def convert[T]: Conversion[T, NValues[ID, T]] = NValues.given_Conversion_V_NValues
 
-  extension [T](av: NValues[ID, T]) {
+  extension [T](av: NValues[ID, T])
     override def onlySelf: T = av(self)
     override def withoutSelf: NValues[ID, T] = av.copy(values = av.values.filterKeys(_ != self))
-  }
-}
+end ExchangeCalculusSemantics

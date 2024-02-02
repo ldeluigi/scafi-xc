@@ -1,17 +1,14 @@
 package it.unibo.scafi.xc.abstractions
 
-trait Liftable[F[_]] {
+trait Liftable[F[_]]:
 
-  extension [A](a: F[A]) {
-    def map[B](f: A => B): F[B]
-  }
+  extension [A](a: F[A]) def map[B](f: A => B): F[B]
 
   def lift[A, B, C](a: F[A], b: F[B])(f: (A, B) => C): F[C]
 
   def lift[A, B, C, D](a: F[A], b: F[B], c: F[C])(f: (A, B, C) => D): F[D]
-}
 
-object Liftable {
+object Liftable:
 
   def lift[A, B, C, F[_]: Liftable](a: F[A], b: F[B])(f: (A, B) => C): F[C] =
     summon[Liftable[F]].lift(a, b)(f)
@@ -26,4 +23,3 @@ object Liftable {
       f: (A, B, C) => D,
   ): F1[F2[D]] =
     lift(a, b, c)((aa, bb, cc) => lift(aa, bb, cc)(f))
-}

@@ -2,7 +2,7 @@ package it.unibo.scafi.xc.implicitsinmethods.language
 
 import it.unibo.scafi.xc.abstractions.{ Foldable, Liftable }
 
-trait AggregateFoundation[AV[_]] {
+trait AggregateFoundation[AV[_]]:
   type AggregateValue[T] = AV[T]
 
   /**
@@ -23,7 +23,7 @@ trait AggregateFoundation[AV[_]] {
   given convert[T]: Conversion[T, AV[T]]
 
   // Default builtins
-  extension [T](av: AV[T]) {
+  extension [T](av: AV[T])
 
     /**
      * Restricts the aggregate value scope to "self".
@@ -48,5 +48,5 @@ trait AggregateFoundation[AV[_]] {
      */
     def nfold[B](base: B)(acc: (B, T) => B): B =
       av.withoutSelf.fold(base)(acc)
-  }
-}
+  end extension
+end AggregateFoundation

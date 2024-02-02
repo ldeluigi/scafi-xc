@@ -4,7 +4,7 @@ import it.unibo.scafi.xc.abstractions.{ Foldable, Liftable }
 import it.unibo.scafi.xc.extensions.language.AggregateFoundation
 import it.unibo.scafi.xc.extensions.language.syntax._
 
-trait ExchangeCalculusSemantics extends AggregateFoundation {
+trait ExchangeCalculusSemantics extends AggregateFoundation:
   type ID
   given idEquality: CanEqual[ID, ID] = CanEqual.derived
 
@@ -42,34 +42,31 @@ trait ExchangeCalculusSemantics extends AggregateFoundation {
 
   override def convert[T]: Conversion[T, NValues[ID, T]] = NValues.given_Conversion_V_NValues
 
-  extension [T](av: NValues[ID, T]) {
+  extension [T](av: NValues[ID, T])
     override def onlySelf: T = av(self)
     override def withoutSelf: NValues[ID, T] = av.copy(values = av.values.filterKeys(_ != self))
-  }
-}
 
-object ExchangeCalculusSemantics {
+end ExchangeCalculusSemantics
 
-  given ExchangeCalculusSyntax[ExchangeCalculusSemantics] with {
+object ExchangeCalculusSemantics:
 
-    extension (language: ExchangeCalculusSemantics) {
+  given ExchangeCalculusSyntax[ExchangeCalculusSemantics] with
+
+    extension (language: ExchangeCalculusSemantics)
 
       override def exchange[T](initial: language.AggregateValue[T])(
           f: language.AggregateValue[T] => (language.AggregateValue[T], language.AggregateValue[T]) |
             language.AggregateValue[T],
       ): language.AggregateValue[T] =
         language.xcexchange(initial)(n =>
-          f(n) match {
+          f(n) match
             case retSend: language.AggregateValue[T] => (retSend, retSend)
-            case (ret, send) => (ret, send)
-          },
+            case (ret, send) => (ret, send),
         )
-    }
-  }
 
-  given ExpressiveFieldCalculusSyntax[ExchangeCalculusSemantics] with {
+  given ExpressiveFieldCalculusSyntax[ExchangeCalculusSemantics] with
 
-    extension (language: ExchangeCalculusSemantics) {
+    extension (language: ExchangeCalculusSemantics)
 
       override def rep[A](init: => language.AggregateValue[A])(
           f: language.AggregateValue[A] => language.AggregateValue[A],
@@ -83,23 +80,19 @@ object ExchangeCalculusSemantics {
           f: language.AggregateValue[A] => language.AggregateValue[A],
       ): language.AggregateValue[A] =
         language.exchange(init.onlySelf)(f)
-    }
-  }
 
-  given BranchingSyntax[ExchangeCalculusSemantics] with {
+  given BranchingSyntax[ExchangeCalculusSemantics] with
 
-    extension (language: ExchangeCalculusSemantics) {
+    extension (language: ExchangeCalculusSemantics)
 
       override def branch[T](cond: NValues[language.ID, Boolean])(th: => NValues[language.ID, T])(
           el: => NValues[language.ID, T],
       ): NValues[language.ID, T] =
         language.xcbranch(cond)(th)(el)
-    }
-  }
 
-  given classicSyntax: ClassicFieldCalculusSyntax[ExchangeCalculusSemantics] with {
+  given classicSyntax: ClassicFieldCalculusSyntax[ExchangeCalculusSemantics] with
 
-    extension (language: ExchangeCalculusSemantics) {
+    extension (language: ExchangeCalculusSemantics)
 
       override def nbr[V](expr: => NValues[language.ID, V]): NValues[language.ID, V] =
         summon[ExpressiveFieldCalculusSyntax[ExchangeCalculusSemantics]]
@@ -114,6 +107,4 @@ object ExchangeCalculusSemantics {
         summon[ExpressiveFieldCalculusSyntax[ExchangeCalculusSemantics]]
           .share(language)(init)(nv => nv.map(f))
           .onlySelf
-    }
-  }
-}
+end ExchangeCalculusSemantics

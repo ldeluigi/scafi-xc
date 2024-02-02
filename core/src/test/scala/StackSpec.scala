@@ -2,7 +2,7 @@ import scala.collection.mutable
 
 import org.scalatest.flatspec.AnyFlatSpec
 
-class StackSpec extends AnyFlatSpec {
+class StackSpec extends AnyFlatSpec:
 
   "A Stack" should "pop values in last-in-first-out order" in {
     val stack = new mutable.Stack[Int]
@@ -18,4 +18,3 @@ class StackSpec extends AnyFlatSpec {
       emptyStack.pop()
     }
   }
-}

@@ -2,22 +2,19 @@ package it.unibo.scafi.xc.extensions.runtime.engine
 
 import it.unibo.scafi.xc.extensions.runtime.AggregateRuntime
 
-trait Engine {
+trait Engine:
   this: AggregateRuntime =>
   override type DeviceID = Int
   override type Export = String
   override type Context = EngineContext
 
-  class Factory extends AbstractFactory {
+  class Factory extends AbstractFactory:
     override def createExport: Export = "hello"
-  }
 
   override def factory: Factory = Factory()
 
-  class EngineContext extends BasicContext {
+  class EngineContext extends BasicContext:
 
     override def selfId: DeviceID = 1
 
     override def neighbors: Map[DeviceID, Export] = Map.empty
-  }
-}

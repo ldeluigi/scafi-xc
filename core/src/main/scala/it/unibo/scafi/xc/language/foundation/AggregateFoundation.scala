@@ -1,9 +1,8 @@
-package it.unibo.scafi.xc.language
+package it.unibo.scafi.xc.language.foundation
 
 import it.unibo.scafi.xc.abstractions.{ Foldable, Liftable }
-import it.unibo.scafi.xc.language.syntax.CommonSyntax
 
-trait AggregateFoundation extends CommonSyntax {
+trait AggregateFoundation:
   type AggregateValue[T]
 
   /**
@@ -25,7 +24,7 @@ trait AggregateFoundation extends CommonSyntax {
   given convert[T]: Conversion[T, AggregateValue[T]]
 
   // Default builtins
-  extension [T](av: AggregateValue[T]) {
+  extension [T](av: AggregateValue[T])
 
     /**
      * Restricts the aggregate value scope to "self".
@@ -51,5 +50,5 @@ trait AggregateFoundation extends CommonSyntax {
      */
     def nfold[B](base: B)(acc: (B, T) => B): B =
       av.withoutSelf.fold(base)(acc)
-  }
-}
+  end extension
+end AggregateFoundation

@@ -7,7 +7,8 @@ import it.unibo.scafi.xc.abstractions.boundaries.UpperBounded
 import it.unibo.scafi.xc.cake.language.AggregateFoundation
 import it.unibo.scafi.xc.cake.language.syntax.{ BranchingSyntax, ClassicFieldCalculusSyntax }
 
-trait BasicGradientLibrary { self: AggregateFoundation with ClassicFieldCalculusSyntax with BranchingSyntax =>
+trait BasicGradientLibrary:
+  self: AggregateFoundation with ClassicFieldCalculusSyntax with BranchingSyntax =>
 
   def distanceEstimate[D: Numeric: UpperBounded](
       estimates: AggregateValue[D],
@@ -28,4 +29,4 @@ trait BasicGradientLibrary { self: AggregateFoundation with ClassicFieldCalculus
 
   def hopDistance[D: Numeric: UpperBounded](source: Boolean): D =
     distanceTo(source, summon[Numeric[D]].one)
-}
+end BasicGradientLibrary
