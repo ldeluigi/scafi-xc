@@ -1,19 +1,21 @@
 package it.unibo.scafi.xc.language.foundation
 
-import it.unibo.scafi.xc.abstractions.{ Foldable, Liftable }
+import it.unibo.scafi.xc.abstractions.{ Foldable, Liftable, Neighbouring }
 
 trait AggregateFoundation:
-  type AggregateValue[T]
+  type NeighbouringValue[T]
+  type AggregateValue[T] <: NeighbouringValue[T]
 
   /**
    * Aggregate values can be composed/mapped into new aggregate values.
    */
   given lift: Liftable[AggregateValue]
+  given liftNeighbouring: Liftable[NeighbouringValue]
 
   /**
    * Aggregate values can be folded over.
    */
-  given fold: Foldable[AggregateValue]
+  given fold: Foldable[NeighbouringValue]
 
   /**
    * Local values can be considered aggregate values.
@@ -23,32 +25,8 @@ trait AggregateFoundation:
    */
   given convert[T]: Conversion[T, AggregateValue[T]]
 
-  // Default builtins
-  extension [T](av: AggregateValue[T])
-
-    /**
-     * Restricts the aggregate value scope to "self".
-     */
-    def onlySelf: T
-
-    /**
-     * Restricts the aggregate value scope to "others".
-     */
-    def withoutSelf: AggregateValue[T]
-
-    /**
-     * Folds over the aggregate value, ignoring the "self" value.
-     *
-     * @param base
-     *   the base value
-     * @param acc
-     *   the accumulator function
-     * @tparam B
-     *   the type of the base value
-     * @return
-     *   the folded value
-     */
-    def nfold[B](base: B)(acc: (B, T) => B): B =
-      av.withoutSelf.fold(base)(acc)
-  end extension
+  /**
+   * Aggregate values are aware of their neighbours and their local values.
+   */
+  given neighbouring: Neighbouring[AggregateValue, NeighbouringValue]
 end AggregateFoundation

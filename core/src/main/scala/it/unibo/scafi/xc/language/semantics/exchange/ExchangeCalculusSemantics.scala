@@ -7,8 +7,10 @@ trait ExchangeCalculusSemantics extends AggregateFoundation with DeviceAwareAggr
   /**
    * NValues are maps from aligned neighbouring device identifiers to values, with a default value.
    */
-  trait NValues[T]
+  trait NValuesWithoutSelf[T]
+  trait NValues[T] extends NValuesWithoutSelf[T]
   override type AggregateValue[T] = NValues[T]
+  override type NeighbouringValue[T] = NValuesWithoutSelf[T]
 
   /**
    * This operator branches the computation into `th` or `el` according to `cond`.

@@ -4,7 +4,7 @@ import it.unibo.scafi.xc.language.foundation.AggregateFoundation
 import it.unibo.scafi.xc.language.libraries.FieldCalculusLibrary.*
 import it.unibo.scafi.xc.language.syntax.FieldCalculusSyntax
 
-import Fractional.Implicits._
+import Fractional.Implicits.*
 
 object MathLibrary:
 

@@ -1,12 +1,13 @@
 package it.unibo.scafi.xc.abstractions
 
-trait Liftable[F[_]]:
-
-  extension [A](a: F[A]) def map[B](f: A => B): F[B]
+trait Liftable[F[_]] extends Mappable[F]:
+  def lift[A, B](a: F[A])(f: A => B): F[B]
 
   def lift[A, B, C](a: F[A], b: F[B])(f: (A, B) => C): F[C]
 
   def lift[A, B, C, D](a: F[A], b: F[B], c: F[C])(f: (A, B, C) => D): F[D]
+
+  extension [A](a: F[A]) override def map[B](f: A => B): F[B] = lift(a)(f)
 
 object Liftable:
 
