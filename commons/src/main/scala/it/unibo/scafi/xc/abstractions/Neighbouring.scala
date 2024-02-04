@@ -1,6 +1,6 @@
 package it.unibo.scafi.xc.abstractions
 
-trait Neighbouring[F[_], N[_]]:
+trait Neighbouring[F[T] <: N[T], N[_]]:
 
   extension [T](f: F[T])
     def onlySelf: T

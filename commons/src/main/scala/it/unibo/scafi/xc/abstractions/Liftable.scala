@@ -11,8 +11,11 @@ trait Liftable[F[_]] extends Mappable[F]:
 
 object Liftable:
 
-  def lift[A, B, C, F[_]: Liftable](a: F[A], b: F[B])(f: (A, B) => C): F[C] =
-    summon[Liftable[F]].lift(a, b)(f)
+  def lift[A, B, F[_]: Liftable](a: F[A])(f: A => B): F[B] = summon[Liftable[F]].lift(a)(f)
+
+  def liftTwice[A, B, F1[_]: Liftable, F2[_]: Liftable](a: F1[F2[A]])(f: A => B): F1[F2[B]] = lift(a)(aa => lift(aa)(f))
+
+  def lift[A, B, C, F[_]: Liftable](a: F[A], b: F[B])(f: (A, B) => C): F[C] = summon[Liftable[F]].lift(a, b)(f)
 
   def liftTwice[A, B, C, F1[_]: Liftable, F2[_]: Liftable](a: F1[F2[A]], b: F1[F2[B]])(f: (A, B) => C): F1[F2[C]] =
     lift(a, b)((aa, bb) => lift(aa, bb)(f))
@@ -24,3 +27,10 @@ object Liftable:
       f: (A, B, C) => D,
   ): F1[F2[D]] =
     lift(a, b, c)((aa, bb, cc) => lift(aa, bb, cc)(f))
+
+  def lift[A, B, F[_]: Liftable](f: A => B): F[A] => F[B] = a => lift(a)(f)
+
+  def lift[A, B, C, F[_]: Liftable](f: (A, B) => C): (F[A], F[B]) => F[C] = (a, b) => lift(a, b)(f)
+
+  def lift[A, B, C, D, F[_]: Liftable](f: (A, B, C) => D): (F[A], F[B], F[C]) => F[D] = (a, b, c) => lift(a, b, c)(f)
+end Liftable
