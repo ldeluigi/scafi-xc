@@ -3,7 +3,7 @@ package it.unibo.scafi.xc.language.semantics.exchange.syntaxes
 import it.unibo.scafi.xc.language.semantics.exchange.ExchangeCalculusSemantics
 import it.unibo.scafi.xc.language.syntax.FieldCalculusSyntax
 
-trait XCSupportsFC extends FieldCalculusSyntax:
+trait FieldCalculusByExchangeSemantics extends FieldCalculusSyntax:
   self: ExchangeCalculusSemantics =>
   override def nbr[V](expr: => AggregateValue[V]): AggregateValue[V] = ???
 

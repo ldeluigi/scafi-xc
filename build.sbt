@@ -9,6 +9,7 @@ val ci = scala.sys.env.get("CI").contains("true")
 
 lazy val commonSettings = Seq(
   scalacOptions ++= Seq(
+//    "-explain",
     "-new-syntax",
     "-indent",
     "-feature",
@@ -21,11 +22,7 @@ lazy val commonSettings = Seq(
     "-Ycheck-reentrant",
     "-language:strictEquality",
     "-language:implicitConversions",
-  ) ++ (if (ci)
-          Seq(
-            "-explain",
-          )
-        else Seq.empty),
+  ),
 )
 
 // projects

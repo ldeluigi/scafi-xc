@@ -3,7 +3,7 @@ package it.unibo.scafi.xc.language.semantics.exchange.syntaxes
 import it.unibo.scafi.xc.language.semantics.exchange.ExchangeCalculusSemantics
 import it.unibo.scafi.xc.language.syntax.ExchangeCalculusSyntax
 
-trait XCSupportsExchange extends ExchangeCalculusSyntax:
+trait ExchangeSemantics extends ExchangeCalculusSyntax:
   self: ExchangeCalculusSemantics =>
 
   override def exchange[T](initial: AggregateValue[T])(

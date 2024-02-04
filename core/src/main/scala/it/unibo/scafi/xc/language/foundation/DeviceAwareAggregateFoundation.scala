@@ -6,15 +6,13 @@ trait DeviceAwareAggregateFoundation:
   /**
    * The type of device identifiers.
    */
-  type DeviceID
+  type DeviceId
 
   /**
    * Device identifiers must be equatable.
    */
-  given idEquality: CanEqual[DeviceID, DeviceID] = CanEqual.derived
+  given idEquality: CanEqual[DeviceId, DeviceId] = CanEqual.derived
 
-  def self: DeviceID
-
-  def neighbors: AggregateValue[DeviceID]
+  def self: DeviceId
 
 end DeviceAwareAggregateFoundation
