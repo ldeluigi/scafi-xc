@@ -4,6 +4,7 @@ import scala.collection.MapView
 import scala.collection.mutable
 
 case class MutableValueTree[Token, Value](
+    @SuppressWarnings(Array("scalafix:DisableSyntax.var"))
     var value: Option[Value] = Option.empty,
     private val childrenMap: mutable.Map[Token, MutableValueTree[Token, Value]] =
       mutable.Map.empty[Token, MutableValueTree[Token, Value]],

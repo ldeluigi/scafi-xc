@@ -12,7 +12,6 @@ trait NValuesSemanticsImpl:
 
   protected case class NValuesImpl[+T](default: T, unalignedValues: Map[DeviceId, T] = Map.empty):
     def alignedValues: MapView[DeviceId, T] = unalignedValues.view.filterKeys(aligned)
-    def alignedMap: Map.WithDefault[DeviceId, T] = unalignedValues.withDefaultValue(default)
 
   override given nvOps: NValuesOps[NeighbouringValue, DeviceId] = new NValuesOps[NeighbouringValue, DeviceId]:
     extension [T](nv: NeighbouringValue[T]) override def default: T = nv.default

@@ -8,7 +8,7 @@ class TreeStack[Token, Value](using canEqual: CanEqual[Token, Token]) extends St
   private val tree = MutableValueTree[Token, Value]()
   private val stack = mutable.Stack[Token]()
 
-  @SuppressWarnings(Array("DisableSyntax.var"))
+  @SuppressWarnings(Array("scalafix:DisableSyntax.var"))
   private var currentTree = tree
 
   override def snapshot: ImmutableValueTree[Token, Value] = currentTree.snapshot

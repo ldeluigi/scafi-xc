@@ -1,9 +1,10 @@
 package it.unibo.scafi.xc.engine.exchange
 
-import scala.collection.{ mutable, MapView }
+import scala.collection.{MapView, mutable}
+
 import it.unibo.scafi.xc.engine.network.{ Export, Import }
 import it.unibo.scafi.xc.engine.path.MutableValueTree.*
-import it.unibo.scafi.xc.engine.path.{ MutableValueTree, ValueTree, ValueTreeByMap }
+import it.unibo.scafi.xc.engine.path._
 import it.unibo.scafi.xc.engine.stack.mutable.IncrementalTreeStack
 import it.unibo.scafi.xc.language.semantics.exchange.ExchangeCalculusSemantics
 
@@ -34,11 +35,11 @@ trait ExchangeCalculusSemanticsImpl:
     val previous = previousValue[T](or = init.onlySelf)
     val subject = NValuesImpl[T](previous, messages.toMap)
     val (ret, send) = f(subject)
-    sendMessages += stack.currentPath -> send.alignedMap
+    sendMessages += stack.currentPath -> Map.WithDefault(send.alignedValues.toMap, _ => send.default)
     (ret, ???)
 
   def state: ValueTree[String, Any] = ???
-  def outboundMessages: Export[DeviceId, (String, Int)] = ValueTreeByMap(sendMessages)
+  def outboundMessages: Export[DeviceId, (String, Int)] = ValueTreeByMap(sendMessages.toMap)
 
   def inboundMessages: Import[DeviceId, (String, Int)]
   def previousState: ValueTree[String, Any]
