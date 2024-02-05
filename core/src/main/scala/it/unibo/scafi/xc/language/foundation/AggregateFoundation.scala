@@ -1,6 +1,6 @@
 package it.unibo.scafi.xc.language.foundation
 
-import it.unibo.scafi.xc.abstractions.{ Foldable, Liftable, Neighbouring }
+import it.unibo.scafi.xc.abstractions.{ Foldable, Liftable }
 
 trait AggregateFoundation:
   type NeighbouringValue[T]
@@ -28,5 +28,7 @@ trait AggregateFoundation:
   /**
    * Aggregate values are aware of their neighbours and their local values.
    */
-  given neighbouring: Neighbouring[AggregateValue, NeighbouringValue]
+  extension [T](f: AggregateValue[T])
+    def onlySelf: T
+    def withoutSelf: NeighbouringValue[T]
 end AggregateFoundation

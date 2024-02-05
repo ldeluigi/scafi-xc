@@ -10,6 +10,6 @@ trait ExchangeSemantics extends ExchangeCalculusSyntax:
       f: AggregateValue[T] => (AggregateValue[T], AggregateValue[T]) | AggregateValue[T],
   ): AggregateValue[T] = xc(initial)(nv =>
     f(nv) match
-      case retSend: AggregateValue[T] => (retSend, retSend)
-      case (ret: AggregateValue[T], send: AggregateValue[T]) => (ret, send),
+      case retSend: AggregateValue[T] @unchecked => (retSend, retSend)
+      case (ret: AggregateValue[T] @unchecked, send: AggregateValue[T] @unchecked) => (ret, send),
   )

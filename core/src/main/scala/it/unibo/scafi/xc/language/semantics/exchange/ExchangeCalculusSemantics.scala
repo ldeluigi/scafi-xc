@@ -1,5 +1,6 @@
 package it.unibo.scafi.xc.language.semantics.exchange
 
+//import it.unibo.scafi.xc.abstractions.Foldable
 import it.unibo.scafi.xc.abstractions.Foldable
 import it.unibo.scafi.xc.language.foundation.{ AggregateFoundation, DeviceAwareAggregateFoundation }
 import it.unibo.scafi.xc.language.semantics.exchange
@@ -19,8 +20,7 @@ trait ExchangeCalculusSemantics
   /**
    * NValues are maps from aligned neighbouring device identifiers to values, with a default value.
    */
-  override type AggregateValue[T] <: NValues[DeviceId, T]
-  override type NeighbouringValue[T] <: NValuesWithoutSelf[DeviceId, T]
+  given nvOps: NValuesOps[NeighbouringValue, DeviceId]
 
   /**
    * This operator branches the computation into `th` or `el` according to `cond`.
@@ -43,5 +43,7 @@ trait ExchangeCalculusSemantics
       f: AggregateValue[T] => (AggregateValue[T], AggregateValue[T]),
   ): AggregateValue[T]
 
-  override def fold: Foldable[NeighbouringValue] = NValuesWithoutSelf.given_Foldable_AV[DeviceId, NeighbouringValue]
+  override given fold: Foldable[NeighbouringValue] = NValuesOps.given_Foldable_AV
+
+  extension [T](f: AggregateValue[T]) override def onlySelf: T = f(self)
 end ExchangeCalculusSemantics
