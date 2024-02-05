@@ -1,6 +1,6 @@
 package it.unibo.scafi.xc.engine.exchange
 
-import scala.collection.{MapView, mutable}
+import scala.collection.{ mutable, MapView }
 
 import it.unibo.scafi.xc.engine.network.{ Export, Import }
 import it.unibo.scafi.xc.engine.path.MutableValueTree.*
