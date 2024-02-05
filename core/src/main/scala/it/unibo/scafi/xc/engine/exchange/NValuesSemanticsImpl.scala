@@ -7,8 +7,8 @@ import it.unibo.scafi.xc.language.semantics.exchange.{ ExchangeCalculusSemantics
 
 trait NValuesSemanticsImpl:
   this: ExchangeCalculusSemantics =>
-  opaque override type AggregateValue[T] = NValuesImpl[T]
-  opaque override type NeighbouringValue[T] = NValuesImpl[T]
+  override type AggregateValue[T] = NValuesImpl[T]
+  override type NeighbouringValue[T] = NValuesImpl[T]
 
   protected case class NValuesImpl[T](default: T, unalignedValues: Map[DeviceId, T] = Map.empty):
     def alignedValues: MapView[DeviceId, T] = unalignedValues.view.filterKeys(aligned)

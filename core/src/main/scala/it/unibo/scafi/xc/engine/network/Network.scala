@@ -5,4 +5,4 @@ trait Network:
   type Token
   def send(e: Export[DeviceId, Token]): Unit
 
-  def receive(): Import[DeviceId, Token]
+  def receive(): Iterable[Import[DeviceId, Token]]

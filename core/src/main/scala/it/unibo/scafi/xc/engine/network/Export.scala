@@ -1,7 +1,5 @@
 package it.unibo.scafi.xc.engine.network
 
-import it.unibo.scafi.xc.engine.path.{ MessagesToNeighbors, ValueTree }
+import it.unibo.scafi.xc.engine.path.ValueTree
 
-trait Export[DeviceId, Token]:
-  def sender: DeviceId
-  def messages: ValueTree[Token, MessagesToNeighbors[DeviceId]]
+type Export[DeviceId, Token] = ValueTree[Token, Map.WithDefault[DeviceId, Any]]
