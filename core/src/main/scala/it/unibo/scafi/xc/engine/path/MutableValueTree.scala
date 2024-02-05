@@ -1,17 +1,21 @@
 package it.unibo.scafi.xc.engine.path
 
-import collection.mutable.ListBuffer
+import scala.collection.MapView
+import scala.collection.mutable
 
 case class MutableValueTree[Token, Value](
-    token: Token,
-    value: Option[Value] = Option.empty,
-    children: ListBuffer[MutableValueTree[Token, Value]] = ListBuffer.empty,
+    var value: Option[Value] = Option.empty,
+    private val childrenMap: mutable.Map[Token, MutableValueTree[Token, Value]] =
+      mutable.Map.empty[Token, MutableValueTree[Token, Value]],
 )(using CanEqual[Token, Token])
-    extends ValueTree[Token, Value]:
-  override def hasPrefix(prefix: Path[Token]): Boolean = ???
+    extends ValueTree[Token, Value]
+    with RecursiveValueTreeOps[Token, Value]:
+  override def children: MapView[Token, RecursiveValueTreeOps[Token, Value]] = childrenMap.view
 
-  override def isDefinedAt(x: Path[Token]): Boolean = ???
+  def snapshot: ImmutableValueTree[Token, Value] =
+    ImmutableValueTree(value, childrenMap.view.mapValues(_.snapshot).toMap)
 
-  override def iterator: Iterator[(Path[Token], Value)] = ???
+  def child(token: Token, value: Option[Value]): MutableValueTree[Token, Value] =
+    childrenMap.getOrElseUpdate(token, MutableValueTree(value))
 
-  override def apply(v1: Path[Token]): Value = ???
+  def child(token: Token): MutableValueTree[Token, Value] = child(token, None)

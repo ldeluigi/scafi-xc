@@ -3,8 +3,8 @@ package it.unibo.scafi.xc.language.foundation
 import it.unibo.scafi.xc.abstractions.{ Foldable, Liftable }
 
 trait AggregateFoundation:
-  type NeighbouringValue[T]
-  type AggregateValue[T] <: NeighbouringValue[T]
+  type NeighbouringValue[+T]
+  type AggregateValue[+T] <: NeighbouringValue[T]
 
   /**
    * Aggregate values can be composed/mapped into new aggregate values.
