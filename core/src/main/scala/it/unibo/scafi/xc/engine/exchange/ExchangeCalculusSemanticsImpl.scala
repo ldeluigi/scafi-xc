@@ -3,33 +3,32 @@ package it.unibo.scafi.xc.engine.exchange
 import scala.collection.MapView
 
 import it.unibo.scafi.xc.engine.network.{ Export, Import }
-import it.unibo.scafi.xc.engine.path.ValueTree
-import it.unibo.scafi.xc.engine.path.ValueTree.*
-import it.unibo.scafi.xc.engine.stack.Stack
+import it.unibo.scafi.xc.engine.path.MutableValueTree
+import it.unibo.scafi.xc.engine.path.MutableValueTree.*
+import it.unibo.scafi.xc.engine.stack.TreeStack
 import it.unibo.scafi.xc.language.semantics.exchange.ExchangeCalculusSemantics
 
-trait ExchangeSemanticsImpl:
+trait ExchangeCalculusSemanticsImpl:
   this: ExchangeCalculusSemantics with NValuesSemanticsImpl =>
 
-  @SuppressWarnings(Array("DisableSyntax.var"))
-  private var stack = Stack[String]()
+  private val stack = TreeStack[String, Nothing]("root")
 
   override def aligned: Set[DeviceId] = inboundMessages.view.filter(_._2.hasPrefix(stack.current)).keys.toSet
 
   private def alignedMessages[T]: MapView[DeviceId, T] =
     inboundMessages.view.filterKeys(aligned).mapValues(v => as[T](v(stack.current)))
 
-  def previousValue[T](or: => T): T = as[T](previousState.getOrElse(stack.current, or))
+  def previousValue[T](or: => T): T = ??? // as[T](previousState.getOrElse(stack.current, or))
 
   private def as[T](x: Any): T = x match
     case x: T @unchecked => x
     case _ => throw new IllegalStateException(s"Previous value is not of type ${x.getClass}")
 
-  private def scoped[T](pivot: String)(body: () => T): T =
-    stack = stack.align(pivot)
-    val result = body()
-    stack = stack.dealign
-    result
+  private def scoped[T](pivot: String)(body: () => T): T = ???
+//    stack = stack.align(pivot)
+//    val result = body()
+//    stack = stack.dealign
+//    result
 
   override protected def br[T](cond: Boolean)(th: => T)(el: => T): T = ???
 
@@ -42,8 +41,8 @@ trait ExchangeSemanticsImpl:
     val (ret, _) = f(subject)
     ret
 
-  def state: State[String]
+  def state: Any
   def outboundMessages: Export[DeviceId, String]
   def inboundMessages: Import[DeviceId, String]
-  def previousState: State[String]
-end ExchangeSemanticsImpl
+  def previousState: Any
+end ExchangeCalculusSemanticsImpl
