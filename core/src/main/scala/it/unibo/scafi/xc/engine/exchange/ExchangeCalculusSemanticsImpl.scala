@@ -1,6 +1,6 @@
 package it.unibo.scafi.xc.engine.exchange
 
-import scala.collection.{IndexedSeqView, MapView, mutable}
+import scala.collection.{ mutable, IndexedSeqView, MapView }
 
 import it.unibo.scafi.xc.engine.network.{ Export, Import }
 import it.unibo.scafi.xc.engine.path.*
