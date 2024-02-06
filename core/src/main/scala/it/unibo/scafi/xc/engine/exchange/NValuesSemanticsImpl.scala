@@ -46,5 +46,7 @@ trait NValuesSemanticsImpl:
     override def withoutSelf: NeighbouringValue[T] =
       new NValuesImpl[T](f.default, f.unalignedValues - self)
 
+  override def device: AggregateValue[DeviceId] = new NValuesImpl[DeviceId](self, aligned.map(id => (id, id)).toMap)
+
   def aligned: Set[DeviceId]
 end NValuesSemanticsImpl

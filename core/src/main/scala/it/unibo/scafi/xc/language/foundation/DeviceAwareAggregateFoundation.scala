@@ -15,4 +15,6 @@ trait DeviceAwareAggregateFoundation:
 
   def self: DeviceId
 
+  def device: AggregateValue[DeviceId]
+
 end DeviceAwareAggregateFoundation

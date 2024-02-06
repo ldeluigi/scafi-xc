@@ -6,10 +6,10 @@ import it.unibo.scafi.xc.abstractions.boundaries.{ LowerBounded, UpperBounded }
 object FoldableExtensions:
 
   extension [T[_]: Foldable, N: Ordering: LowerBounded](foldable: T[N])
-    def max: N = foldable.fold(summon[LowerBounded[N]].lowerBound)(implicitly[Ordering[N]].max)
+    def max: N = foldable.fold(summon[LowerBounded[N]].lowerBound)(summon[Ordering[N]].max)
 
   extension [T[_]: Foldable, N: Ordering: UpperBounded](foldable: T[N])
-    def min: N = foldable.fold(summon[UpperBounded[N]].upperBound)(implicitly[Ordering[N]].min)
+    def min: N = foldable.fold(summon[UpperBounded[N]].upperBound)(summon[Ordering[N]].min)
 
   private object NumericExtensions:
     import math.Numeric.Implicits.infixNumericOps
