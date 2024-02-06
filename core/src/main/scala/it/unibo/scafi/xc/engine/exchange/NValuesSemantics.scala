@@ -5,7 +5,7 @@ import scala.collection.MapView
 import it.unibo.scafi.xc.abstractions.Liftable
 import it.unibo.scafi.xc.language.semantics.exchange.{ ExchangeCalculusSemantics, NValuesOps }
 
-trait NValuesSemanticsImpl:
+trait NValuesSemantics:
   this: ExchangeCalculusSemantics =>
   override type AggregateValue[+T] = NValuesImpl[T]
   override type NeighbouringValue[+T] = NValuesImpl[T]
@@ -49,4 +49,4 @@ trait NValuesSemanticsImpl:
   override def device: AggregateValue[DeviceId] = new NValuesImpl[DeviceId](self, aligned.map(id => (id, id)).toMap)
 
   def aligned: Set[DeviceId]
-end NValuesSemanticsImpl
+end NValuesSemantics
