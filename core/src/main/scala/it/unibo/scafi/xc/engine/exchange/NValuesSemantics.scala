@@ -48,5 +48,5 @@ trait NValuesSemantics:
 
   override def device: AggregateValue[DeviceId] = new NValuesImpl[DeviceId](self, aligned.map(id => (id, id)).toMap)
 
-  def aligned: Set[DeviceId]
+  protected def aligned: Set[DeviceId]
 end NValuesSemantics

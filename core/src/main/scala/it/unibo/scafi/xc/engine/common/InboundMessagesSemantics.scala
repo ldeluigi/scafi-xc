@@ -1,14 +1,14 @@
-package it.unibo.scafi.xc.engine.exchange
+package it.unibo.scafi.xc.engine.common
 
 import it.unibo.scafi.xc.engine.network.Import
-import it.unibo.scafi.xc.language.semantics.exchange.ExchangeCalculusSemantics
 
-trait AlignmentSemantics:
-  this: ExchangeCalculusSemantics & NValuesSemantics & StackSemantics =>
+trait InboundMessagesSemantics:
+  this: StackSemantics & MessageSemantics =>
+  type DeviceId
 
   def inboundMessages: Import[DeviceId, InvocationCoordinate, Envelope]
 
-  override def aligned: Set[DeviceId] = inboundMessages.view
+  protected def aligned: Set[DeviceId] = inboundMessages.view
     .filter(_._2.keys.exists(_.startsWith(currentPath)))
     .keys
     .toSet

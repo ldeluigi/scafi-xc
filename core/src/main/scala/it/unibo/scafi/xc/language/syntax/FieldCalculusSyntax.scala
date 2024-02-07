@@ -5,7 +5,7 @@ import it.unibo.scafi.xc.language.foundation.AggregateFoundation
 trait FieldCalculusSyntax:
   self: AggregateFoundation =>
 
-  def nbr[V](expr: => AggregateValue[V]): AggregateValue[V]
+  def nbr[A](expr: => AggregateValue[A]): AggregateValue[A]
 
   def rep[A](init: => AggregateValue[A])(f: AggregateValue[A] => AggregateValue[A]): AggregateValue[A]
 
