@@ -23,6 +23,14 @@ trait ExchangeCalculusSemantics
   given nvOps: NValuesOps[NeighbouringValue, DeviceId]
 
   /**
+   * Local values can be considered NValues.
+   *
+   * @tparam T
+   *   can be any local value
+   */
+  given convert[T]: Conversion[T, AggregateValue[T]]
+
+  /**
    * This operator branches the computation into `th` or `el` according to `cond`.
    */
   protected def br[T](cond: Boolean)(th: => T)(el: => T): T

@@ -18,14 +18,6 @@ trait AggregateFoundation:
   given fold: Foldable[NeighbouringValue]
 
   /**
-   * Local values can be considered aggregate values.
-   *
-   * @tparam T
-   *   can be any local value
-   */
-  given convert[T]: Conversion[T, AggregateValue[T]]
-
-  /**
    * Aggregate values are aware of their neighbours and their local values.
    */
   extension [T](f: AggregateValue[T])

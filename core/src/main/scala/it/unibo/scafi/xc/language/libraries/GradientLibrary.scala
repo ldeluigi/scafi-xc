@@ -22,4 +22,4 @@ object GradientLibrary:
   )(source: Boolean, distances: language.NeighbouringValue[N]): N =
     share[N](summon[UpperBounded[N]].upperBound)(av =>
       mux(source)(summon[Numeric[N]].zero)(distanceEstimate(av, distances)),
-    ).onlySelf
+    )

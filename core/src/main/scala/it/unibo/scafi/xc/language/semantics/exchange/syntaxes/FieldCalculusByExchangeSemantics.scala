@@ -1,12 +1,12 @@
 package it.unibo.scafi.xc.language.semantics.exchange.syntaxes
 
 import it.unibo.scafi.xc.language.semantics.exchange.ExchangeCalculusSemantics
-import it.unibo.scafi.xc.language.syntax.FieldCalculusSyntax
+import it.unibo.scafi.xc.language.syntax.{ ExchangeCalculusSyntax, FieldCalculusSyntax }
 
 trait FieldCalculusByExchangeSemantics extends FieldCalculusSyntax:
-  self: ExchangeCalculusSemantics =>
-  override def nbr[V](expr: => AggregateValue[V]): AggregateValue[V] = ???
+  self: ExchangeCalculusSemantics & ExchangeCalculusSyntax =>
+  override def nbr[V](expr: => V): AggregateValue[V] = exchange(expr)(nv => nv)
 
-  override def rep[A](init: => AggregateValue[A])(f: AggregateValue[A] => AggregateValue[A]): AggregateValue[A] = ???
+  override def rep[A](init: => A)(f: A => A): A = ???
 
-  override def share[A](init: => AggregateValue[A])(f: AggregateValue[A] => AggregateValue[A]): AggregateValue[A] = ???
+  override def share[A](init: => A)(f: AggregateValue[A] => A): A = exchange(init)(nv => f(nv)).onlySelf
