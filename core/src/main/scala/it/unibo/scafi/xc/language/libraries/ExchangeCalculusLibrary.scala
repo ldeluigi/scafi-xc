@@ -5,7 +5,7 @@ import it.unibo.scafi.xc.language.syntax.ExchangeCalculusSyntax
 
 object ExchangeCalculusLibrary:
 
-  def exchange[T](using language: AggregateFoundation with ExchangeCalculusSyntax)(initial: language.AggregateValue[T])(
+  def exchange[T](using language: AggregateFoundation & ExchangeCalculusSyntax)(initial: language.AggregateValue[T])(
       f: language.AggregateValue[T] => (language.AggregateValue[T], language.AggregateValue[T]) |
         language.AggregateValue[T],
   ): language.AggregateValue[T] = language.exchange(initial)(f)

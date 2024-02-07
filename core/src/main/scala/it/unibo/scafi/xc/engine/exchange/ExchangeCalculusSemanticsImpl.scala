@@ -1,13 +1,10 @@
 package it.unibo.scafi.xc.engine.exchange
 
-import scala.collection.{ mutable, IndexedSeqView, MapView }
-
-import it.unibo.scafi.xc.engine.network.{ Export, Import }
-import it.unibo.scafi.xc.engine.path.*
 import it.unibo.scafi.xc.language.semantics.exchange.ExchangeCalculusSemantics
 
 trait ExchangeCalculusSemanticsImpl:
-  this: ExchangeCalculusSemantics with OutboundMessagesSemantics =>
+  this: ExchangeCalculusSemantics & NValuesSemantics & StackSemantics & AlignmentSemantics &
+    OutboundMessagesSemantics =>
 
   override protected def br[T](cond: Boolean)(th: => T)(el: => T): T = scope(s"branch/$cond"): () =>
     if cond then th else el
@@ -19,8 +16,8 @@ trait ExchangeCalculusSemanticsImpl:
     val subject = NValuesImpl[T](init.onlySelf, messages)
     val (ret, send) = f(subject)
     sendMessages += currentPath.toList -> Map.WithDefault(
-      send.alignedValues.mapValues(conversion).toMap,
-      _ => conversion(send.default),
+      send.alignedValues.mapValues(close).toMap,
+      _ => close(send.default),
     )
     ret
 

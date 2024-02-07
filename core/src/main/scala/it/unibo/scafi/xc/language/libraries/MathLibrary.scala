@@ -8,7 +8,7 @@ import Fractional.Implicits.*
 
 object MathLibrary:
 
-  def average[N: Fractional](using language: AggregateFoundation with FieldCalculusSyntax)(weight: N, value: N): N =
+  def average[N: Fractional](using language: AggregateFoundation & FieldCalculusSyntax)(weight: N, value: N): N =
     val totW = nbr(weight).fold(weight)(_ + _)
     val totV = nbr(weight * value).fold(weight * value)(_ + _)
     totV / totW

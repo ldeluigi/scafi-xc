@@ -18,7 +18,7 @@ object GradientLibrary:
   ): N = lift(neighboursEstimates, distances)(_ + _).min
 
   def distanceTo[N: Numeric: UpperBounded](using
-      language: AggregateFoundation with FieldCalculusSyntax,
+      language: AggregateFoundation & FieldCalculusSyntax,
   )(source: Boolean, distances: language.NeighbouringValue[N]): N =
     share[N](summon[UpperBounded[N]].upperBound)(av =>
       mux(source)(summon[Numeric[N]].zero)(distanceEstimate(av, distances)),
