@@ -1,51 +1,44 @@
-import Def.SettingsDefinition.wrapSettingsDefinition
-
 ThisBuild / version := "0.1.0-SNAPSHOT"
 
-ThisBuild / scalaVersion := "3.3.1"
-
-// common settings
+// environment
 val ci = scala.sys.env.get("CI").contains("true")
 
-lazy val commonSettings = Seq(
-  scalacOptions ++= Seq(
-//    "-explain",
-    "-new-syntax",
-    "-indent",
-    "-feature",
-    "-Werror",
-    "-Wunused:all",
-    "-Wvalue-discard",
-    "-Wnonunit-statement",
-    "-Yexplicit-nulls",
-    "-Ysafe-init",
-    "-Ycheck-reentrant",
-    "-language:strictEquality",
-    "-language:implicitConversions",
-  ),
-)
+// scala
+ThisBuild / scalaVersion := "3.3.1"
+
+ThisBuild / scalacOptions ++= Seq(
+  "-new-syntax",
+  "-indent",
+  "-feature",
+  "-Werror",
+  "-Wunused:all",
+  "-Wvalue-discard",
+  "-Wnonunit-statement",
+  "-Yexplicit-nulls",
+  "-Ysafe-init",
+  "-Ycheck-reentrant",
+  "-language:strictEquality",
+  "-language:implicitConversions",
+) ++ (if (ci) Seq("-explain") else Nil)
 
 // projects
-lazy val commons = crossProject(JSPlatform, JVMPlatform, NativePlatform)
+lazy val commons = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .crossType(CrossType.Pure)
   .settings(
-    commonSettings,
     name := "commons",
   )
 
-lazy val core = crossProject(JSPlatform, JVMPlatform, NativePlatform)
+lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .crossType(CrossType.Pure)
   .settings(
-    commonSettings,
     name := "core",
     libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.17" % Test,
   )
   .dependsOn(commons)
 
-lazy val simulator = crossProject(JSPlatform, JVMPlatform, NativePlatform)
+lazy val simulator = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .crossType(CrossType.Pure)
   .settings(
-    commonSettings,
     name := "simulator",
   )
   .dependsOn(core)
