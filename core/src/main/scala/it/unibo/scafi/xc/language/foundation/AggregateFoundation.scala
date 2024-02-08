@@ -1,26 +1,16 @@
 package it.unibo.scafi.xc.language.foundation
 
-import it.unibo.scafi.xc.abstractions.{ Foldable, Liftable }
+import it.unibo.scafi.xc.abstractions.{ Field, Liftable }
 
 trait AggregateFoundation:
-  type NeighbouringValue[+T]
-  type AggregateValue[+T] <: NeighbouringValue[T]
+  type AggregateValue[T] <: Iterable[T]
 
   /**
-   * Aggregate values can be composed/mapped into new aggregate values.
+   * Aggregate values can be iterated also by ignoring the self value.
+   */
+  given field: Field[AggregateValue]
+
+  /**
+   * Aggregate values can be composed and mapped.
    */
   given lift: Liftable[AggregateValue]
-  given liftNeighbouring: Liftable[NeighbouringValue]
-
-  /**
-   * Aggregate values can be folded over.
-   */
-  given fold: Foldable[NeighbouringValue]
-
-  /**
-   * Aggregate values are aware of their neighbours and their local values.
-   */
-  extension [T](f: AggregateValue[T])
-    def onlySelf: T
-    def withoutSelf: NeighbouringValue[T]
-end AggregateFoundation

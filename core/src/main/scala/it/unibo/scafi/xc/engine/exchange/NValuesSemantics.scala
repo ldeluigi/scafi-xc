@@ -2,20 +2,28 @@ package it.unibo.scafi.xc.engine.exchange
 
 import scala.collection.MapView
 
-import it.unibo.scafi.xc.abstractions.Liftable
+import it.unibo.scafi.xc.abstractions.{ Field, Liftable }
 import it.unibo.scafi.xc.language.semantics.exchange.{ ExchangeCalculusSemantics, NValuesOps }
 
 trait NValuesSemantics:
   this: ExchangeCalculusSemantics =>
-  override type AggregateValue[+T] = NValuesImpl[T]
-  override type NeighbouringValue[+T] = NValuesImpl[T]
+  override type AggregateValue[T] = NValuesImpl[T]
 
-  protected case class NValuesImpl[+T](default: T, unalignedValues: Map[DeviceId, T] = Map.empty):
+  protected case class NValuesImpl[+T](default: T, unalignedValues: Map[DeviceId, T] = Map.empty) extends Iterable[T]:
     def alignedValues: MapView[DeviceId, T] = unalignedValues.view.filterKeys(aligned)
+    override def iterator: Iterator[T] = unalignedValues.valuesIterator
+    def apply(id: DeviceId): T = alignedValues(id)
 
-  override given nvOps: NValuesOps[NeighbouringValue, DeviceId] = new NValuesOps[NeighbouringValue, DeviceId]:
-    extension [T](nv: NeighbouringValue[T]) override def default: T = nv.default
-    extension [T](nv: NeighbouringValue[T]) override def values: MapView[DeviceId, T] = nv.alignedValues
+  override given nvalues: NValuesOps[AggregateValue, DeviceId] = new NValuesOps[AggregateValue, DeviceId]:
+    extension [T](nv: AggregateValue[T]) override def default: T = nv.default
+    extension [T](nv: AggregateValue[T]) override def values: MapView[DeviceId, T] = nv.alignedValues
+
+    extension [T](nv: AggregateValue[T])
+
+      override def set(id: DeviceId, value: T): AggregateValue[T] = new NValuesImpl[T](
+        nv.default,
+        nv.unalignedValues + (id -> value),
+      )
 
   override given lift: Liftable[AggregateValue] = new Liftable[AggregateValue]:
 
@@ -37,14 +45,16 @@ trait NValuesSemantics:
         .toMap,
     )
 
-  override given liftNeighbouring: Liftable[NeighbouringValue] = lift
+  override given field: Field[AggregateValue] = new Field[AggregateValue]:
+
+    extension [A](a: AggregateValue[A])
+
+      override def withoutSelf: Iterable[A] = new NValuesImpl[A](
+        a.default,
+        a.unalignedValues - self,
+      )
 
   override given convert[T]: Conversion[T, AggregateValue[T]] = new NValuesImpl[T](_)
-
-  extension [T](f: AggregateValue[T])
-
-    override def withoutSelf: NeighbouringValue[T] =
-      new NValuesImpl[T](f.default, f.unalignedValues - self)
 
   override def device: AggregateValue[DeviceId] = new NValuesImpl[DeviceId](self, aligned.map(id => (id, id)).toMap)
 
