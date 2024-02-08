@@ -7,7 +7,6 @@ import it.unibo.scafi.xc.language.semantics.exchange.syntaxes.{
   ExchangeSemantics,
   FieldCalculusByExchangeSemantics,
 }
-import it.unibo.scafi.xc.language.syntax.common.RetSend
 
 trait ExchangeCalculusSemantics
     extends AggregateFoundation
@@ -43,5 +42,7 @@ trait ExchangeCalculusSemantics
    * @return
    *   the neighbouring value providing for the next local state
    */
-  protected def xc[T](init: AggregateValue[T])(f: AggregateValue[T] => RetSend[AggregateValue[T]]): AggregateValue[T]
+  protected def xc[T](init: AggregateValue[T])(
+      f: AggregateValue[T] => (AggregateValue[T], AggregateValue[T]),
+  ): AggregateValue[T]
 end ExchangeCalculusSemantics

@@ -25,7 +25,7 @@ trait NValuesSemantics:
         nv.unalignedValues + (id -> value),
       )
 
-  override given lift: Liftable[AggregateValue] = new Liftable[AggregateValue]:
+  override given liftable: Liftable[AggregateValue] = new Liftable[AggregateValue]:
 
     override def lift[A, B](a: NValuesImpl[A])(f: A => B): NValuesImpl[B] =
       new NValuesImpl[B](f(a.default), a.unalignedValues.view.mapValues(f).toMap)

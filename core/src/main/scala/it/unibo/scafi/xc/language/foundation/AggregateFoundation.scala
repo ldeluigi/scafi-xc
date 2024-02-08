@@ -13,4 +13,4 @@ trait AggregateFoundation:
   /**
    * Aggregate values can be composed and mapped.
    */
-  given lift: Liftable[AggregateValue]
+  given liftable: Liftable[AggregateValue]

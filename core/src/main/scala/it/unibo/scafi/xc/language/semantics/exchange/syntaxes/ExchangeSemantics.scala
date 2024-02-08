@@ -10,4 +10,4 @@ trait ExchangeSemantics extends ExchangeCalculusSyntax:
   override def exchange[T](initial: AggregateValue[T])(
       f: AggregateValue[T] => RetSend[AggregateValue[T]],
   ): AggregateValue[T] =
-    xc(initial)(f)
+    xc(initial)(f.andThen(rs => (rs.ret, rs.send)))
