@@ -1,13 +1,15 @@
 package it.unibo.scafi.xc.engine.exchange
 
-import it.unibo.scafi.xc.engine.common._
-import it.unibo.scafi.xc.engine.network.Import
+import it.unibo.scafi.xc.engine.Context
+import it.unibo.scafi.xc.engine.common.*
+import it.unibo.scafi.xc.engine.network.{ Export, Import }
 import it.unibo.scafi.xc.language.semantics.exchange.ExchangeCalculusSemantics
 
 class ExchangeCalculusContext[Id](
     override val self: Id,
     override val inboundMessages: Import[Id, InvocationCoordinate, Any],
-) extends ExchangeCalculusSemantics
+) extends Context[Id]
+    with ExchangeCalculusSemantics
     with NValuesSemantics
     with ConstructsSemantics
     with StackSemantics
@@ -22,3 +24,6 @@ class ExchangeCalculusContext[Id](
     case _ => throw new ClassCastException(s"Cannot cast $a to requested type")
 
   override protected def close[T](a: T): Any = a
+
+  override def messages: Export[Id, Any, Any] = ???
+end ExchangeCalculusContext
