@@ -8,7 +8,7 @@ import it.unibo.scafi.xc.language.semantics.exchange.ExchangeCalculusSemantics
 class ExchangeCalculusContext[Id](
     override val self: Id,
     override val inboundMessages: Import[Id, InvocationCoordinate, Any],
-) extends Context[Id]
+) extends Context[Id, InvocationCoordinate, Any]
     with ExchangeCalculusSemantics
     with NValuesSemantics
     with ConstructsSemantics
@@ -25,5 +25,10 @@ class ExchangeCalculusContext[Id](
 
   override protected def close[T](a: T): Any = a
 
-  override def messages: Export[Id, Any, Any] = ???
+  override def messages: Export[Id, InvocationCoordinate, Any] = outboundMessages
 end ExchangeCalculusContext
+
+object ExchangeCalculusContext:
+
+  def apply[Id](self: Id, inboundMessages: Import[Id, InvocationCoordinate, Any]): ExchangeCalculusContext[Id] =
+    new ExchangeCalculusContext(self, inboundMessages)

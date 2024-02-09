@@ -2,16 +2,31 @@ package it.unibo.scafi.xc.engine
 
 import it.unibo.scafi.xc.engine.network.Network
 
-trait BaseEngine[DeviceId, Result, C <: Context[DeviceId]](
-    val net: Network[DeviceId],
-    val deviceId: DeviceId,
-    val factory: Iterable[net.InboundMessage] => C,
+class BaseEngine[DeviceId, Result, Token, Value, C <: Context[DeviceId, Token, Value]](
+    private val net: Network[DeviceId, Token, Value],
+    private val factory: (DeviceId, Iterable[net.InboundMessage]) => C,
+)(
+    private val program: C ?=> Result,
 ):
-  def program: C ?=> Result
 
-  def cycle(): Result =
-    val messages = net.receive()
-    given c: C = factory(messages)
+  private def round(): AggregateResult =
+    val inMessages = net.receive()
+    given c: C = factory(net.localId, inMessages)
     val result = program
-    net.send(c.messages)
-    result
+    val outMessages = c.messages
+    net.send(outMessages)
+    AggregateResult(result, inMessages, outMessages)
+
+  def cycle(): Result = round().result
+
+  def cycleWhile(p: AggregateResult => Boolean): Result =
+    var ar = round()
+    while p(ar) do ar = round()
+    ar.result
+
+  case class AggregateResult(
+      result: Result,
+      incomingMessages: Iterable[net.InboundMessage],
+      outgoingMessages: net.OutboundMessage,
+  )
+end BaseEngine

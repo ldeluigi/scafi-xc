@@ -1,8 +1,10 @@
 package it.unibo.scafi.xc.engine.network
 
-trait Network[DeviceId]:
-  type OutboundMessage = Export[DeviceId, Any, Any]
-  type InboundMessage = Import[DeviceId, Any, Any]
+trait Network[DeviceId, Token, Value]:
+  type OutboundMessage = Export[DeviceId, Token, Value]
+  type InboundMessage = Import[DeviceId, Token, Value]
+
+  def localId: DeviceId
 
   def send(e: OutboundMessage): Unit
 
