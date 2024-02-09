@@ -27,8 +27,3 @@ class ExchangeCalculusContext[Id](
 
   override def messages: Export[Id, InvocationCoordinate, Any] = outboundMessages
 end ExchangeCalculusContext
-
-object ExchangeCalculusContext:
-
-  def apply[Id](self: Id, inboundMessages: Import[Id, InvocationCoordinate, Any]): ExchangeCalculusContext[Id] =
-    new ExchangeCalculusContext(self, inboundMessages)

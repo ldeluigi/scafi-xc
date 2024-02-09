@@ -1,3 +1,4 @@
 package it.unibo.scafi.xc.simulator
 
-trait Simulator
+trait Simulator(protected val parameters: SimulationParameters):
+  def tick(): Unit

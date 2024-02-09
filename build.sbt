@@ -8,6 +8,7 @@ ThisBuild / scalaVersion := "3.3.1"
 
 ThisBuild / scalacOptions ++= Seq(
   "-new-syntax",
+  "-deprecation",
   "-indent",
   "-feature",
   "-Werror",
