@@ -2,7 +2,7 @@ package it.unibo.scafi.xc.engine
 
 import it.unibo.scafi.xc.engine.network.{ Export, Import, Network }
 
-class BaseEngine[DeviceId, Result, Token, Value, C <: Context[DeviceId, Token, Value]](
+class Engine[DeviceId, Result, Token, Value, C <: Context[DeviceId, Token, Value]](
     private val net: Network[DeviceId, Token, Value],
     private val factory: (DeviceId, Import[DeviceId, Token, Value]) => C,
     private val program: C ?=> Result,
@@ -28,4 +28,4 @@ class BaseEngine[DeviceId, Result, Token, Value, C <: Context[DeviceId, Token, V
       incomingMessages: Import[DeviceId, Token, Value],
       outgoingMessages: Export[DeviceId, Token, Value],
   )
-end BaseEngine
+end Engine
