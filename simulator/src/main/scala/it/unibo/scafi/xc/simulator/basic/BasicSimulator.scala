@@ -21,10 +21,10 @@ class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
   private var messageQueue: List[TravelingMessage] = List.empty
   private var deliveredMessages: List[Message] = List.empty
 
-  private lazy val devicePool: List[Device] = (0 until parameters.deviceCount)
+  lazy val devicePool: List[Device] = (0 until parameters.deviceCount)
     .map(Device(_, randomSleepTime))
     .toList
-  private lazy val deviceNeighbourhood: Map[DeviceId, Set[DeviceId]] = initNeighborhoods
+  lazy val deviceNeighbourhood: Map[DeviceId, Set[DeviceId]] = initNeighborhoods
 
   private def initNeighborhoods: Map[DeviceId, Set[DeviceId]] =
     var result: Map[DeviceId, Set[DeviceId]] = Map.WithDefault[DeviceId, Set[DeviceId]](Map.empty, Set(_))
@@ -76,9 +76,9 @@ class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
       valueAdapter = <=>,
     )
 
-  private case class Device(
+  case class Device(
       id: DeviceId,
-      private val sleepTime: Int,
+      sleepTime: Int,
   ):
     private var slept = 0
 

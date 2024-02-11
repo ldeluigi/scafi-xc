@@ -12,7 +12,7 @@ trait OutboundMessagesSemantics:
   protected def outboundMessages: Export[DeviceId, InvocationCoordinate, Envelope] = sentMessages.toMap
 
   private val sentMessages: mutable.Map[Path[InvocationCoordinate], MessageMap[DeviceId, Envelope]] =
-    mutable.Map.empty
+    mutable.Map(currentPath.toList -> MessageMap.empty(close(None)))
 
   protected def sendMessages[T](messages: MapView[DeviceId, T], default: T): Unit =
     sentMessages += currentPath.toList -> MessageMap(

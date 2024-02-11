@@ -7,12 +7,12 @@ import it.unibo.scafi.xc.language.semantics.exchange.{ ExchangeCalculusSemantics
 
 trait NValuesSemantics:
   this: ExchangeCalculusSemantics =>
-  override type AggregateValue[T] = NValuesImpl[T]
+  override type AggregateValue[T] = NValues[T]
 
-  protected case class NValuesImpl[+T](default: T, unalignedValues: Map[DeviceId, T] = Map.empty) extends Iterable[T]:
+  protected case class NValues[+T](default: T, unalignedValues: Map[DeviceId, T] = Map.empty) extends Iterable[T]:
     def alignedValues: MapView[DeviceId, T] = unalignedValues.view.filterKeys(aligned)
     override def iterator: Iterator[T] = unalignedValues.valuesIterator
-    def apply(id: DeviceId): T = alignedValues(id)
+    def apply(id: DeviceId): T = alignedValues.getOrElse(id, default)
 
   override given nvalues: NValuesOps[AggregateValue, DeviceId] = new NValuesOps[AggregateValue, DeviceId]:
     extension [T](nv: AggregateValue[T]) override def default: T = nv.default
@@ -20,25 +20,25 @@ trait NValuesSemantics:
 
     extension [T](nv: AggregateValue[T])
 
-      override def set(id: DeviceId, value: T): AggregateValue[T] = new NValuesImpl[T](
+      override def set(id: DeviceId, value: T): AggregateValue[T] = new NValues[T](
         nv.default,
         nv.unalignedValues + (id -> value),
       )
 
   override given liftable: Liftable[AggregateValue] = new Liftable[AggregateValue]:
 
-    override def lift[A, B](a: NValuesImpl[A])(f: A => B): NValuesImpl[B] =
-      new NValuesImpl[B](f(a.default), a.unalignedValues.view.mapValues(f).toMap)
+    override def lift[A, B](a: NValues[A])(f: A => B): NValues[B] =
+      new NValues[B](f(a.default), a.unalignedValues.view.mapValues(f).toMap)
 
-    override def lift[A, B, C](a: NValuesImpl[A], b: NValuesImpl[B])(f: (A, B) => C): NValuesImpl[C] =
-      new NValuesImpl[C](
+    override def lift[A, B, C](a: NValues[A], b: NValues[B])(f: (A, B) => C): NValues[C] =
+      new NValues[C](
         f(a.default, b.default),
         (a.unalignedValues.keySet ++ b.unalignedValues.keySet).map(k => k -> f(a(k), b(k))).toMap,
       )
 
-    override def lift[A, B, C, D](a: NValuesImpl[A], b: NValuesImpl[B], c: NValuesImpl[C])(
+    override def lift[A, B, C, D](a: NValues[A], b: NValues[B], c: NValues[C])(
         f: (A, B, C) => D,
-    ): NValuesImpl[D] = new NValuesImpl[D](
+    ): NValues[D] = new NValues[D](
       f(a.default, b.default, c.default),
       (a.unalignedValues.keySet ++ b.unalignedValues.keySet ++ c.unalignedValues.keySet)
         .map(k => k -> f(a(k), b(k), c(k)))
@@ -49,14 +49,14 @@ trait NValuesSemantics:
 
     extension [A](a: AggregateValue[A])
 
-      override def withoutSelf: Iterable[A] = new NValuesImpl[A](
+      override def withoutSelf: Iterable[A] = new NValues[A](
         a.default,
         a.unalignedValues - self,
       )
 
-  override given convert[T]: Conversion[T, AggregateValue[T]] = new NValuesImpl[T](_)
+  override given convert[T]: Conversion[T, AggregateValue[T]] = new NValues[T](_)
 
-  override def device: AggregateValue[DeviceId] = new NValuesImpl[DeviceId](self, aligned.map(id => (id, id)).toMap)
+  override def device: AggregateValue[DeviceId] = new NValues[DeviceId](self, aligned.map(id => (id, id)).toMap)
 
   protected def aligned: Set[DeviceId]
 end NValuesSemantics

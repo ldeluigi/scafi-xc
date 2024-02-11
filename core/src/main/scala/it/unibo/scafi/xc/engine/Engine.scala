@@ -12,7 +12,7 @@ class Engine[DeviceId, Result, Token, Value, C <: Context[DeviceId, Token, Value
   private def round(): AggregateResult =
     val inMessages = net.receive()
     given c: C = factory(net.localId, inMessages)
-    val result = program
+    val result: Result = program
     val outMessages = c.messages
     net.send(outMessages)
     AggregateResult(result, inMessages, outMessages)
