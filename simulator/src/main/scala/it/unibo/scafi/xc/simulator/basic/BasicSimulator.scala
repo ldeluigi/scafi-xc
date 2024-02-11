@@ -5,14 +5,14 @@ import scala.util.Random
 import it.unibo.scafi.xc.abstractions.BidirectionalFunction.<=>
 import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
 import it.unibo.scafi.xc.engine.Engine
-import it.unibo.scafi.xc.engine.context.Context
+import it.unibo.scafi.xc.engine.context.{ Context, ContextFactory }
 import it.unibo.scafi.xc.engine.network.*
 import it.unibo.scafi.xc.engine.path.Path
 import it.unibo.scafi.xc.simulator.{ DiscreteSimulator, SimulationParameters }
 
 class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
     override val parameters: SimulationParameters,
-    private val contextFactory: (Int, Import[Int, InvocationCoordinate, Any]) => C,
+    private val contextFactory: ContextFactory[Network[Int, InvocationCoordinate, Any], C],
     override val program: C ?=> Any,
 ) extends DiscreteSimulator[C]:
   private val SEPARATOR = "/"
@@ -82,7 +82,7 @@ class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
   ):
     private var slept = 0
 
-    private val engine = Engine[DeviceId, Any, InvocationCoordinate, Any, C](
+    private val engine = Engine[DeviceId, Any, InvocationCoordinate, Any, Network[Int, InvocationCoordinate, Any], C](
       net = network(id),
       factory = contextFactory,
       program = program,
