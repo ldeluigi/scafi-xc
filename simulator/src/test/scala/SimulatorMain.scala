@@ -1,4 +1,4 @@
-import it.unibo.scafi.xc.engine.exchange.ExchangeCalculusContext
+import it.unibo.scafi.xc.engine.context.exchange.ExchangeCalculusContext
 import it.unibo.scafi.xc.simulator.SimulationParameters
 import it.unibo.scafi.xc.simulator.basic.BasicSimulator
 

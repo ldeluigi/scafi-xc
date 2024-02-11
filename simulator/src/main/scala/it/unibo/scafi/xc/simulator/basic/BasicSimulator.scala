@@ -3,8 +3,9 @@ package it.unibo.scafi.xc.simulator.basic
 import scala.util.Random
 
 import it.unibo.scafi.xc.abstractions.BidirectionalFunction.<=>
-import it.unibo.scafi.xc.engine.{ Context, Engine }
-import it.unibo.scafi.xc.engine.common.InvocationCoordinate
+import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
+import it.unibo.scafi.xc.engine.Engine
+import it.unibo.scafi.xc.engine.context.Context
 import it.unibo.scafi.xc.engine.network.*
 import it.unibo.scafi.xc.engine.path.Path
 import it.unibo.scafi.xc.simulator.{ DiscreteSimulator, SimulationParameters }

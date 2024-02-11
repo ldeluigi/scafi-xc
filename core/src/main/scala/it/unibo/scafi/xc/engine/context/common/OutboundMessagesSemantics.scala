@@ -1,4 +1,4 @@
-package it.unibo.scafi.xc.engine.common
+package it.unibo.scafi.xc.engine.context.common
 
 import scala.collection.{ mutable, MapView }
 
@@ -9,7 +9,7 @@ trait OutboundMessagesSemantics:
   this: StackSemantics & MessageSemantics =>
   type DeviceId
 
-  def outboundMessages: Export[DeviceId, InvocationCoordinate, Envelope] = sentMessages.toMap
+  protected def outboundMessages: Export[DeviceId, InvocationCoordinate, Envelope] = sentMessages.toMap
 
   private val sentMessages: mutable.Map[Path[InvocationCoordinate], MessageMap[DeviceId, Envelope]] =
     mutable.Map.empty

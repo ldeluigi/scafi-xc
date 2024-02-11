@@ -1,5 +1,6 @@
 package it.unibo.scafi.xc.engine
 
+import it.unibo.scafi.xc.engine.context.Context
 import it.unibo.scafi.xc.engine.network.{ Export, Import, Network }
 
 class Engine[DeviceId, Result, Token, Value, C <: Context[DeviceId, Token, Value]](

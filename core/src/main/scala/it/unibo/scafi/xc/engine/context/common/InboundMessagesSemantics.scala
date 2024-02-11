@@ -1,4 +1,4 @@
-package it.unibo.scafi.xc.engine.common
+package it.unibo.scafi.xc.engine.context.common
 
 import it.unibo.scafi.xc.engine.network.Import
 
@@ -6,7 +6,7 @@ trait InboundMessagesSemantics:
   this: StackSemantics & MessageSemantics =>
   type DeviceId
 
-  def inboundMessages: Import[DeviceId, InvocationCoordinate, Envelope]
+  protected def inboundMessages: Import[DeviceId, InvocationCoordinate, Envelope]
 
   protected def aligned: Set[DeviceId] = inboundMessages.view
     .filter(_._2.keys.exists(_.startsWith(currentPath)))

@@ -1,4 +1,4 @@
-package it.unibo.scafi.xc.engine.common
+package it.unibo.scafi.xc.engine.context.common
 
 import scala.collection.{ mutable, IndexedSeqView }
 
