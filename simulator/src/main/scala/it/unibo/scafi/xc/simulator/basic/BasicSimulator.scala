@@ -95,7 +95,7 @@ class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
       else slept += 1
   end Device
 
-  private case class Message(from: DeviceId, to: DeviceId, content: Map[Path[String], Any])
+  private case class Message(from: DeviceId, to: DeviceId, content: Map[Path[String], Any]) derives CanEqual
 
   private case class TravelingMessage(var delay: Int, message: Message)
 
@@ -117,14 +117,15 @@ class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
       for message <- deliveredMessages.filter(_.to == forDevice) do
         for (path, content) <- message.content do
           messages += message.from -> (messages(message.from) + (path -> content))
-      deliveredMessages = deliveredMessages.filter(_.to != forDevice)
+        deliveredMessages =
+          deliveredMessages.filterNot(m => m.to == forDevice && m.from == message.from && m != message)
       messages
 
   end BasicNetwork
 
   override def tick(): Unit =
     for message <- messageQueue do message.delay -= 1
-    deliveredMessages ++= messageQueue.filter(_.delay <= 0).map(_.message)
+    deliveredMessages = messageQueue.filter(_.delay <= 0).map(_.message) ++ deliveredMessages
     messageQueue = messageQueue.filter(_.delay > 0)
     devicePool.foreach(_.fire())
 end BasicSimulator

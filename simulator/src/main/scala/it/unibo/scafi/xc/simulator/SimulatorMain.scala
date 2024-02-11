@@ -14,7 +14,7 @@ object SimulatorMain:
     override val stdevMessageDelay: Double = 1
     override val averageNeighbourhood: Int = 5
     override val stdevNeighbourhood: Int = 1
-    override val probabilityOfOneDirectionalNeighbourhood: Double = 1 / 20
+    override val probabilityOfOneDirectionalNeighbourhood: Double = 0
     override val seed: Int = 42
 
   private def program(using c: ExchangeCalculusContext[Int]): Unit =
