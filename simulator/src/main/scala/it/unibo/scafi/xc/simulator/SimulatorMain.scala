@@ -20,7 +20,7 @@ object SimulatorMain:
     override val seed: Int = 42
 
   private def program(using c: BasicExchangeCalculusContext[Int]): Unit =
-    println(s"${c.device(c.self)} sees ${c.device.size} aligned neighbours")
+    println(s"${c.device(c.self)} sees ${c.device.withoutSelf.size} aligned neighbours")
 
   @main def main(): Unit =
     val sim = new BasicSimulator(
