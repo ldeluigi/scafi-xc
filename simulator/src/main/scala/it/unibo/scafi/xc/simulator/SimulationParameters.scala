@@ -3,7 +3,7 @@ package it.unibo.scafi.xc.simulator
 trait SimulationParameters:
   def averageSleepTime: Double
 
-  def stdevSleepTime: Double
+  def stddevSleepTime: Double
 
   def deviceCount: Int
 
@@ -11,11 +11,11 @@ trait SimulationParameters:
 
   def averageMessageDelay: Double
 
-  def stdevMessageDelay: Double
+  def stddevMessageDelay: Double
 
   def averageNeighbourhood: Int
 
-  def stdevNeighbourhood: Int
+  def stddevNeighbourhood: Int
 
   def probabilityOfOneDirectionalNeighbourhood: Double
 

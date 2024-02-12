@@ -43,10 +43,10 @@ class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
     result
 
   private def randomSleepTime: Int =
-    randomNumber(parameters.averageSleepTime, parameters.stdevSleepTime).toInt
+    randomNumber(parameters.averageSleepTime, parameters.stddevSleepTime).toInt
 
   private def randomNeighborCount: Int =
-    randomNumber(parameters.averageNeighbourhood, parameters.stdevNeighbourhood).toInt
+    randomNumber(parameters.averageNeighbourhood, parameters.stddevNeighbourhood).toInt
 
   private def isNeighbourhoodUnidirectional: Boolean =
     rnd.nextDouble() < parameters.probabilityOfOneDirectionalNeighbourhood
@@ -55,7 +55,7 @@ class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
     rnd.nextDouble() < parameters.probabilityOfMessageLoss
 
   private def messageDelay: Int =
-    randomNumber(parameters.averageMessageDelay, parameters.stdevMessageDelay).toInt
+    randomNumber(parameters.averageMessageDelay, parameters.stddevMessageDelay).toInt
 
   private def randomNumber(average: Double, stdev: Double): Double =
     rnd.nextGaussian() * stdev + average match
