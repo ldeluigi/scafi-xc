@@ -2,7 +2,8 @@ package it.unibo.scafi.xc.simulator
 
 import it.unibo.scafi.xc.engine.context.ContextFactory
 import it.unibo.scafi.xc.engine.context.exchange.BasicExchangeCalculusContext
-import it.unibo.scafi.xc.language.libraries.CommonLibrary.{ _, given }
+import it.unibo.scafi.xc.language.libraries.CommonLibrary._
+import it.unibo.scafi.xc.implementations.boundaries.CommonBoundaries.given
 import it.unibo.scafi.xc.language.libraries.GradientLibrary
 import it.unibo.scafi.xc.language.libraries.GradientLibrary.sensorDistanceTo
 import it.unibo.scafi.xc.language.sensors.DistanceSensor
@@ -25,7 +26,8 @@ object SimulatorMain:
 
   private def program(using c: BasicExchangeCalculusContext[Int] & DistanceSensor[Int]): Unit =
     println(
-      s"${device(self)} sees ${device.withoutSelf.size} aligned neighbours with distances ${sensorDistanceTo(self == 0)}",
+      s"${device(self)} sees ${device.withoutSelf.size} aligned neighbours with " +
+        s"distance ${sensorDistanceTo(self == 0)} from source",
     )
 
   @main def main(): Unit =
@@ -43,7 +45,7 @@ object SimulatorMain:
     for device <- sim.devicePool do println(s"Device ${device.id} sleeps for ${device.sleepTime} ticks")
     for (deviceId, neighbourhood) <- sim.deviceNeighbourhood do
       println(s"Device $deviceId has neighbours: ${neighbourhood.mkString(", ")}")
-    for tick <- 1 to 10 do
-      println(s"Tick $tick")
+    for tick <- 1 to 100 do
+      println(s"--------------- t_$tick ----------------")
       sim.tick()
 end SimulatorMain
