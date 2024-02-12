@@ -12,7 +12,7 @@ import it.unibo.scafi.xc.simulator.{ DiscreteSimulator, SimulationParameters }
 
 class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
     override val parameters: SimulationParameters,
-    private val contextFactory: ContextFactory[Network[Int, InvocationCoordinate, Any], C],
+    private val contextFactory: ContextFactory[BasicSimulator.SimulatedNetwork, C],
     override val program: C ?=> Any,
 ) extends DiscreteSimulator[C]:
   private val SEPARATOR = "/"
@@ -62,7 +62,7 @@ class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
       case d if d < 0 => 0
       case d => d
 
-  private def network(id: DeviceId): Network[DeviceId, InvocationCoordinate, Any] =
+  private def network(id: DeviceId): BasicSimulator.SimulatedNetwork =
     NetworkAdapter(
       BasicNetwork(id),
       tokenAdapter = <=>[String, InvocationCoordinate](
@@ -82,7 +82,7 @@ class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
   ):
     private var slept = 0
 
-    private val engine = Engine[DeviceId, Any, InvocationCoordinate, Any, Network[Int, InvocationCoordinate, Any], C](
+    private val engine = Engine[DeviceId, Any, InvocationCoordinate, Any, BasicSimulator.SimulatedNetwork, C](
       net = network(id),
       factory = contextFactory,
       program = program,
@@ -129,3 +129,6 @@ class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
     messageQueue = messageQueue.filter(_.delay > 0)
     devicePool.foreach(_.fire())
 end BasicSimulator
+
+object BasicSimulator:
+  type SimulatedNetwork = Network[Int, InvocationCoordinate, Any]
