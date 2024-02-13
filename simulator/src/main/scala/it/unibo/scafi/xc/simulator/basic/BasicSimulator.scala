@@ -1,6 +1,7 @@
 package it.unibo.scafi.xc.simulator.basic
 
 import scala.util.Random
+import scala.collection.mutable
 
 import it.unibo.scafi.xc.abstractions.BidirectionalFunction.<=>
 import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
@@ -16,18 +17,17 @@ class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
     override val program: C ?=> Any,
 ) extends DiscreteSimulator[C]:
   private val SEPARATOR = "/"
-  private type DeviceId = Int
   private val rnd: Random = Random(new java.util.Random(parameters.seed))
-  private var messageQueue: List[TravelingMessage] = List.empty
-  private var deliveredMessages: List[Message] = List.empty
+  private val messageQueue: mutable.ListBuffer[TravelingMessage] = mutable.ListBuffer.empty
+  private val deliveredMessages: mutable.Map[(Int, Int), DeliveredMessage] = mutable.Map.empty
 
   lazy val devicePool: List[Device] = (0 until parameters.deviceCount)
     .map(Device(_, randomSleepTime))
     .toList
-  lazy val deviceNeighbourhood: Map[DeviceId, Set[DeviceId]] = initNeighborhoods
+  lazy val deviceNeighbourhood: Map[Int, Set[Int]] = initNeighborhoods
 
-  private def initNeighborhoods: Map[DeviceId, Set[DeviceId]] =
-    var result: Map[DeviceId, Set[DeviceId]] = Map.WithDefault[DeviceId, Set[DeviceId]](Map.empty, Set(_))
+  private def initNeighborhoods: Map[Int, Set[Int]] =
+    var result: Map[Int, Set[Int]] = Map.WithDefault[Int, Set[Int]](Map.empty, Set(_))
     val deviceSet = devicePool.map(_.id).toSet
     val deviceWithIndex = devicePool.map(_.id).zipWithIndex.toMap
     for (device, i) <- deviceWithIndex do
@@ -62,7 +62,7 @@ class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
       case d if d < 0 => 0
       case d => d
 
-  private def network(id: DeviceId): BasicSimulator.SimulatedNetwork =
+  private def network(id: Int): BasicSimulator.SimulatedNetwork =
     NetworkAdapter(
       BasicNetwork(id),
       tokenAdapter = <=>[String, InvocationCoordinate](
@@ -77,12 +77,12 @@ class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
     )
 
   case class Device(
-      id: DeviceId,
+      id: Int,
       sleepTime: Int,
   ):
     private var slept = 0
 
-    private val engine = Engine[DeviceId, Any, InvocationCoordinate, Any, BasicSimulator.SimulatedNetwork, C](
+    private val engine = Engine[Int, Any, InvocationCoordinate, Any, BasicSimulator.SimulatedNetwork, C](
       net = network(id),
       factory = contextFactory,
       program = program,
@@ -95,38 +95,42 @@ class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
       else slept += 1
   end Device
 
-  private case class Message(from: DeviceId, to: DeviceId, content: Map[Path[String], Any]) derives CanEqual
+  private case class Message(from: Int, to: Int, content: Map[Path[String], Any]) derives CanEqual
 
   private case class TravelingMessage(var delay: Int, message: Message)
 
-  private class BasicNetwork(forDevice: DeviceId) extends Network[DeviceId, String, Any]:
-    override def localId: DeviceId = forDevice
+  private case class DeliveredMessage(message: Message, var lifetime: Int = 0)
 
-    override def send(e: Export[DeviceId, String, Any]): Unit =
-      var messages: Map[DeviceId, Map[Path[String], Any]] = Map.WithDefault(Map.empty, _ => Map.empty)
+  private class BasicNetwork(forDevice: Int) extends Network[Int, String, Any]:
+    override def localId: Int = forDevice
+
+    override def send(e: Export[Int, String, Any]): Unit =
+      var messages: Map[Int, Map[Path[String], Any]] = Map.WithDefault(Map.empty, _ => Map.empty)
       for (path, messageMap) <- e do
         for deviceId <- deviceNeighbourhood(forDevice) do
           messages += deviceId -> (messages(deviceId) + (path -> messageMap(deviceId)))
-      messageQueue ++=
+      messageQueue.appendAll(
         messages
-          .filter(_ => !messageLost)
-          .map((deviceId, messageMap) => TravelingMessage(messageDelay, Message(forDevice, deviceId, messageMap)))
+          .filterNot(_ => messageLost)
+          .map((deviceId, messageMap) => TravelingMessage(messageDelay, Message(forDevice, deviceId, messageMap))),
+      )
 
-    override def receive(): Import[DeviceId, String, Any] =
-      var messages: Import[DeviceId, String, Any] = Map.WithDefault(Map.empty, _ => Map.empty)
-      for message <- deliveredMessages.filter(_.to == forDevice) do
-        for (path, content) <- message.content do
-          messages += message.from -> (messages(message.from) + (path -> content))
-        deliveredMessages =
-          deliveredMessages.filterNot(m => m.to == forDevice && m.from == message.from && m != message)
+    override def receive(): Import[Int, String, Any] =
+      var messages: Import[Int, String, Any] = Map.WithDefault(Map.empty, _ => Map.empty)
+      for message <- deliveredMessages.values.filter(_.message.to == forDevice) do
+        for (path, content) <- message.message.content do
+          messages += message.message.from -> (messages(message.message.from) + (path -> content))
       messages
 
   end BasicNetwork
 
   override def tick(): Unit =
     for message <- messageQueue do message.delay -= 1
-    deliveredMessages = messageQueue.filter(_.delay <= 0).map(_.message) ++ deliveredMessages
-    messageQueue = messageQueue.filter(_.delay > 0)
+    for message <- deliveredMessages.values do message.lifetime += 1
+    for message <- messageQueue.filter(_.delay <= 0).map(_.message) do
+      deliveredMessages.update(message.from -> message.to, DeliveredMessage(message))
+    deliveredMessages.filterInPlace((_, v) => v.lifetime > parameters.deliveredMessageLifetime)
+    messageQueue.filterInPlace(_.delay > 0)
     devicePool.foreach(_.fire())
 end BasicSimulator
 

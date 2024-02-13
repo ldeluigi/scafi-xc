@@ -23,6 +23,7 @@ object SimulatorMain:
     override val averageNeighbourhood: Int = 5
     override val stddevNeighbourhood: Int = 1
     override val probabilityOfOneDirectionalNeighbourhood: Double = 0
+    override val deliveredMessageLifetime: Int = 17
     override val seed: Int = 42
 
   private def program(using c: BasicExchangeCalculusContext[Int] & DistanceSensor[Int]): Unit =
@@ -38,7 +39,7 @@ object SimulatorMain:
         new BasicExchangeCalculusContext(n.localId, n.receive()) with DistanceSensor[Int]:
           override def senseDistance: AggregateValue[Int] = new NValues[Int](
             default = CommonBoundaries.given_Bounded_Int.upperBound,
-            device.unalignedValues.view.mapValues(id => if id == self then 0 else 1).toMap,
+            aligned.map(id => (id, if id == self then 0 else 1)).toMap,
           )
       ,
       program = program,

@@ -19,5 +19,7 @@ trait SimulationParameters:
 
   def probabilityOfOneDirectionalNeighbourhood: Double
 
+  def deliveredMessageLifetime: Int
+
   def seed: Int
 end SimulationParameters
