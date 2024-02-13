@@ -129,7 +129,7 @@ class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
     for message <- deliveredMessages.values do message.lifetime += 1
     for message <- messageQueue.filter(_.delay <= 0).map(_.message) do
       deliveredMessages.update(message.from -> message.to, DeliveredMessage(message))
-    deliveredMessages.filterInPlace((_, v) => v.lifetime > parameters.deliveredMessageLifetime)
+    deliveredMessages.filterInPlace((_, v) => v.lifetime <= parameters.deliveredMessageLifetime)
     messageQueue.filterInPlace(_.delay > 0)
     devicePool.foreach(_.fire())
 end BasicSimulator

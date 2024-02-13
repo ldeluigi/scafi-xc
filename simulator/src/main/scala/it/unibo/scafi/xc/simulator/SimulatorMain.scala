@@ -26,7 +26,7 @@ object SimulatorMain:
     override val deliveredMessageLifetime: Int = 17
     override val seed: Int = 42
 
-  private def program(using c: BasicExchangeCalculusContext[Int] & DistanceSensor[Int]): Unit =
+  private def program(using c: BasicExchangeCalculusContext[Int] & DistanceSensor[Double]): Unit =
     println(
       s"${device(self)} sees ${device.withoutSelf.size} aligned neighbours with " +
         s"distance ${sensorDistanceTo(self == 0)} from source",
@@ -36,10 +36,10 @@ object SimulatorMain:
     val sim = new BasicSimulator(
       parameters = SimulationSettings,
       contextFactory = n =>
-        new BasicExchangeCalculusContext(n.localId, n.receive()) with DistanceSensor[Int]:
-          override def senseDistance: AggregateValue[Int] = new NValues[Int](
-            default = CommonBoundaries.given_Bounded_Int.upperBound,
-            aligned.map(id => (id, if id == self then 0 else 1)).toMap,
+        new BasicExchangeCalculusContext(n.localId, n.receive()) with DistanceSensor[Double]:
+          override def senseDistance: AggregateValue[Double] = new NValues[Double](
+            default = CommonBoundaries.given_Bounded_Double.upperBound,
+            aligned.map(id => (id, if id == self then 0.0 else 1.0)).toMap,
           )
       ,
       program = program,
