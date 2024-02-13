@@ -1,9 +1,9 @@
 package it.unibo.scafi.xc.language.foundation
 
-import it.unibo.scafi.xc.abstractions.{ Aggregate, Liftable }
+import it.unibo.scafi.xc.abstractions.{ Aggregate, Liftable, SafeIterable }
 
 trait AggregateFoundation:
-  type AggregateValue[T]
+  type AggregateValue[T] <: SafeIterable[T]
 
   /**
    * Aggregate values can be iterated also by ignoring the self value.
