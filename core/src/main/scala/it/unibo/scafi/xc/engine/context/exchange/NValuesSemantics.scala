@@ -2,7 +2,8 @@ package it.unibo.scafi.xc.engine.context.exchange
 
 import scala.collection.MapView
 
-import it.unibo.scafi.xc.abstractions.{ Aggregate, Liftable, SafeIterable }
+import it.unibo.scafi.xc.abstractions.{ Aggregate, Liftable }
+import it.unibo.scafi.xc.collections.SafeIterable
 import it.unibo.scafi.xc.language.semantics.exchange.{ ExchangeCalculusSemantics, NValuesOps }
 
 trait NValuesSemantics:

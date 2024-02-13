@@ -1,4 +1,4 @@
-package it.unibo.scafi.xc.engine.network
+package it.unibo.scafi.xc.collections
 
 import scala.collection.immutable
 

@@ -1,8 +1,8 @@
 package it.unibo.scafi.xc.simulator.basic
 
 import scala.collection.mutable
-
 import it.unibo.scafi.xc.abstractions.BidirectionalFunction.<=>
+import it.unibo.scafi.xc.collections.MapWithDefault
 import it.unibo.scafi.xc.engine.Engine
 import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
 import it.unibo.scafi.xc.engine.context.{ Context, ContextFactory }

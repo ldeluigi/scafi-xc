@@ -1,4 +1,4 @@
-package it.unibo.scafi.xc.abstractions
+package it.unibo.scafi.xc.collections
 
 import it.unibo.scafi.xc.abstractions.boundaries.{ LowerBounded, UpperBounded }
 
