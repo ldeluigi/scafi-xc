@@ -1,17 +1,23 @@
 package it.unibo.scafi.xc.abstractions
 
-trait SafeIterable[+T]:
+import it.unibo.scafi.xc.abstractions.boundaries.{ LowerBounded, UpperBounded }
 
-  private val iterable: Iterable[T] = new Iterable[T]:
-    override def iterator: Iterator[T] = SafeIterable.this.iterator
+trait SafeIterable[+A]:
 
-  protected def iterator: Iterator[T]
+  private val iterable: Iterable[A] = new Iterable[A]:
+    override def iterator: Iterator[A] = SafeIterable.this.iterator
 
-  def toIterable: Iterable[T] = iterable
+  protected def iterator: Iterator[A]
+
+  def toIterable: Iterable[A] = iterable
 
   override def toString: String = iterable.toString()
 
   override def hashCode(): Int = iterable.hashCode()
+
+  def min[B >: A: Ordering: UpperBounded]: B = minOption.getOrElse(summon[UpperBounded[B]].upperBound)
+
+  def max[B >: A: Ordering: LowerBounded]: B = maxOption.getOrElse(summon[LowerBounded[B]].lowerBound)
 
   export iterable.{
     collectFirst,
@@ -35,10 +41,12 @@ trait SafeIterable[+T]:
     minOption,
     mkString,
     nonEmpty,
+    product,
     reduceLeftOption,
     reduceOption,
     reduceRightOption,
     size,
+    sum,
     to,
     toArray,
     toBuffer,
