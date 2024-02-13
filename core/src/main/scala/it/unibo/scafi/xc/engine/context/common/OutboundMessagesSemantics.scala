@@ -14,7 +14,8 @@ trait OutboundMessagesSemantics:
   override def outboundMessages: Import[DeviceId, InvocationCoordinate, Envelope] =
     var messages: Map[DeviceId, ValueTree[InvocationCoordinate, Envelope]] = Map.empty
     for (path, messageMap) <- sentMessages do
-      for (deviceId, value) <- messageMap do messages = messages.updatedWith(deviceId)(_.map(_ + (path -> value)))
+      for deviceId <- unalignedDevices do
+        messages = messages.updatedWith(deviceId)(_.map(_ + (path -> messageMap(deviceId))))
     MapWithDefault[DeviceId, ValueTree[InvocationCoordinate, Envelope]](messages, ValueTree.empty)
 
   private val sentMessages: mutable.Map[Path[InvocationCoordinate], MapWithDefault[DeviceId, Envelope]] =
@@ -25,4 +26,6 @@ trait OutboundMessagesSemantics:
       messages.mapValues(close).toMap,
       close(default),
     )
+
+  protected def unalignedDevices: Set[DeviceId]
 end OutboundMessagesSemantics

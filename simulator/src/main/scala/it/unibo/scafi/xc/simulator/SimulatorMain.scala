@@ -39,7 +39,7 @@ object SimulatorMain:
         new BasicExchangeCalculusContext(n.localId, n.receive()) with DistanceSensor[Double]:
           override def senseDistance: AggregateValue[Double] = new NValues[Double](
             default = CommonBoundaries.given_Bounded_Double.upperBound,
-            aligned.map(id => (id, if id == self then 0.0 else 1.0)).toMap,
+            unalignedDevices.map(id => (id, if id == self then 0.0 else 1.0)).toMap,
           )
       ,
       program = program,
