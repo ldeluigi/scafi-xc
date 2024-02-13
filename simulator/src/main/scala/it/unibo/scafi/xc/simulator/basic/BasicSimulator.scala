@@ -8,7 +8,7 @@ import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
 import it.unibo.scafi.xc.engine.Engine
 import it.unibo.scafi.xc.engine.context.{ Context, ContextFactory }
 import it.unibo.scafi.xc.engine.network.*
-import it.unibo.scafi.xc.engine.path.Path
+import it.unibo.scafi.xc.engine.path.{ Path, ValueTree }
 import it.unibo.scafi.xc.simulator.{ DiscreteSimulator, SimulationParameters }
 
 class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
@@ -104,23 +104,22 @@ class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
   private class BasicNetwork(forDevice: Int) extends Network[Int, String, Any]:
     override def localId: Int = forDevice
 
-    override def send(e: Export[Int, String, Any]): Unit =
-      var messages: Map[Int, Map[Path[String], Any]] = Map.WithDefault(Map.empty, _ => Map.empty)
-      for (path, messageMap) <- e do
-        for deviceId <- deviceNeighbourhood(forDevice) do
-          messages += deviceId -> (messages(deviceId) + (path -> messageMap(deviceId)))
+    override def send(e: Import[Int, String, Any]): Unit =
       messageQueue.appendAll(
-        messages
+        e.view
+          .filterKeys(deviceNeighbourhood(forDevice))
           .filterNot(_ => messageLost)
           .map((deviceId, messageMap) => TravelingMessage(messageDelay, Message(forDevice, deviceId, messageMap))),
       )
 
     override def receive(): Import[Int, String, Any] =
-      var messages: Import[Int, String, Any] = Map.WithDefault(Map.empty, _ => Map.empty)
-      for message <- deliveredMessages.values.filter(_.message.to == forDevice) do
-        for (path, content) <- message.message.content do
-          messages += message.message.from -> (messages(message.message.from) + (path -> content))
-      messages
+      MapWithDefault(
+        deliveredMessages.values
+          .filter(_.message.to == forDevice)
+          .map(m => (m.message.from, m.message.content))
+          .toMap,
+        ValueTree.empty,
+      )
 
   end BasicNetwork
 

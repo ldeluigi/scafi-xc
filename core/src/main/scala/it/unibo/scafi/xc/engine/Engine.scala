@@ -1,7 +1,7 @@
 package it.unibo.scafi.xc.engine
 
 import it.unibo.scafi.xc.engine.context.{ Context, ContextFactory }
-import it.unibo.scafi.xc.engine.network.{ Export, Import, Network }
+import it.unibo.scafi.xc.engine.network.{ Import, Network }
 
 class Engine[
     DeviceId,
@@ -33,6 +33,6 @@ class Engine[
   case class AggregateResult(
       result: Result,
       incomingMessages: Import[DeviceId, Token, Value],
-      outgoingMessages: Export[DeviceId, Token, Value],
+      outgoingMessages: Import[DeviceId, Token, Value],
   )
 end Engine
