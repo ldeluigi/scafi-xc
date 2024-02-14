@@ -1,23 +1,23 @@
 package it.unibo.scafi.xc.simulator.basic
 
-import scala.util.Random
 import scala.collection.mutable
 
 import it.unibo.scafi.xc.abstractions.BidirectionalFunction.<=>
-import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
+import it.unibo.scafi.xc.collections.MapWithDefault
 import it.unibo.scafi.xc.engine.Engine
+import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
 import it.unibo.scafi.xc.engine.context.{ Context, ContextFactory }
 import it.unibo.scafi.xc.engine.network.*
-import it.unibo.scafi.xc.engine.path.Path
-import it.unibo.scafi.xc.simulator.{ DiscreteSimulator, SimulationParameters }
+import it.unibo.scafi.xc.engine.path.ValueTree
+import it.unibo.scafi.xc.simulator.{ DiscreteSimulator, RandomNumberGenerators, SimulationParameters }
 
 class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
     override val parameters: SimulationParameters,
     private val contextFactory: ContextFactory[BasicSimulator.SimulatedNetwork, C],
     override val program: C ?=> Any,
-) extends DiscreteSimulator[C]:
+) extends DiscreteSimulator[C]
+    with RandomNumberGenerators:
   private val SEPARATOR = "/"
-  private val rnd: Random = Random(new java.util.Random(parameters.seed))
   private val messageQueue: mutable.ListBuffer[TravelingMessage] = mutable.ListBuffer.empty
   private val deliveredMessages: mutable.Map[(Int, Int), DeliveredMessage] = mutable.Map.empty
 
@@ -41,26 +41,6 @@ class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
         if deviceWithIndex(neighbour) > i && !isNeighbourhoodUnidirectional then
           result += neighbour -> (result(neighbour) + device)
     result
-
-  private def randomSleepTime: Int =
-    randomNumber(parameters.averageSleepTime, parameters.stddevSleepTime).toInt
-
-  private def randomNeighborCount: Int =
-    randomNumber(parameters.averageNeighbourhood, parameters.stddevNeighbourhood).toInt
-
-  private def isNeighbourhoodUnidirectional: Boolean =
-    rnd.nextDouble() < parameters.probabilityOfOneDirectionalNeighbourhood
-
-  private def messageLost: Boolean =
-    rnd.nextDouble() < parameters.probabilityOfMessageLoss
-
-  private def messageDelay: Int =
-    randomNumber(parameters.averageMessageDelay, parameters.stddevMessageDelay).toInt
-
-  private def randomNumber(average: Double, stdev: Double): Double =
-    rnd.nextGaussian() * stdev + average match
-      case d if d < 0 => 0
-      case d => d
 
   private def network(id: Int): BasicSimulator.SimulatedNetwork =
     NetworkAdapter(
@@ -95,32 +75,25 @@ class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
       else slept += 1
   end Device
 
-  private case class Message(from: Int, to: Int, content: Map[Path[String], Any]) derives CanEqual
-
-  private case class TravelingMessage(var delay: Int, message: Message)
-
-  private case class DeliveredMessage(message: Message, var lifetime: Int = 0)
-
   private class BasicNetwork(forDevice: Int) extends Network[Int, String, Any]:
     override def localId: Int = forDevice
 
-    override def send(e: Export[Int, String, Any]): Unit =
-      var messages: Map[Int, Map[Path[String], Any]] = Map.WithDefault(Map.empty, _ => Map.empty)
-      for (path, messageMap) <- e do
-        for deviceId <- deviceNeighbourhood(forDevice) do
-          messages += deviceId -> (messages(deviceId) + (path -> messageMap(deviceId)))
+    override def send(e: Import[Int, String, Any]): Unit =
       messageQueue.appendAll(
-        messages
+        deviceNeighbourhood(forDevice).view
+          .map(id => id -> e(id))
           .filterNot(_ => messageLost)
           .map((deviceId, messageMap) => TravelingMessage(messageDelay, Message(forDevice, deviceId, messageMap))),
       )
 
     override def receive(): Import[Int, String, Any] =
-      var messages: Import[Int, String, Any] = Map.WithDefault(Map.empty, _ => Map.empty)
-      for message <- deliveredMessages.values.filter(_.message.to == forDevice) do
-        for (path, content) <- message.message.content do
-          messages += message.message.from -> (messages(message.message.from) + (path -> content))
-      messages
+      MapWithDefault(
+        deliveredMessages.values
+          .filter(_.message.to == forDevice)
+          .map(m => (m.message.from, m.message.content))
+          .toMap,
+        ValueTree.empty,
+      )
 
   end BasicNetwork
 

@@ -2,7 +2,8 @@ package it.unibo.scafi.xc.engine.context.exchange
 
 import scala.collection.MapView
 
-import it.unibo.scafi.xc.abstractions.{ Aggregate, Liftable, SafeIterable }
+import it.unibo.scafi.xc.abstractions.{ Aggregate, Liftable }
+import it.unibo.scafi.xc.collections.SafeIterable
 import it.unibo.scafi.xc.language.semantics.exchange.{ ExchangeCalculusSemantics, NValuesOps }
 
 trait NValuesSemantics:
@@ -10,7 +11,7 @@ trait NValuesSemantics:
   override type AggregateValue[T] = NValues[T]
 
   protected case class NValues[+T](default: T, unalignedValues: Map[DeviceId, T] = Map.empty) extends SafeIterable[T]:
-    def alignedValues: MapView[DeviceId, T] = unalignedValues.view.filterKeys(aligned)
+    def alignedValues: MapView[DeviceId, T] = unalignedValues.view.filterKeys(alignedDevices)
     def apply(id: DeviceId): T = alignedValues.getOrElse(id, default)
     override def iterator: Iterator[T] = alignedValues.values.iterator
 
@@ -52,7 +53,7 @@ trait NValuesSemantics:
 
   override given convert[T]: Conversion[T, AggregateValue[T]] = new NValues[T](_)
 
-  override def device: AggregateValue[DeviceId] = new NValues[DeviceId](self, aligned.map(id => (id, id)).toMap)
+  override def device: AggregateValue[DeviceId] = new NValues[DeviceId](self, alignedDevices.map(id => (id, id)).toMap)
 
-  protected def aligned: Set[DeviceId]
+  protected def alignedDevices: Set[DeviceId]
 end NValuesSemantics

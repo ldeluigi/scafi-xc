@@ -39,7 +39,7 @@ object SimulatorMain:
         new BasicExchangeCalculusContext(n.localId, n.receive()) with DistanceSensor[Double]:
           override def senseDistance: AggregateValue[Double] = new NValues[Double](
             default = CommonBoundaries.given_Bounded_Double.upperBound,
-            aligned.map(id => (id, if id == self then 0.0 else 1.0)).toMap,
+            unalignedDevices.map(id => (id, if id == self then 0.0 else 1.0)).toMap,
           )
       ,
       program = program,
@@ -47,7 +47,7 @@ object SimulatorMain:
     for device <- sim.devicePool do println(s"Device ${device.id} sleeps for ${device.sleepTime} ticks")
     for (deviceId, neighbourhood) <- sim.deviceNeighbourhood do
       println(s"Device $deviceId has neighbours: ${neighbourhood.mkString(", ")}")
-    for tick <- 1 to 100 do
+    for tick <- 1 to 20 do
       println(s"--------------- t_$tick ----------------")
       sim.tick()
 end SimulatorMain
