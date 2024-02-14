@@ -1,6 +1,7 @@
 package it.unibo.scafi.xc.simulator.basic
 
 import scala.collection.mutable
+
 import it.unibo.scafi.xc.abstractions.BidirectionalFunction.<=>
 import it.unibo.scafi.xc.collections.MapWithDefault
 import it.unibo.scafi.xc.engine.Engine
@@ -78,25 +79,21 @@ class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
     override def localId: Int = forDevice
 
     override def send(e: Import[Int, String, Any]): Unit =
-      println(s"MessageQueue before send: $messageQueue while sending $e")
       messageQueue.appendAll(
         deviceNeighbourhood(forDevice).view
           .map(id => id -> e(id))
           .filterNot(_ => messageLost)
           .map((deviceId, messageMap) => TravelingMessage(messageDelay, Message(forDevice, deviceId, messageMap))),
       )
-      println(s"MessageQueue after send: $messageQueue")
 
     override def receive(): Import[Int, String, Any] =
-      val res = MapWithDefault(
+      MapWithDefault(
         deliveredMessages.values
           .filter(_.message.to == forDevice)
           .map(m => (m.message.from, m.message.content))
           .toMap,
         ValueTree.empty,
       )
-      println(s"Received: $res")
-      res
 
   end BasicNetwork
 

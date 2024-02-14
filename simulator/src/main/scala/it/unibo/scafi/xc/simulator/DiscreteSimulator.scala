@@ -2,7 +2,7 @@ package it.unibo.scafi.xc.simulator
 
 import it.unibo.scafi.xc.engine.context.Context
 
-trait DiscreteSimulator[C <: Context[_, _, _]]:
+trait DiscreteSimulator[C <: Context[?, ?, ?]]:
   def program: C ?=> Any
 
   def parameters: SimulationParameters

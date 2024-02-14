@@ -3,7 +3,7 @@ package it.unibo.scafi.xc.simulator
 import scala.util.Random
 
 trait RandomNumberGenerators:
-  self: DiscreteSimulator[_] =>
+  self: DiscreteSimulator[?] =>
   protected val rnd: Random = Random(new java.util.Random(parameters.seed))
 
   protected def randomSleepTime: Int =

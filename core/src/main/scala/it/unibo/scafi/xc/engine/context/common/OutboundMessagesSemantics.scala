@@ -1,8 +1,8 @@
 package it.unibo.scafi.xc.engine.context.common
 
-import it.unibo.scafi.xc.collections.MapWithDefault
 import scala.collection.{ mutable, MapView }
 
+import it.unibo.scafi.xc.collections.MapWithDefault
 import it.unibo.scafi.xc.engine.context.Context
 import it.unibo.scafi.xc.engine.network.Import
 import it.unibo.scafi.xc.engine.path.{ Path, ValueTree }
@@ -16,8 +16,7 @@ trait OutboundMessagesSemantics:
     var messages: MapWithDefault[DeviceId, ValueTree[InvocationCoordinate, Envelope]] =
       MapWithDefault.empty(ValueTree.empty)
     for (path, messageMap) <- sentMessages do
-      for deviceId <- unalignedDevices do
-        messages = messages.updatedWith(deviceId)(_.map(_ + (path -> messageMap(deviceId))))
+      for deviceId <- unalignedDevices do messages = messages.updated(deviceId, _.updated(path, messageMap(deviceId)))
     messages
 
   private val sentMessages: mutable.Map[Path[InvocationCoordinate], MapWithDefault[DeviceId, Envelope]] =
