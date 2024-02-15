@@ -8,12 +8,11 @@ import it.unibo.scafi.xc.implementations.boundaries.CommonBoundaries.given
 import it.unibo.scafi.xc.language.libraries.GradientLibrary
 import it.unibo.scafi.xc.language.libraries.GradientLibrary.sensorDistanceTo
 import it.unibo.scafi.xc.language.sensors.DistanceSensor
-import it.unibo.scafi.xc.simulator.basic.BasicSimulator
-import it.unibo.scafi.xc.simulator.basic.BasicSimulator.SimulatedNetwork
+import it.unibo.scafi.xc.simulator.random.{ BasicRandomSimulator, RandomSimulationParameters }
 
 object SimulatorMain:
 
-  private object SimulationSettings extends SimulationParameters:
+  private object SimulationSettings extends RandomSimulationParameters:
     override val averageSleepTime: Double = 2
     override val stddevSleepTime: Double = 1
     override val deviceCount: Int = 10
@@ -33,7 +32,7 @@ object SimulatorMain:
     )
 
   @main def main(): Unit =
-    val sim = new BasicSimulator(
+    val sim = new BasicRandomSimulator(
       parameters = SimulationSettings,
       contextFactory = n =>
         new BasicExchangeCalculusContext(n.localId, n.receive()) with DistanceSensor[Double]:
@@ -44,8 +43,8 @@ object SimulatorMain:
       ,
       program = program,
     )
-    for device <- sim.devicePool do println(s"Device ${device.id} sleeps for ${device.sleepTime} ticks")
-    for (deviceId, neighbourhood) <- sim.deviceNeighbourhood do
+    for device <- sim.devices do println(s"Device ${device.id} sleeps for ${device.sleepTime} ticks")
+    for (deviceId, neighbourhood) <- sim.neighborhoods do
       println(s"Device $deviceId has neighbours: ${neighbourhood.mkString(", ")}")
     for tick <- 1 to 20 do
       println(s"--------------- t_$tick ----------------")

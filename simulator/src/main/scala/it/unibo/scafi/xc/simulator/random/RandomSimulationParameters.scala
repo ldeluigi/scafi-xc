@@ -1,6 +1,6 @@
-package it.unibo.scafi.xc.simulator
+package it.unibo.scafi.xc.simulator.random
 
-trait SimulationParameters:
+trait RandomSimulationParameters:
   def averageSleepTime: Double
 
   def stddevSleepTime: Double
@@ -22,4 +22,4 @@ trait SimulationParameters:
   def deliveredMessageLifetime: Int
 
   def seed: Int
-end SimulationParameters
+end RandomSimulationParameters
