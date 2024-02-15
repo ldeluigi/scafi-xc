@@ -10,14 +10,14 @@ class NetworkAdapter[DeviceId, TokenA, TokenB, ValueA, ValueB](
 
   export network.localId
 
-  override def send(e: Import[DeviceId, TokenB, ValueB]): Unit =
+  override def send(e: Export[DeviceId, TokenB, ValueB]): Unit =
     network.send(
       e.map(
         _.map((path, value) => path.map(tokenAdapter.backward) -> valueAdapter.backward(value)),
       ),
     )
 
-  override def receive(): Import[DeviceId, TokenB, ValueB] = network
+  override def receive(): Export[DeviceId, TokenB, ValueB] = network
     .receive()
     .map(
       _.map((path, value) => path.map(tokenAdapter.forward) -> valueAdapter.forward(value)),
