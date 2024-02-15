@@ -3,12 +3,11 @@ package it.unibo.scafi.xc.simulator.basic
 import scala.collection.mutable
 
 import it.unibo.scafi.xc.abstractions.BidirectionalFunction.<=>
-import it.unibo.scafi.xc.collections.MapWithDefault
+import it.unibo.scafi.xc.collections.{ MapWithDefault, ValueTree }
 import it.unibo.scafi.xc.engine.Engine
 import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
 import it.unibo.scafi.xc.engine.context.{ Context, ContextFactory }
 import it.unibo.scafi.xc.engine.network.*
-import it.unibo.scafi.xc.engine.path.ValueTree
 import it.unibo.scafi.xc.simulator.{ DiscreteSimulator, RandomNumberGenerators, SimulationParameters }
 
 class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
@@ -78,7 +77,7 @@ class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
   private class BasicNetwork(forDevice: Int) extends Network[Int, String, Any]:
     override def localId: Int = forDevice
 
-    override def send(e: Import[Int, String, Any]): Unit =
+    override def send(e: Export[Int, String, Any]): Unit =
       messageQueue.appendAll(
         deviceNeighbourhood(forDevice).view
           .map(id => id -> e(id))
@@ -86,7 +85,7 @@ class BasicSimulator[C <: Context[Int, InvocationCoordinate, Any]](
           .map((deviceId, messageMap) => TravelingMessage(messageDelay, Message(forDevice, deviceId, messageMap))),
       )
 
-    override def receive(): Import[Int, String, Any] =
+    override def receive(): Export[Int, String, Any] =
       MapWithDefault(
         deliveredMessages.values
           .filter(_.message.to == forDevice)

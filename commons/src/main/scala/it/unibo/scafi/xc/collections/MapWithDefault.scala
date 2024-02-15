@@ -46,8 +46,6 @@ class MapWithDefault[K, +V](underlying: Map[K, V], val default: V) extends Itera
 
   override def knownSize: Int = inner.knownSize
 
-  def lift: K => V = this
-
   def map[V2](f: V => V2): MapWithDefault[K, V2] = new MapWithDefault(inner.map((k, v) => (k, f(v))), f(default))
 
   override def partition(p: ((K, V)) => Boolean): (MapWithDefault[K, V], MapWithDefault[K, V]) =
