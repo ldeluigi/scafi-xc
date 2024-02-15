@@ -1,4 +1,4 @@
-package it.unibo.scafi.xc.implementations.boundaries
+package it.unibo.scafi.xc.implementations
 
 import it.unibo.scafi.xc.abstractions.boundaries.Bounded
 

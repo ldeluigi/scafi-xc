@@ -22,6 +22,9 @@ ThisBuild / scalacOptions ++= Seq(
   "-language:implicitConversions",
 ) ++ (if (ci) Seq("-explain") else Nil)
 
+// testing
+ThisBuild / libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.17" % Test
+
 // projects
 lazy val commons = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .crossType(CrossType.Pure)
@@ -33,7 +36,6 @@ lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .crossType(CrossType.Pure)
   .settings(
     name := "core",
-    libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.17" % Test,
   )
   .dependsOn(commons)
 
@@ -43,6 +45,13 @@ lazy val simulator = crossProject(JVMPlatform, JSPlatform, NativePlatform)
     name := "simulator",
   )
   .dependsOn(core)
+
+lazy val tests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
+  .crossType(CrossType.Pure)
+  .settings(
+    name := "tests",
+  )
+  .dependsOn(core, simulator)
 
 // conventional commits
 Global / onLoad ~= (_ andThen ("conventionalCommits" :: _))

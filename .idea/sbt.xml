@@ -23,6 +23,10 @@
             <option value="$PROJECT_DIR$/simulator/.js" />
             <option value="$PROJECT_DIR$/simulator/.jvm" />
             <option value="$PROJECT_DIR$/simulator/.native" />
+            <option value="$PROJECT_DIR$/tests" />
+            <option value="$PROJECT_DIR$/tests/.js" />
+            <option value="$PROJECT_DIR$/tests/.jvm" />
+            <option value="$PROJECT_DIR$/tests/.native" />
           </set>
         </option>
         <option name="resolveSbtClassifiers" value="true" />

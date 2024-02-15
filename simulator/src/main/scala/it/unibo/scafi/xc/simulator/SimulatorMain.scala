@@ -2,9 +2,8 @@ package it.unibo.scafi.xc.simulator
 
 import it.unibo.scafi.xc.engine.context.ContextFactory
 import it.unibo.scafi.xc.engine.context.exchange.BasicExchangeCalculusContext
-import it.unibo.scafi.xc.implementations.boundaries.CommonBoundaries
+import it.unibo.scafi.xc.implementations.CommonBoundaries.given_Bounded_Double
 import it.unibo.scafi.xc.language.libraries.CommonLibrary.*
-import it.unibo.scafi.xc.implementations.boundaries.CommonBoundaries.given
 import it.unibo.scafi.xc.language.libraries.GradientLibrary
 import it.unibo.scafi.xc.language.libraries.GradientLibrary.sensorDistanceTo
 import it.unibo.scafi.xc.language.sensors.DistanceSensor
@@ -37,7 +36,7 @@ object SimulatorMain:
       contextFactory = n =>
         new BasicExchangeCalculusContext(n.localId, n.receive()) with DistanceSensor[Double]:
           override def senseDistance: AggregateValue[Double] = new NValues[Double](
-            default = CommonBoundaries.given_Bounded_Double.upperBound,
+            default = given_Bounded_Double.upperBound,
             unalignedDevices.map(id => (id, if id == self then 0.0 else 1.0)).toMap,
           )
       ,
