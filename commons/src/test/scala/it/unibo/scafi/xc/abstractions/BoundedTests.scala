@@ -39,6 +39,8 @@ trait BoundedTests:
       lowerBound - one should equal(lowerBound)
 
   def bounded[T: Numeric: Bounded](): Unit =
+    it should behave like upperBounded[T]()
+    it should behave like lowerBounded[T]()
     val bounds = summon[Bounded[T]]
     it should "provide a lower bound that is less than the upper bound" in:
       bounds.lowerBound should be < bounds.upperBound

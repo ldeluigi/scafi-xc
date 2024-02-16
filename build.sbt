@@ -25,24 +25,36 @@ ThisBuild / scalacOptions ++= Seq(
 // testing
 ThisBuild / libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.17" % Test
 
+lazy val commonTestSettings = Seq(
+  Test / scalacOptions --= Seq(
+    "-Werror",
+    "-Wunused:all",
+    "-Wvalue-discard",
+    "-Wnonunit-statement",
+  ),
+)
+
 // projects
 lazy val commons = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .crossType(CrossType.Pure)
   .settings(
     name := "commons",
+    commonTestSettings,
   )
 
 lazy val core = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .crossType(CrossType.Pure)
   .settings(
     name := "core",
+    commonTestSettings,
   )
-  .dependsOn(commons)
+  .dependsOn(commons % "compile->compile;test->test")
 
 lazy val simulator = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .crossType(CrossType.Pure)
   .settings(
     name := "simulator",
+    commonTestSettings,
   )
   .dependsOn(core)
 
@@ -50,6 +62,7 @@ lazy val tests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .crossType(CrossType.Pure)
   .settings(
     name := "tests",
+    commonTestSettings,
   )
   .dependsOn(core, simulator)
 

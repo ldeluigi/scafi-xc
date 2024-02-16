@@ -13,17 +13,14 @@ trait ValueTree[N, +V] extends Iterable[(Seq[N], V)] with PartialFunction[Seq[N]
   def map[N1, V1](f: (Seq[N], V) => (Seq[N1], V1)): ValueTree[N1, V1]
   def filter(f: (Seq[N], V) => Boolean): ValueTree[N, V]
   def filterNot(f: (Seq[N], V) => Boolean): ValueTree[N, V] = filter((k, v) => !f(k, v))
-  def flatMap[N1, V1](f: (Seq[N], V) => ValueTree[N1, V1]): ValueTree[N1, V1]
+  def flatMap[N1, V1](f: (Seq[N], V) => IterableOnce[(Seq[N1], V1)]): ValueTree[N1, V1]
   def remove(seq: Seq[N]): ValueTree[N, V]
   def removePrefix(seq: Iterable[N]): ValueTree[N, V]
   def update[V1 >: V](seq: Seq[N], value: V1): ValueTree[N, V1]
-  def updatePrefix[V1 >: V](seq: Iterable[N], value: V1): ValueTree[N, V1]
   def concat[V1 >: V](other: ValueTree[N, V1]): ValueTree[N, V1]
   def partition(f: (Seq[N], V) => Boolean): (ValueTree[N, V], ValueTree[N, V])
   def prepend[N1 >: N](prefix: Seq[N1]): ValueTree[N1, V]
   def append[N1 >: N](suffix: Seq[N1]): ValueTree[N1, V]
-  def cutPrefix(prefix: Iterable[N]): ValueTree[N, V]
-  def cutSuffix(suffix: Iterable[N]): ValueTree[N, V]
   def reversedNodes: ValueTree[N, V]
 
   @targetName("concat")

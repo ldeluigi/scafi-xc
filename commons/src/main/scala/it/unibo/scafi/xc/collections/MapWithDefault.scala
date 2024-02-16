@@ -4,11 +4,11 @@ import scala.annotation.targetName
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.{ Iterable, MapView }
 
-class MapWithDefault[K, +V](underlying: Map[K, V], val default: V) extends Iterable[(K, V)] with Function[K, V]:
+case class MapWithDefault[K, +V](private val underlying: Map[K, V], default: V)
+    extends Iterable[(K, V)]
+    with Function[K, V] derives CanEqual:
 
   private val inner: Map[K, V] = underlying.withDefaultValue(default)
-
-  override def hashCode(): Int = inner.hashCode() * 31 + default.hashCode()
 
   override def apply(v1: K): V = inner(v1)
 
@@ -58,15 +58,15 @@ class MapWithDefault[K, +V](underlying: Map[K, V], val default: V) extends Itera
 
   override def size: Int = inner.size
 
-  override def tapEach[U](f: ((K, V)) => U): MapWithDefault[K, V] = new MapWithDefault(inner.tapEach(f), default)
+  override def tapEach[U](f: ((K, V)) => U): MapWithDefault[K, V] =
+    val _ = inner.tapEach(f)
+    this
 
   def updated[V1 >: V](key: K, value: V1): MapWithDefault[K, V1] =
     new MapWithDefault(inner.updated(key, value), default)
 
   def updatedWith[V1 >: V](key: K)(f: V1 => Option[V1]): MapWithDefault[K, V1] =
     new MapWithDefault(inner.updatedWith(key)(v => f(v.getOrElse(default))), default)
-
-  def updated[V1 >: V](key: K, f: V1 => V1): MapWithDefault[K, V1] = updatedWith(key)(v => Some(f(v)))
 
   def withDefault[V1 >: V](d: V1): MapWithDefault[K, V1] = new MapWithDefault(inner, d)
 

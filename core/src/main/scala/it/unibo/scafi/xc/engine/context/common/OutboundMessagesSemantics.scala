@@ -16,7 +16,8 @@ trait OutboundMessagesSemantics:
     var messages: Export[DeviceId, InvocationCoordinate, Envelope] =
       MapWithDefault.empty(ValueTree.empty)
     for (path, messageMap) <- sentMessages do
-      for deviceId <- unalignedDevices do messages = messages.updated(deviceId, _.update(path, messageMap(deviceId)))
+      for deviceId <- unalignedDevices do
+        messages = messages.updated(deviceId, messages(deviceId).update(path, messageMap(deviceId)))
     messages
 
   private val sentMessages: mutable.Map[Path[InvocationCoordinate], MapWithDefault[DeviceId, Envelope]] =

@@ -23,7 +23,7 @@ case class MapValueTree[N, +V](underlying: Map[Seq[N], V]) extends ValueTree[N, 
 
   override def filter(f: (Seq[N], V) => Boolean): ValueTree[N, V] = MapValueTree(underlying.filter((k, v) => f(k, v)))
 
-  override def flatMap[N1, V1](f: (Seq[N], V) => ValueTree[N1, V1]): ValueTree[N1, V1] = MapValueTree(
+  override def flatMap[N1, V1](f: (Seq[N], V) => IterableOnce[(Seq[N1], V1)]): ValueTree[N1, V1] = MapValueTree(
     underlying.flatMap((k, v) => f(k, v).iterator),
   )
 
@@ -34,10 +34,6 @@ case class MapValueTree[N, +V](underlying: Map[Seq[N], V]) extends ValueTree[N, 
   )
 
   override def update[V1 >: V](seq: Seq[N], value: V1): ValueTree[N, V1] = MapValueTree(underlying.updated(seq, value))
-
-  override def updatePrefix[V1 >: V](seq: Iterable[N], value: V1): ValueTree[N, V1] = MapValueTree(
-    underlying.map((k, v) => k -> (if k.startsWith(seq) then value else v)),
-  )
 
   override def concat[V1 >: V](other: ValueTree[N, V1]): ValueTree[N, V1] = MapValueTree(underlying ++ other.iterator)
 
@@ -52,12 +48,6 @@ case class MapValueTree[N, +V](underlying: Map[Seq[N], V]) extends ValueTree[N, 
   override def append[N1 >: N](suffix: Seq[N1]): ValueTree[N1, V] = MapValueTree(
     underlying.map((k, v) => k ++ suffix -> v),
   )
-
-  override def cutPrefix(prefix: Iterable[N]): ValueTree[N, V] =
-    MapValueTree(underlying.map((k, v) => (if k.startsWith(prefix) then k.drop(prefix.size) else k) -> v))
-
-  override def cutSuffix(suffix: Iterable[N]): ValueTree[N, V] =
-    MapValueTree(underlying.map((k, v) => (if k.endsWith(suffix) then k.dropRight(suffix.size) else k) -> v))
 
   override def iterator: Iterator[(Seq[N], V)] = underlying.iterator
 
