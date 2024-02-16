@@ -6,17 +6,17 @@ trait ValueTreeTests:
   this: UnitTest =>
 
   def nonEmptyValueTree[N, V](vt: ValueTree[N, V], transform: V => V)(using CanEqual[N, N], CanEqual[V, V]): Unit =
-    val paths = for pathValue <- vt yield pathValue._1
+    val paths = vt.toMap.keySet
     val path = paths.head
-    var otherPath = paths.find(_ != path).get
+    val otherPath = paths.find(_ != path).get
     val pathPrefix = path.take(2)
     val missingPath = path ++ path
     assume(path.length > 2)
     assume(transform(vt.get(path).get) != vt.get(path).get)
-    assume(!paths.exists(_ == missingPath))
+    assume(!paths.contains(missingPath))
     it should "allow to check for a contained path" in:
-      path.contains(path) shouldBe true
-      path.contains(missingPath) shouldBe false
+      vt.contains(path) should be(true)
+      vt.contains(missingPath) should be(false)
     it should "allow to check for a contained prefix" in:
       vt.containsPrefix(path) shouldBe true
       vt.containsPrefix(pathPrefix) shouldBe true
@@ -45,7 +45,7 @@ trait ValueTreeTests:
       filtered.get(path) shouldBe empty
       filtered.get(missingPath) shouldBe defined
     it should "allow to flatMap the tree" in:
-      val flatMapped = vt.flatMap((p, v) => if p.length == path.length then Some(missingPath -> v) else None)
+      val flatMapped = vt.flatMap((p, v) => if p == path then Some(missingPath -> v) else None)
       flatMapped.get(path) shouldBe empty
       flatMapped.get(missingPath) shouldBe defined
       flatMapped.get(missingPath).get shouldBe vt.get(path).get
@@ -66,7 +66,7 @@ trait ValueTreeTests:
       updated2.get(path).get shouldBe transform(vt.get(path).get)
     it should "allow concatenation" in:
       val vt2 = vt.mapValues((_, v) => transform(v))
-      val concatenated = vt.remove(path).concat(vt2)
+      val concatenated = vt.remove(path).concat(vt2.remove(otherPath))
       concatenated.get(path) shouldBe defined
       concatenated.get(path).get shouldBe vt2.get(path).get
       concatenated.get(otherPath) shouldBe defined
