@@ -9,5 +9,6 @@ class BranchingSyntaxTests extends UnitTest:
     override def branch[T](cond: Boolean)(th: => T)(el: => T): T = mock[T]
 
   "Branching Syntax" should "compile" in:
-    "language.branch(false)(1)(2)" should compile
-    "language.branch(1)(1)(2)" shouldNot typeCheck
+    "val _: Int = language.branch(false)(1)(2)" should compile
+    "val _: Int = language.branch(1)(1)(2)" shouldNot typeCheck
+    "val _: String = language.branch(true)(1)(2)" shouldNot typeCheck
