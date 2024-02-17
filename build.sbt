@@ -18,6 +18,7 @@ ThisBuild / scalacOptions ++= Seq(
   "-Yexplicit-nulls",
   "-Ysafe-init",
   "-Ycheck-reentrant",
+  "-Xcheck-macros",
   "-language:strictEquality",
   "-language:implicitConversions",
 ) ++ (if (ci) Seq("-explain") else Nil)
@@ -31,6 +32,7 @@ lazy val commonTestSettings = Seq(
     "-Wunused:all",
     "-Wvalue-discard",
     "-Wnonunit-statement",
+    "-Xcheck-macros",
   ),
 )
 
