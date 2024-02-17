@@ -4,7 +4,11 @@ import it.unibo.scafi.xc.UnitTest
 
 trait MappableTests:
   this: UnitTest =>
+  type F[_]
+  def mappable: Mappable[F]
+  def toIterable[A](fa: F[A]): Iterable[A]
 
-  def mappable[F[X] <: Iterable[X]: Mappable](sut: F[Int]): Unit =
+  def mappable(sut: F[Int]): Unit =
+    given Mappable[F] = mappable
     it should "allow mapping values of collection" in:
-      summon[Mappable[F]].map(sut)(_ + 1) should be(sut.map(_ + 1))
+      toIterable(summon[Mappable[F]].map(sut)(_ + 1)) should be(toIterable(sut.map(_ + 1)))

@@ -10,3 +10,4 @@ class BranchingSyntaxTests extends UnitTest:
 
   "Branching Syntax" should "compile" in:
     "language.branch(false)(1)(2)" should compile
+    "language.branch(1)(1)(2)" shouldNot typeCheck

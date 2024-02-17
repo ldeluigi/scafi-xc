@@ -3,7 +3,11 @@ package it.unibo.scafi.xc.language.foundation
 import it.unibo.scafi.xc.abstractions.{ Aggregate, Liftable }
 import it.unibo.scafi.xc.collections.SafeIterable
 
-class AggregateFoundationMock extends AggregateFoundation with DeviceAwareAggregateFoundation:
+class AggregateFoundationMock
+    extends AggregateFoundation
+    with DeviceAwareAggregateFoundation
+    with FieldMock
+    with DeviceMock:
   override type AggregateValue[T] = MockAggregate[T]
 
   case class MockAggregate[T](mockedValues: Iterable[T] = Seq()) extends SafeIterable[T]:
@@ -27,12 +31,5 @@ class AggregateFoundationMock extends AggregateFoundation with DeviceAwareAggreg
       a.mockedValues.zip(b.mockedValues).zip(c.mockedValues).map(t => (t._1._1, t._1._2, t._2)).map(f.tupled),
     )
 
-  override type DeviceId = Int
-
-  override def self: DeviceId = 0
-
-  override def device: MockAggregate[DeviceId] = MockAggregate(Seq(0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
-
-  @SuppressWarnings(Array("DisableSyntax.asInstanceOf", "DisableSyntax.null"))
-  def mock[T]: T = null.asInstanceOf[T]
+  override def mockField[T](items: Iterable[T]): MockAggregate[T] = MockAggregate(items)
 end AggregateFoundationMock

@@ -17,3 +17,6 @@ trait UnitTest
   export org.scalatest.matchers.should.Matchers._
   export math.Numeric.Implicits.infixNumericOps
   export org.scalatest.prop.{ TableFor1, TableFor2, TableFor3 }
+
+  @SuppressWarnings(Array("DisableSyntax.asInstanceOf", "DisableSyntax.null"))
+  def mock[T]: T = null.asInstanceOf[T]

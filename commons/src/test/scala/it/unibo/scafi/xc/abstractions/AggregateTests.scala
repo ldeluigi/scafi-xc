@@ -12,3 +12,4 @@ trait AggregateTests:
       agg.withoutSelf.toSet should contain theSameElementsAs agg.toSet - agg.onlySelf
     it should "provide a value for self as extension" in:
       agg.toSet should contain(agg.onlySelf)
+    "Neighbouring aggregate" should behave like safeIterable(agg.withoutSelf)
