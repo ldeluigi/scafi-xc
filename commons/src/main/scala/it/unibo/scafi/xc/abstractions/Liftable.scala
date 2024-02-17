@@ -1,5 +1,10 @@
 package it.unibo.scafi.xc.abstractions
 
+/**
+ * A type class that provides ways to combine collections of values into new collections of values.
+ * @tparam F
+ *   the type of the collection
+ */
 trait Liftable[F[_]] extends Mappable[F]:
   def lift[A, B](a: F[A])(f: A => B): F[B]
 
