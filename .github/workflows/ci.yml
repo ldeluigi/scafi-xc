@@ -32,6 +32,8 @@ jobs:
           - distribution: oracle
             java-version: 11
     runs-on: ${{ matrix.os }}
+    env:
+      SBT_OPS: sbt.server.autostart=false
     steps:
       - name: Configure git
         run: "git config --global core.autocrlf false"
