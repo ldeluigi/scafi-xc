@@ -21,7 +21,7 @@ class DeterministicSimulator[Id, C <: Context[Id, InvocationCoordinate, Any]](
     val messageDelayPolicy: Message[Id] => Int = (_: Message[Id]) => 1,
 )(using CanEqual[Id, Id])
     extends DiscreteSimulator[C]:
-  private val SEPARATOR = "/"
+  private val SEPARATOR = ":::"
   private lazy val devicePool = devices.map(SimulatedDevice.apply(_))
   private val messageQueue: mutable.ListBuffer[TravelingMessage[Id]] = mutable.ListBuffer.empty
   private val deliveredMessages: mutable.Map[(Id, Id), DeliveredMessage[Id]] = mutable.Map.empty
