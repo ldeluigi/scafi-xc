@@ -4,6 +4,17 @@ import scala.annotation.targetName
 import scala.annotation.unchecked.uncheckedVariance
 import scala.collection.{ Iterable, MapView }
 
+/**
+ * A map with a default value for missing keys. Implements [[Function1]][K, V] and [[Iterable]][(K, V)].
+ * @param underlying
+ *   the underlying map that implements [[PartialFunction]][K, V]
+ * @param default
+ *   the default value for missing keys
+ * @tparam K
+ *   the key type
+ * @tparam V
+ *   the value type
+ */
 case class MapWithDefault[K, +V](private val underlying: Map[K, V], default: V)
     extends Iterable[(K, V)]
     with Function[K, V] derives CanEqual:

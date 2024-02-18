@@ -41,17 +41,7 @@ case class MapValueTree[N, +V](underlying: Map[Seq[N], V]) extends ValueTree[N, 
     val (left, right) = underlying.partition((k, v) => f(k, v))
     (MapValueTree(left), MapValueTree(right))
 
-  override def prepend[N1 >: N](prefix: Seq[N1]): ValueTree[N1, V] = MapValueTree(
-    underlying.map((k, v) => prefix ++ k -> v),
-  )
-
-  override def append[N1 >: N](suffix: Seq[N1]): ValueTree[N1, V] = MapValueTree(
-    underlying.map((k, v) => k ++ suffix -> v),
-  )
-
   override def iterator: Iterator[(Seq[N], V)] = underlying.iterator
-
-  override def reversedNodes: ValueTree[N, V] = MapValueTree(underlying.map((k, v) => k.reverse -> v))
 end MapValueTree
 
 object MapValueTree extends ValueTree.Factory[MapValueTree]:

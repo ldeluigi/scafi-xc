@@ -2,6 +2,9 @@ package it.unibo.scafi.xc.implementations
 
 import it.unibo.scafi.xc.abstractions.boundaries.Bounded
 
+/**
+ * Provides common boundaries for the most common types.
+ */
 object CommonBoundaries:
 
   given Bounded[Double] with

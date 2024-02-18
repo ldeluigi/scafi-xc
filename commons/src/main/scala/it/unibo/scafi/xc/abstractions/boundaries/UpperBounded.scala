@@ -6,4 +6,9 @@ package it.unibo.scafi.xc.abstractions.boundaries
  *   the type of the value
  */
 trait UpperBounded[T: Ordering]:
+  /**
+   * The upper bound for the type T. Adding a value to this bound should return the same value.
+   * @return
+   *   the upper bound for the type T
+   */
   def upperBound: T
