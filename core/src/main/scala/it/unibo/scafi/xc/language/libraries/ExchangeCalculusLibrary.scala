@@ -5,6 +5,7 @@ import it.unibo.scafi.xc.language.syntax.ExchangeCalculusSyntax
 import it.unibo.scafi.xc.language.syntax.common.RetSend
 
 object ExchangeCalculusLibrary:
+  export RetSend.{ _, given }
 
   def exchange[T](using language: AggregateFoundation & ExchangeCalculusSyntax)(initial: language.AggregateValue[T])(
       f: language.AggregateValue[T] => RetSend[language.AggregateValue[T]],

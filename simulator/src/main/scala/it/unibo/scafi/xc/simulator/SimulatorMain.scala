@@ -4,6 +4,7 @@ import it.unibo.scafi.xc.engine.context.ContextFactory
 import it.unibo.scafi.xc.engine.context.exchange.BasicExchangeCalculusContext
 import it.unibo.scafi.xc.implementations.CommonBoundaries.given_Bounded_Double
 import it.unibo.scafi.xc.language.libraries.CommonLibrary.*
+import it.unibo.scafi.xc.language.libraries.ExchangeCalculusLibrary.*
 import it.unibo.scafi.xc.language.libraries.GradientLibrary
 import it.unibo.scafi.xc.language.libraries.BranchingLibrary.branch
 import it.unibo.scafi.xc.language.libraries.GradientLibrary.sensorDistanceTo
@@ -31,6 +32,7 @@ object SimulatorMain:
         s"distance $d from source",
     )
     branch(self % 2 == 0)(printDistance(sensorDistanceTo(self == 0)))(printDistance(sensorDistanceTo(self == 1)))
+    println(exchange(5)(nv => ret(10) send 5))
 
   @main def main(): Unit =
     val sim = new BasicRandomSimulator(
