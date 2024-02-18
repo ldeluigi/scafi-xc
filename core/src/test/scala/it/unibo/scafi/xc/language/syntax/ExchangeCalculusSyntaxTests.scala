@@ -3,6 +3,7 @@ package it.unibo.scafi.xc.language.syntax
 import it.unibo.scafi.xc.UnitTest
 import it.unibo.scafi.xc.language.foundation.{ AggregateFoundation, AggregateFoundationMock }
 import it.unibo.scafi.xc.language.syntax.common.RetSend
+import it.unibo.scafi.xc.language.syntax.common.RetSend._
 
 class ExchangeCalculusSyntaxTests extends UnitTest:
 
@@ -14,6 +15,8 @@ class ExchangeCalculusSyntaxTests extends UnitTest:
 
   "ExchangeCalculus Syntax" should "compile" in:
     val field: language.AggregateValue[Boolean] = mock[language.AggregateValue[Boolean]]
+    val intField = mock[language.AggregateValue[Int]]
     "val _: language.AggregateValue[Boolean] = language.exchange(field)(x => x)" should compile
+    "val _: language.AggregateValue[Int] = language.exchange(intField)(x => ret (x) send x)" should compile
     "val _: language.AggregateValue[Boolean] = language.exchange(field)(x => (x, x))" should compile
     "val _: language.AggregateValue[Int] = language.exchange(field)(x => x)" shouldNot typeCheck

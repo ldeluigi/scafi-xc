@@ -15,6 +15,11 @@ trait ExchangeCalculusSyntax:
    * different aggregate value as a result of the computation.
    *
    * <h3>Examples</h3>
+   *
+   * <h4>To send and return the same value</h4> {{{exchange(0)(value => f(value))}}}
+   * {{{exchange(0)(value => retsend(f(value)))}}} <h4>To send and return different values</h4>
+   * {{{exchange(0)(value => (f(value), f2(value)))}}} {{{exchange(0)(value => ret (f(value)) send f2(value))}}}
+   * {{{exchange(0)(value => RetSend(f(value), f2(value)))}}}
    * @param initial
    *   the initial aggregate value
    * @param f
@@ -24,6 +29,8 @@ trait ExchangeCalculusSyntax:
    *   the type of the aggregate value
    * @return
    *   the new aggregate value
+   * @see
+   *   [[common.RetSend]]
    */
   def exchange[T](initial: AggregateValue[T])(
       f: AggregateValue[T] => RetSend[AggregateValue[T]],
