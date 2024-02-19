@@ -4,6 +4,9 @@ import it.unibo.scafi.xc.language.semantics.exchange.ExchangeCalculusSemantics
 import it.unibo.scafi.xc.language.syntax.ExchangeCalculusSyntax
 import it.unibo.scafi.xc.language.syntax.common.RetSend
 
+/**
+ * This trait enables the exchange syntax for the exchange calculus semantics.
+ */
 trait ExchangeSemantics extends ExchangeCalculusSyntax:
   self: ExchangeCalculusSemantics =>
 

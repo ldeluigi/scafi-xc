@@ -8,12 +8,13 @@ trait InboundMessagesSemantics:
   type DeviceId
   type Envelope
 
-  protected def unalignedDevices: Set[DeviceId] = unalignedMessages.view.keys.toSet
+  protected def unalignedDevices: Set[DeviceId] = unalignedMessages.view.keys.toSet + self
 
   protected def alignedDevices: Set[DeviceId] = unalignedMessages.view
     .filter(currentPath.isEmpty || _._2.containsPrefix(currentPath))
     .keys
     .toSet
+    + self
 
   protected def unalignedMessages: Export[DeviceId, InvocationCoordinate, Envelope] = inboundMessages
 
@@ -23,4 +24,6 @@ trait InboundMessagesSemantics:
         .get(currentPath.toList)
         .map(id -> _),
     )
+
+  protected def self: DeviceId
 end InboundMessagesSemantics

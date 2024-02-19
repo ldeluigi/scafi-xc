@@ -8,6 +8,9 @@ import it.unibo.scafi.xc.language.semantics.exchange.syntaxes.{
   FieldCalculusByExchangeSemantics,
 }
 
+/**
+ * This trait provides the semantics for the exchange calculus.
+ */
 trait ExchangeCalculusSemantics
     extends AggregateFoundation
     with DeviceAwareAggregateFoundation
@@ -15,6 +18,13 @@ trait ExchangeCalculusSemantics
     with BranchingExchangeSemantics
     with FieldCalculusByExchangeSemantics:
 
+  /**
+   * Operations on NValues are provided by the ExchangeCalculusSemantics as extension methods.
+   * @return
+   *   an instance of NValuesOps
+   * @see
+   *   [[NValuesOps]]
+   */
   given nvalues: NValuesOps[AggregateValue, DeviceId]
 
   /**

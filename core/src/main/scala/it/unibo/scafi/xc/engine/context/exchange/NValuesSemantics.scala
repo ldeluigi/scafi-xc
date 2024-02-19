@@ -14,6 +14,7 @@ trait NValuesSemantics:
     def alignedValues: MapView[DeviceId, T] = unalignedValues.view.filterKeys(alignedDevices)
     def apply(id: DeviceId): T = alignedValues.getOrElse(id, default)
     override def iterator: Iterator[T] = alignedValues.values.iterator
+    override def toString: String = s"NValues($default, $unalignedValues)"
 
   override given nvalues: NValuesOps[AggregateValue, DeviceId] = new NValuesOps[AggregateValue, DeviceId]:
     extension [T](nv: AggregateValue[T]) override def default: T = nv.default

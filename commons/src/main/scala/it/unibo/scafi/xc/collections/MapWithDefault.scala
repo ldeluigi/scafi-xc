@@ -25,7 +25,9 @@ case class MapWithDefault[K, +V](private val underlying: Map[K, V], default: V)
 
   override def iterator: Iterator[(K, V)] = inner.iterator
 
-  override def toString(): String = mkString(s"$className<default=$default>(", ", ", ")")
+  override def toString(): String = mkString(s"$className<$default>(", ", ", ")")
+
+  override def className: String = "MapWithDefault"
 
   @targetName("addElements")
   inline def ++[V1 >: V](xs: IterableOnce[(K, V1)]): MapWithDefault[K, V1] = new MapWithDefault(inner ++ xs, default)

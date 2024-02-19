@@ -24,9 +24,12 @@ trait OutboundMessagesSemantics:
     mutable.Map.empty
 
   protected def sendMessages[T](messages: MapView[DeviceId, T], default: T): Unit =
-    sentMessages += currentPath.toList -> MapWithDefault(
-      messages.mapValues(close).toMap,
-      close(default),
+    sentMessages.update(
+      currentPath.toList,
+      MapWithDefault(
+        messages.mapValues(close).toMap,
+        close(default),
+      ),
     )
 
   protected def unalignedDevices: Set[DeviceId]

@@ -196,6 +196,8 @@ trait ValueTree[N, +V] extends Iterable[(Seq[N], V)] with PartialFunction[Seq[N]
   override def apply(v1: Seq[N]): V = get(v1).get
 
   override def isDefinedAt(v1: Seq[N]): Boolean = contains(v1)
+
+  override def toString(): String = super[Iterable].toString()
 end ValueTree
 
 object ValueTree extends ValueTree.Factory[ValueTree]:

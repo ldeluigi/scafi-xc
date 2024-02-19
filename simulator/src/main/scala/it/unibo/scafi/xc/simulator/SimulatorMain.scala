@@ -3,11 +3,7 @@ package it.unibo.scafi.xc.simulator
 import it.unibo.scafi.xc.engine.context.ContextFactory
 import it.unibo.scafi.xc.engine.context.exchange.BasicExchangeCalculusContext
 import it.unibo.scafi.xc.implementations.CommonBoundaries.given_Bounded_Double
-import it.unibo.scafi.xc.language.libraries.CommonLibrary.*
-import it.unibo.scafi.xc.language.libraries.ExchangeCalculusLibrary.*
-import it.unibo.scafi.xc.language.libraries.GradientLibrary
-import it.unibo.scafi.xc.language.libraries.BranchingLibrary.branch
-import it.unibo.scafi.xc.language.libraries.GradientLibrary.sensorDistanceTo
+import it.unibo.scafi.xc.language.libraries.All._
 import it.unibo.scafi.xc.language.sensors.DistanceSensor
 import it.unibo.scafi.xc.simulator.random.{ BasicRandomSimulator, RandomSimulationParameters }
 
@@ -27,12 +23,12 @@ object SimulatorMain:
     override val seed: Int = 42
 
   private def program(using c: BasicExchangeCalculusContext[Int] & DistanceSensor[Double]): Unit =
+    println(s"I am $self and I'm computing my ${rep(0)(_ + 1)}th iteration.")
     def printDistance(d: Double): Unit = println(
       s"${device(self)} sees ${device.withoutSelf.size} aligned neighbours with " +
         s"distance $d from source",
     )
     branch(self % 2 == 0)(printDistance(sensorDistanceTo(self == 0)))(printDistance(sensorDistanceTo(self == 1)))
-    println(exchange(5)(nv => ret(10) send 5))
 
   @main def main(): Unit =
     val sim = new BasicRandomSimulator(

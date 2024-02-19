@@ -3,6 +3,9 @@ package it.unibo.scafi.xc.language.semantics.exchange.syntaxes
 import it.unibo.scafi.xc.language.semantics.exchange.ExchangeCalculusSemantics
 import it.unibo.scafi.xc.language.syntax.{ ExchangeCalculusSyntax, FieldCalculusSyntax }
 
+/**
+ * This trait witnesses the fact that the field calculus can be implemented by the exchange calculus.
+ */
 trait FieldCalculusByExchangeSemantics extends FieldCalculusSyntax:
   this: ExchangeCalculusSemantics & ExchangeCalculusSyntax =>
 

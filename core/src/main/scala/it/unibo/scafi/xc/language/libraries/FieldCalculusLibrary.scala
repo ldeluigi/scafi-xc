@@ -3,14 +3,59 @@ package it.unibo.scafi.xc.language.libraries
 import it.unibo.scafi.xc.language.foundation.AggregateFoundation
 import it.unibo.scafi.xc.language.syntax.FieldCalculusSyntax
 
+/**
+ * This library provides the field calculus primitives: `nbr`, `rep`, and `share`.
+ */
 object FieldCalculusLibrary:
 
-  def nbr[T](using language: AggregateFoundation & FieldCalculusSyntax)(expr: => T): language.AggregateValue[T] =
+  /**
+   * `nbr` sends a local value to <b>neighbors</b> and returns the aggregate value of the received messages.
+   *
+   * @param expr
+   *   the local value to send to neighbors
+   * @tparam A
+   *   the type of the local value
+   * @return
+   *   the aggregate value of the received messages
+   * @see
+   *   [[FieldCalculusSyntax.nbr]]
+   */
+  def nbr[A](using language: AggregateFoundation & FieldCalculusSyntax)(expr: A): language.AggregateValue[A] =
     language.nbr(expr)
 
-  def rep[T](using language: AggregateFoundation & FieldCalculusSyntax)(init: => T)(f: T => T): T =
+  /**
+   * `rep` <b>repeatedly</b> applies a function to an initial value for every execution round.
+   *
+   * @param init
+   *   the initial value
+   * @param f
+   *   the function to apply
+   * @tparam A
+   *   the type of the value
+   * @return
+   *   the value after the last application of the function
+   * @see
+   *   [[FieldCalculusSyntax.rep]]
+   */
+  def rep[A](using language: AggregateFoundation & FieldCalculusSyntax)(init: A)(f: A => A): A =
     language.rep(init)(f)
 
-  def share[T](using language: AggregateFoundation & FieldCalculusSyntax)(init: => T)(
-      f: language.AggregateValue[T] => T,
-  ): T = language.share(init)(f)
+  /**
+   * `share` computes a value by repeatedly applying a function to an initial value while <b>sharing</b> the result with
+   * neighbors.
+   *
+   * @param init
+   *   the initial value
+   * @param f
+   *   the function that returns the value to share and return
+   * @tparam A
+   *   the type of the value
+   * @return
+   *   the value after the last application of the function that has been shared with neighbors
+   * @see
+   *   [[FieldCalculusSyntax.share]]
+   */
+  def share[A](using language: AggregateFoundation & FieldCalculusSyntax)(init: A)(
+      f: language.AggregateValue[A] => A,
+  ): A = language.share(init)(f)
+end FieldCalculusLibrary
