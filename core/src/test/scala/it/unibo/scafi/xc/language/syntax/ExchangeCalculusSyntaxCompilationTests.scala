@@ -5,7 +5,7 @@ import it.unibo.scafi.xc.language.foundation.{ AggregateFoundation, AggregateFou
 import it.unibo.scafi.xc.language.syntax.common.RetSend
 import it.unibo.scafi.xc.language.syntax.common.RetSend._
 
-class ExchangeCalculusSyntaxTests extends UnitTest:
+class ExchangeCalculusSyntaxCompilationTests extends UnitTest:
 
   val language: ExchangeCalculusSyntax & AggregateFoundation = new AggregateFoundationMock with ExchangeCalculusSyntax:
 

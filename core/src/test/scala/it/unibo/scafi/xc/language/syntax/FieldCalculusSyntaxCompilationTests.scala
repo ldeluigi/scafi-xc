@@ -4,7 +4,7 @@ import it.unibo.scafi.xc.UnitTest
 import it.unibo.scafi.xc.language.foundation.{ AggregateFoundation, AggregateFoundationMock }
 import it.unibo.scafi.xc.language.syntax.common.RetSend
 
-class FieldCalculusSyntaxTests extends UnitTest:
+class FieldCalculusSyntaxCompilationTests extends UnitTest:
 
   val language: FieldCalculusSyntax & AggregateFoundation = new AggregateFoundationMock with FieldCalculusSyntax:
 

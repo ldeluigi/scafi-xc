@@ -15,7 +15,9 @@ trait ExchangeCalculusSemanticsTests:
       nv.default shouldEqual 10
     it should "allow to retrieve a value map" in:
       val v: Map[lang.DeviceId, Int] = nv.values.toMap
-      v.values.toList should contain theSameElementsAs valuesMap.values
+      v.values.toList should contain theSameElementsAs lang.device.toIterable
+        .map(id => valuesMap.getOrElse(id, 10))
+        .toList
     it should "allow to retrieve a value" in:
       nv.get(lang.self) shouldEqual 1
       nv(lang.self) shouldEqual 1
