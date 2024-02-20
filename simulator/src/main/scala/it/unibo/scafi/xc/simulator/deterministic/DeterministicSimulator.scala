@@ -3,7 +3,6 @@ package it.unibo.scafi.xc.simulator.deterministic
 import scala.collection.mutable
 
 import it.unibo.scafi.xc.abstractions.BidirectionalFunction.<=>
-import it.unibo.scafi.xc.collections.{ MapWithDefault, ValueTree }
 import it.unibo.scafi.xc.engine.Engine
 import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
 import it.unibo.scafi.xc.engine.context.{ Context, ContextFactory }
@@ -69,14 +68,10 @@ class DeterministicSimulator[Id, C <: Context[Id, InvocationCoordinate, Any]](
           .map(m => TravelingMessage(messageDelayPolicy(m), m)),
       )
 
-    override def receive(): Export[Id, String, Any] =
-      MapWithDefault(
-        deliveredMessages.values
-          .filter(_.message.to == forDevice)
-          .map(m => (m.message.from, m.message.content))
-          .toMap,
-        ValueTree.empty,
-      )
+    override def receive(): Export[Id, String, Any] = deliveredMessages.values
+      .filter(_.message.to == forDevice)
+      .map(m => (m.message.from, m.message.content))
+      .toMap
   end BasicNetwork
 
   override def tick(): Unit =

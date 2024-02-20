@@ -24,8 +24,9 @@ trait OutboundMessagesSemantics:
   override type Envelope
 
   override def outboundMessages: Export[DeviceId, InvocationCoordinate, Envelope] =
-    var messages: Export[DeviceId, InvocationCoordinate, Envelope] =
-      MapWithDefault.empty(ValueTree.empty)
+    var messages: Export[DeviceId, InvocationCoordinate, Envelope] = Map
+      .empty[DeviceId, ValueTree[InvocationCoordinate, Envelope]]
+      .withDefaultValue(ValueTree.empty)
     for (path, messageMap) <- sentMessages do
       for deviceId <- unalignedDevices do
         messages = messages.updated(deviceId, messages(deviceId).update(path, messageMap(deviceId)))

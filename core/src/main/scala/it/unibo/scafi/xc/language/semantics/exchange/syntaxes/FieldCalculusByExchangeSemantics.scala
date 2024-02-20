@@ -17,4 +17,5 @@ trait FieldCalculusByExchangeSemantics extends FieldCalculusSyntax:
       nones.set(self, Some(f(previousValue))),
     )(self).get
 
-  override def share[A](init: A)(f: AggregateValue[A] => A): A = exchange(init)(nv => f(nv))(self)
+  override def share[A](init: A)(f: AggregateValue[A] => A): A =
+    exchange(init)(nv => f(nv))(self)

@@ -34,18 +34,17 @@ class NetworkAdapter[DeviceIdA, DeviceIdB, TokenA, TokenB, ValueA, ValueB](
 
   override def send(e: Export[DeviceIdB, TokenB, ValueB]): Unit =
     network.send(
-      e
-        .mapKeys(deviceIdAdapter.backward)
-        .mapValues(
+      e.map(
+        deviceIdAdapter.backward(_) ->
           _.map((path, value) => path.map(tokenAdapter.backward) -> valueAdapter.backward(value)),
-        ),
+      ),
     )
 
   override def receive(): Export[DeviceIdB, TokenB, ValueB] = network
     .receive()
-    .mapKeys(deviceIdAdapter.forward)
-    .mapValues(
-      _.map((path, value) => path.map(tokenAdapter.forward) -> valueAdapter.forward(value)),
+    .map(
+      deviceIdAdapter.forward(_) ->
+        _.map((path, value) => path.map(tokenAdapter.forward) -> valueAdapter.forward(value)),
     )
 end NetworkAdapter
 

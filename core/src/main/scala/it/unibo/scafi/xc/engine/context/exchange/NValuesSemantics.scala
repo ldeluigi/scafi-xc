@@ -24,11 +24,13 @@ trait NValuesSemantics:
    *   the type of the values
    */
   protected case class NValues[+T](default: T, unalignedValues: Map[DeviceId, T] = Map.empty) extends SafeIterable[T]:
+
     /**
      * @return
      *   a filtered view of the NValues data that only contains the values for aligned devices
      */
-    def alignedValues: MapView[DeviceId, T] = unalignedValues.view.filterKeys(alignedDevices)
+    def alignedValues: MapView[DeviceId, T] =
+      alignedDevices.view.map(id => id -> unalignedValues.getOrElse(id, default)).toMap.view
 
     /**
      * @param id
