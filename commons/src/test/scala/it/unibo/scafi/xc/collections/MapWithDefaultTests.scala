@@ -68,8 +68,11 @@ class MapWithDefaultTests extends UnitTest:
     nonEmptyMapWithDefault.get("a") shouldBe 1
     nonEmptyMapWithDefault.get("x") shouldBe nonEmptyMapWithDefault.default
 
-  it should "allow mapping while mapping the default value" in:
-    nonEmptyMapWithDefault.map(v => v * 4) shouldBe MapWithDefault(Map("a" -> 4, "b" -> 168), 20)
+  it should "allow mapping values while mapping the default value" in:
+    nonEmptyMapWithDefault.mapValues(v => v * 4) shouldBe MapWithDefault(Map("a" -> 4, "b" -> 168), 20)
+
+  it should "allow mapping keys without altering the default value" in:
+    nonEmptyMapWithDefault.mapKeys(k => k + "bis") shouldBe MapWithDefault(Map("abis" -> 1, "bbis" -> 42), 5)
 
   it should "allow partitioning to same type" in:
     val (even, odd) = nonEmptyMapWithDefault.partition(_._2 % 2 == 0)

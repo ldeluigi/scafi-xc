@@ -3,21 +3,51 @@ package it.unibo.scafi.xc.engine.context.common
 import it.unibo.scafi.xc.engine.context.Context
 import it.unibo.scafi.xc.engine.network.Export
 
+/**
+ * Implements the semantics related to inbound messages coming from self and neighbors.
+ */
 trait InboundMessagesSemantics:
   this: StackSemantics & MessageSemantics & Context[DeviceId, InvocationCoordinate, Envelope] =>
-  type DeviceId
-  type Envelope
 
+  /**
+   * The type of device ids.
+   */
+  type DeviceId
+
+  /**
+   * The type that wraps values stored and retrieved from value trees.
+   */
+  override type Envelope
+
+  /**
+   * @return
+   *   the set of device ids of visible devices even if they are not aligned with the current path, always including
+   *   self
+   */
   protected def unalignedDevices: Set[DeviceId] = unalignedMessages.view.keys.toSet + self
 
+  /**
+   * @return
+   *   the set of device ids of devices that are aligned with the current path, always including self
+   */
   protected def alignedDevices: Set[DeviceId] = unalignedMessages.view
     .filter(currentPath.isEmpty || _._2.containsPrefix(currentPath))
     .keys
     .toSet
     + self
 
-  protected def unalignedMessages: Export[DeviceId, InvocationCoordinate, Envelope] = inboundMessages
+  /**
+   * @return
+   *   the [[Export]] that contains the inbound messages of visible devices even if they are not aligned with the
+   *   current path, always including self
+   */
+  private def unalignedMessages: Export[DeviceId, InvocationCoordinate, Envelope] = inboundMessages
 
+  /**
+   * @return
+   *   the [[Map]]`[DeviceId, Envelope]` that contains the inbound values of devices that are aligned with the current
+   *   path
+   */
   protected def alignedMessages: Map[DeviceId, Envelope] = unalignedMessages
     .flatMap((id, valueTree) =>
       valueTree
@@ -25,5 +55,9 @@ trait InboundMessagesSemantics:
         .map(id -> _),
     )
 
+  /**
+   * @return
+   *   the device id of the current device
+   */
   protected def self: DeviceId
 end InboundMessagesSemantics

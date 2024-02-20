@@ -7,10 +7,21 @@ import it.unibo.scafi.xc.engine.context.Context
 import it.unibo.scafi.xc.engine.network.Export
 import it.unibo.scafi.xc.engine.path.Path
 
+/**
+ * Implements the semantics related to outbound messages directed to self and neighbors.
+ */
 trait OutboundMessagesSemantics:
   this: StackSemantics & MessageSemantics & Context[DeviceId, InvocationCoordinate, Envelope] =>
+
+  /**
+   * The type of device ids.
+   */
   type DeviceId
-  type Envelope
+
+  /**
+   * The type that wraps values stored and retrieved from value trees.
+   */
+  override type Envelope
 
   override def outboundMessages: Export[DeviceId, InvocationCoordinate, Envelope] =
     var messages: Export[DeviceId, InvocationCoordinate, Envelope] =
@@ -23,6 +34,15 @@ trait OutboundMessagesSemantics:
   private val sentMessages: mutable.Map[Path[InvocationCoordinate], MapWithDefault[DeviceId, Envelope]] =
     mutable.Map.empty
 
+  /**
+   * Adds a message to the outbound message box, located at the current path.
+   * @param messages
+   *   the messages to add
+   * @param default
+   *   the default message to add for unaligned devices
+   * @tparam T
+   *   the type of the messages
+   */
   protected def sendMessages[T](messages: MapView[DeviceId, T], default: T): Unit =
     sentMessages.update(
       currentPath.toList,
@@ -32,5 +52,10 @@ trait OutboundMessagesSemantics:
       ),
     )
 
+  /**
+   * @return
+   *   the set of device ids of visible devices even if they are not aligned with the current path, always including
+   *   self
+   */
   protected def unalignedDevices: Set[DeviceId]
 end OutboundMessagesSemantics

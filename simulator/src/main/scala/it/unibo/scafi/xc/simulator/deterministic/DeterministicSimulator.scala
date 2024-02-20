@@ -27,18 +27,17 @@ class DeterministicSimulator[Id, C <: Context[Id, InvocationCoordinate, Any]](
   private val deliveredMessages: mutable.Map[(Id, Id), DeliveredMessage[Id]] = mutable.Map.empty
 
   private def network(id: Id): SimulatedNetwork[Id] =
-    NetworkAdapter(
-      BasicNetwork(id),
-      tokenAdapter = <=>(
-        s =>
-          s.split(SEPARATOR) match
-            case Array(key, index) => InvocationCoordinate(key.nn, index.nn.toInt)
-            case _ => throw new IllegalArgumentException(s"Invalid token: $s")
-        ,
-        id => s"${id.key}$SEPARATOR${id.index}",
-      ),
-      valueAdapter = <=>,
-    )
+    NetworkAdapter(BasicNetwork(id))
+      .byToken(
+        <=>(
+          s =>
+            s.split(SEPARATOR) match
+              case Array(key, index) => InvocationCoordinate(key.nn, index.nn.toInt)
+              case _ => throw new IllegalArgumentException(s"Invalid token: $s")
+          ,
+          id => s"${id.key}$SEPARATOR${id.index}",
+        ),
+      )
 
   private case class SimulatedDevice(device: Device[Id]):
     private var slept = 0

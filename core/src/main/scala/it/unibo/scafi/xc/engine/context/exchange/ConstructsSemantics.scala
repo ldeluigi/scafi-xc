@@ -3,6 +3,9 @@ package it.unibo.scafi.xc.engine.context.exchange
 import it.unibo.scafi.xc.engine.context.common._
 import it.unibo.scafi.xc.language.semantics.exchange.ExchangeCalculusSemantics
 
+/**
+ * Implements the foundational constructs of the exchange calculus semantics.
+ */
 trait ConstructsSemantics:
   this: ExchangeCalculusSemantics & NValuesSemantics & MessageSemantics & StackSemantics & InboundMessagesSemantics &
     OutboundMessagesSemantics =>

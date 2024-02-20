@@ -59,7 +59,9 @@ case class MapWithDefault[K, +V](private val underlying: Map[K, V], default: V)
 
   override def knownSize: Int = inner.knownSize
 
-  def map[V2](f: V => V2): MapWithDefault[K, V2] = new MapWithDefault(inner.map((k, v) => (k, f(v))), f(default))
+  def mapValues[V2](f: V => V2): MapWithDefault[K, V2] = new MapWithDefault(inner.map((k, v) => (k, f(v))), f(default))
+
+  def mapKeys[K2](f: K => K2): MapWithDefault[K2, V] = new MapWithDefault(inner.map((k, v) => (f(k), v)), default)
 
   override def partition(p: ((K, V)) => Boolean): (MapWithDefault[K, V], MapWithDefault[K, V]) =
     val (l, r) = inner.partition(p)

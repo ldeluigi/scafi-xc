@@ -60,5 +60,5 @@ object BidirectionalFunction:
    *   a bidirectional function
    */
   @targetName("bidirectionalFunction2")
-  def <=>[A, B](forward: A => B, backward: B => A): A <=> B = BidirectionalFunction[A, B](forward, backward)
+  infix def <=>[A, B](forward: A => B, backward: B => A): A <=> B = BidirectionalFunction[A, B](forward, backward)
 end BidirectionalFunction
