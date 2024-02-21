@@ -18,7 +18,7 @@ class GradientTest extends AcceptanceTest:
   override def program(using C): Unit =
     results += self -> distanceTo(self == 1, 1.0)
 
-  "The gradient" should "be calculated correctly" in:
+  "The hop distance" should "be calculated correctly" in:
     results(1) should be(0.0)
     results(2) should be(1.0)
     results(3) should be(2.0)

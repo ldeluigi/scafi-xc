@@ -24,6 +24,7 @@ trait UnitTest
   def mock[T]: T = null.asInstanceOf[T]
 
   extension [A](it: Iterable[A])
+    def mean(using ops: Fractional[A]): A = ops.div(it.sum, ops.fromInt(it.size))
 
     def single: A =
       assert(it.tail.isEmpty, s">>> expected single element, but got: $it")
