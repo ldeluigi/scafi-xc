@@ -68,14 +68,14 @@ class Engine[
    * Compact representation of different aspects of an aggregate computation round/cycle.
    * @param result
    *   the result of the computation
-   * @param incomingMessages
+   * @param inboundMessages
    *   the messages received from the network before the computation
-   * @param outgoingMessages
+   * @param outboundMessages
    *   the messages sent to the network after the computation
    */
   case class AggregateResult(
       result: Result,
-      incomingMessages: Import[DeviceId, Token, Value],
-      outgoingMessages: Export[DeviceId, Token, Value],
+      inboundMessages: Import[DeviceId, Token, Value],
+      outboundMessages: Export[DeviceId, Token, Value],
   )
 end Engine
