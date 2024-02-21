@@ -79,7 +79,7 @@ object NetworkAdapter:
      *   the type of the device id in the new network
      * @return
      */
-    def byDevice[DeviceIdB](
+    def byDeviceId[DeviceIdB](
         deviceIdAdapter: DeviceIdA <=> DeviceIdB,
     ): NetworkAdapter[DeviceIdA, DeviceIdB, TokenA, TokenA, ValueA, ValueA] =
       new NetworkAdapter(network, deviceIdAdapter = deviceIdAdapter, tokenAdapter = <=>, valueAdapter = <=>)
