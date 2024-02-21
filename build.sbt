@@ -58,7 +58,7 @@ lazy val simulator = crossProject(JVMPlatform, JSPlatform, NativePlatform)
     name := "simulator",
     commonTestSettings,
   )
-  .dependsOn(core)
+  .dependsOn(core % "compile->compile;test->test")
 
 lazy val tests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .crossType(CrossType.Pure)

@@ -12,7 +12,7 @@ trait StackSemantics:
   this: MessageSemantics =>
 
   private val trace: mutable.Map[Path[InvocationCoordinate], Int] = mutable.Map.empty[Path[InvocationCoordinate], Int]
-  private val stack: mutable.Stack[InvocationCoordinate] = mutable.Stack.empty[InvocationCoordinate]
+  private val stack: mutable.Stack[InvocationCoordinate] = mutable.Stack.empty
 
   /**
    * @return

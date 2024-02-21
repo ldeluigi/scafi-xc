@@ -8,7 +8,10 @@ trait ExchangeCalculusSemanticsTests:
 
   def nvalues[C <: ExchangeCalculusSemantics & ExchangeCalculusSemanticsTestHelper](using lang: C): Unit =
     assume(lang.self == 0)
-    assume((0 until 10).toSet.subsetOf(lang.device.toSet))
+    assume(
+      (0 until 10).toSet.subsetOf(lang.device.toSet),
+      s"Devices: ${lang.device.toSet} is not a superset of ${0 until 10}",
+    )
     val valuesMap: Map[Int, Int] = Map(0 -> 1, 1 -> 2, 2 -> 3, 3 -> 42, 4 -> 125)
     val nv = lang.mockNValues(10, valuesMap)
     it should "provide the default value" in:

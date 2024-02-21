@@ -68,7 +68,7 @@ class DeterministicSimulator[Id, C <: Context[Id, InvocationCoordinate, Any]](
           .map(m => TravelingMessage(messageDelayPolicy(m), m)),
       )
 
-    override def receive(): Export[Id, String, Any] = deliveredMessages.values
+    override def receive(): Import[Id, String, Any] = deliveredMessages.values
       .filter(_.message.to == forDevice)
       .map(m => (m.message.from, m.message.content))
       .toMap

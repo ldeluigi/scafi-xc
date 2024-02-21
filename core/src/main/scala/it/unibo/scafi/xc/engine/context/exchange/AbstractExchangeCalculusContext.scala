@@ -2,7 +2,7 @@ package it.unibo.scafi.xc.engine.context.exchange
 
 import it.unibo.scafi.xc.engine.context.Context
 import it.unibo.scafi.xc.engine.context.common.*
-import it.unibo.scafi.xc.engine.network.Export
+import it.unibo.scafi.xc.engine.network.Import
 import it.unibo.scafi.xc.language.semantics.exchange.ExchangeCalculusSemantics
 
 /**
@@ -10,7 +10,7 @@ import it.unibo.scafi.xc.language.semantics.exchange.ExchangeCalculusSemantics
  * @param self
  *   the device id of the current device
  * @param inboundMessages
- *   inbound messages as [[Export]]
+ *   inbound messages as [[Import]]
  * @tparam Id
  *   the type of the device id
  * @tparam Wrapper
@@ -18,7 +18,7 @@ import it.unibo.scafi.xc.language.semantics.exchange.ExchangeCalculusSemantics
  */
 abstract class AbstractExchangeCalculusContext[Id, Wrapper](
     override val self: Id,
-    override val inboundMessages: Export[Id, InvocationCoordinate, Wrapper],
+    override val inboundMessages: Import[Id, InvocationCoordinate, Wrapper],
 ) extends Context[Id, InvocationCoordinate, Wrapper]
     with ExchangeCalculusSemantics
     with NValuesSemantics

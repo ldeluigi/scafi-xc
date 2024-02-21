@@ -5,7 +5,7 @@ import it.unibo.scafi.xc.collections.{ MapWithDefault, ValueTree }
 import it.unibo.scafi.xc.engine.context.ProbingContextMixin
 import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
 import it.unibo.scafi.xc.engine.context.exchange.libraries.*
-import it.unibo.scafi.xc.engine.network.Export
+import it.unibo.scafi.xc.engine.network.Import
 import it.unibo.scafi.xc.language.semantics.exchange.{
   ExchangeCalculusSemanticsTestHelper,
   ExchangeCalculusSemanticsTests,
@@ -14,15 +14,18 @@ import it.unibo.scafi.xc.language.semantics.exchange.{
 class BasicExchangeCalculusContextTests
     extends UnitTest
     with ProbingContextMixin
-    with WithBasicFactory
+    with BasicFactoryMixin
     with ExchangeCalculusSemanticsTests
-    with BranchingWithExchangeTests
+    with BranchingTests
     with ExchangeCalculusTests
-    with FieldCalculusWithExchangeTests:
+    with FieldCalculusTests
+    with FoldingTests
+    with GradientTests
+    with MathTests:
 
   class BasicExchangeCalculusContextWithTestHelpers(
       self: Int,
-      inboundMessages: Export[Int, InvocationCoordinate, Any],
+      inboundMessages: Import[Int, InvocationCoordinate, Any],
   ) extends BasicExchangeCalculusContext[Int](self, inboundMessages)
       with ExchangeCalculusSemanticsTestHelper:
 
@@ -33,11 +36,22 @@ class BasicExchangeCalculusContextTests
 
   given context: BasicExchangeCalculusContextWithTestHelpers = BasicExchangeCalculusContextWithTestHelpers(
     self = 0,
-    inboundMessages = (0 until 10).map(_ -> ValueTree.empty).toMap,
+    inboundMessages = (0 until 10)
+      .map(id =>
+        id -> probe(
+          localId = id,
+          factory = factory,
+          program = () => (),
+        )(0),
+      )
+      .toMap,
   )
 
   "Basic ExchangeCalculusContext" should behave like exchangeCalculusSemanticsWithAtLeast10AlignedDevices
   "Basic ExchangeCalculusContext 'branch'" should behave like branchingSemantics()
   "Basic ExchangeCalculusContext 'exchange'" should behave like exchangeSemantics()
   "Basic ExchangeCalculusContext field calculus" should behave like fieldCalculusSemantics()
+  "Basic ExchangeCalculusContext folding" should behave like foldingSemantics()
+  "Basic ExchangeCalculusContext gradient library" should behave like gradientSemantics()
+  "Basic ExchangeCalculusContext math library" should behave like mathLibrarySemantics()
 end BasicExchangeCalculusContextTests

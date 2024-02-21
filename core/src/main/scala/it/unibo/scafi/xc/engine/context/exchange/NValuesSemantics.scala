@@ -78,7 +78,10 @@ trait NValuesSemantics:
   override given aggregate: Aggregate[AggregateValue] = new Aggregate[AggregateValue]:
 
     extension [A](a: AggregateValue[A])
-      override def withoutSelf: SafeIterable[A] = SafeIterable(a.alignedValues.filterKeys(_ != self).values)
+
+      override def withoutSelf: SafeIterable[A] =
+        val filtered = a.alignedValues.filterKeys(_ != self).values
+        SafeIterable(filtered)
       override def onlySelf: A = a(self)
 
   override given convert[T]: Conversion[T, AggregateValue[T]] = new NValues[T](_)

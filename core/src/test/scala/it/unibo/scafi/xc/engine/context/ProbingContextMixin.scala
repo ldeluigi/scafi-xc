@@ -1,6 +1,6 @@
 package it.unibo.scafi.xc.engine.context
 
-import it.unibo.scafi.xc.engine.network.Export
+import it.unibo.scafi.xc.engine.network.{ Export, Import }
 
 trait ProbingContextMixin:
 
@@ -8,7 +8,7 @@ trait ProbingContextMixin:
       localId: Id,
       factory: ContextFactory[TestingNetwork[Id, Tokens, Values], C],
       program: C ?=> Any,
-      inboundMessages: Export[Id, Tokens, Values],
+      inboundMessages: Import[Id, Tokens, Values],
   ): Export[Id, Tokens, Values] =
     val network: TestingNetwork[Id, Tokens, Values] = TestingNetwork(
       localId = localId,

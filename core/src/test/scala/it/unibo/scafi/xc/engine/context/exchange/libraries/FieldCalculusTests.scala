@@ -5,11 +5,11 @@ import it.unibo.scafi.xc.collections.{ MapWithDefault, ValueTree }
 import it.unibo.scafi.xc.engine.context.{ ContextFactory, ProbingContextMixin, TestingNetwork }
 import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
 import it.unibo.scafi.xc.engine.context.exchange.BasicExchangeCalculusContext
-import it.unibo.scafi.xc.engine.network.Export
+import it.unibo.scafi.xc.engine.network.{ Export, Import }
 import it.unibo.scafi.xc.language.libraries.All.{ *, given }
 
-trait FieldCalculusWithExchangeTests:
-  this: UnitTest & ProbingContextMixin & WithBasicFactory =>
+trait FieldCalculusTests:
+  this: UnitTest & ProbingContextMixin & BasicFactoryMixin =>
 
   def nbrSemantics(): Unit =
     var neighbors: Set[Int] = Set.empty
@@ -32,7 +32,7 @@ trait FieldCalculusWithExchangeTests:
         localId = 66,
         factory = factory,
         program = neighbouringProgram,
-        inboundMessages = exportProbe,
+        inboundMessages = Map(66 -> exportProbe(66)),
       )
       exportProbe.single._1 shouldBe 66
       exportProbe.single._2.single._2.as[Int] shouldBe 71
@@ -53,19 +53,32 @@ trait FieldCalculusWithExchangeTests:
             localId = 2,
             factory = factory,
             program = neighbouringProgram,
-            inboundMessages = Map(1 -> ValueTree.empty),
           )(1),
           3 -> probe(
             localId = 3,
             factory = factory,
             program = neighbouringProgram,
-            inboundMessages = Map(1 -> ValueTree.empty),
           )(1),
         ),
       )
       exportProbe.size shouldBe 3
       exportProbe(1).single._2.as[Int] shouldBe 6
       neighbors shouldBe Set(6, 7, 8)
+
+    it should "always send the result of the expression to neighbors" in:
+      exportProbe = probe(
+        localId = 1,
+        factory = factory,
+        program = neighbouringProgram,
+        inboundMessages = Map(
+          2 -> probe(
+            localId = 2,
+            factory = factory,
+            program = neighbouringProgram,
+          )(1),
+        ),
+      )
+      exportProbe(2).single._2.as[Int] shouldBe 6
   end nbrSemantics
 
   def repSemantics(): Unit =
@@ -78,7 +91,7 @@ trait FieldCalculusWithExchangeTests:
       factory = factory,
       program = repeatingProgram,
     )
-    val messageFromNeighbor: Export[Int, InvocationCoordinate, Any] = Map(
+    val messageFromNeighbor: Import[Int, InvocationCoordinate, Any] = Map(
       1 ->
         probe( // adding a neighbor should not alter the result
           localId = 1,
@@ -97,7 +110,7 @@ trait FieldCalculusWithExchangeTests:
         localId = 66,
         factory = factory,
         program = repeatingProgram,
-        inboundMessages = exportProbe.filter(_._1 == 66) ++ messageFromNeighbor,
+        inboundMessages = messageFromNeighbor + (66 -> exportProbe(66)),
       )
       exportProbe.keySet should contain(66)
       exportProbe(66).single._2.as[Option[Int]] shouldBe Some(4)
@@ -107,7 +120,7 @@ trait FieldCalculusWithExchangeTests:
         localId = 66,
         factory = factory,
         program = repeatingProgram,
-        inboundMessages = exportProbe.filter(_._1 == 66) ++ messageFromNeighbor,
+        inboundMessages = messageFromNeighbor + (66 -> exportProbe(66)),
       )
       exportProbe.keySet should contain(66)
       exportProbe(66).single._2.as[Option[Int]] shouldBe Some(6)
@@ -145,7 +158,7 @@ trait FieldCalculusWithExchangeTests:
         localId = 7,
         factory = factory,
         program = sharingProgram,
-        inboundMessages = exportProbe,
+        inboundMessages = Map(7 -> exportProbe(7)),
       )
       exportProbe.single._1 shouldBe 7
       exportProbe.single._2.single._2.as[Int] shouldBe 1
@@ -155,24 +168,22 @@ trait FieldCalculusWithExchangeTests:
         localId = 7,
         factory = factory,
         program = sharingProgram,
-        inboundMessages = exportProbe ++ Map(
+        inboundMessages = Map(
+          7 -> exportProbe(7),
           1 -> probe(
             localId = 1,
             factory = factory,
             program = sharingProgram,
-            inboundMessages = Map(7 -> ValueTree.empty),
           )(7),
           2 -> probe(
             localId = 2,
             factory = factory,
             program = sharingProgram,
-            inboundMessages = Map(7 -> ValueTree.empty),
           )(7),
           3 -> probe(
             localId = 3,
             factory = factory,
             program = sharingProgram,
-            inboundMessages = Map(7 -> ValueTree.empty),
           )(7),
         ),
       )
@@ -183,24 +194,22 @@ trait FieldCalculusWithExchangeTests:
         localId = 7,
         factory = factory,
         program = sharingProgram,
-        inboundMessages = exportProbe ++ Map(
+        inboundMessages = Map(
+          7 -> exportProbe(7),
           1 -> probe(
             localId = 1,
             factory = factory,
             program = sharingProgram,
-            inboundMessages = Map(7 -> ValueTree.empty),
           )(7),
           2 -> probe(
             localId = 2,
             factory = factory,
             program = sharingProgram,
-            inboundMessages = Map(7 -> ValueTree.empty),
           )(7),
           3 -> probe(
             localId = 3,
             factory = factory,
             program = sharingProgram,
-            inboundMessages = Map(7 -> ValueTree.empty),
           )(7),
         ),
       )
@@ -214,4 +223,4 @@ trait FieldCalculusWithExchangeTests:
     "nbr" should behave like nbrSemantics()
     "rep" should behave like repSemantics()
     "share" should behave like shareSemantics()
-end FieldCalculusWithExchangeTests
+end FieldCalculusTests

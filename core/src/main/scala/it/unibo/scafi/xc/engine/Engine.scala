@@ -1,7 +1,7 @@
 package it.unibo.scafi.xc.engine
 
 import it.unibo.scafi.xc.engine.context.{ Context, ContextFactory }
-import it.unibo.scafi.xc.engine.network.{ Export, Network }
+import it.unibo.scafi.xc.engine.network.{ Export, Import, Network }
 
 /**
  * The engine is responsible for linking a context with a network and a program and handling the program execution for
@@ -75,7 +75,7 @@ class Engine[
    */
   case class AggregateResult(
       result: Result,
-      incomingMessages: Export[DeviceId, Token, Value],
+      incomingMessages: Import[DeviceId, Token, Value],
       outgoingMessages: Export[DeviceId, Token, Value],
   )
 end Engine

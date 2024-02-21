@@ -8,8 +8,8 @@ import it.unibo.scafi.xc.language.semantics.exchange.ExchangeCalculusSemantics
 import it.unibo.scafi.xc.engine.network.Export
 import it.unibo.scafi.xc.language.libraries.All.{ *, given }
 
-trait BranchingWithExchangeTests:
-  this: UnitTest & ProbingContextMixin & WithBasicFactory =>
+trait BranchingTests:
+  this: UnitTest & ProbingContextMixin & BasicFactoryMixin =>
 
   def branchingSemantics(): Unit =
     def branchingProgram(using BasicExchangeCalculusContext[Int]): Unit =
@@ -47,11 +47,14 @@ trait BranchingWithExchangeTests:
       localId = 0,
       factory = factory,
       program = branchingProgramWithSideEffect,
-      inboundMessages = exportProbeOdd ++ exportProbeEven,
+      inboundMessages = Map(
+        143 -> exportProbeOdd(0),
+        142 -> exportProbeEven(0),
+      ),
     )
 
     it should "restrict domain to aligned neighbors" in:
       crossingMessagesProbe(0).single._2 should be(100)
       neighborsCount should be(2)
   end branchingSemantics
-end BranchingWithExchangeTests
+end BranchingTests

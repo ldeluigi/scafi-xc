@@ -24,13 +24,15 @@ trait OutboundMessagesSemantics:
   override type Envelope
 
   override def outboundMessages: Export[DeviceId, InvocationCoordinate, Envelope] =
-    var messages: Export[DeviceId, InvocationCoordinate, Envelope] = Map
+    var messages: Map[DeviceId, ValueTree[InvocationCoordinate, Envelope]] = Map
       .empty[DeviceId, ValueTree[InvocationCoordinate, Envelope]]
       .withDefaultValue(ValueTree.empty)
+    var default: ValueTree[InvocationCoordinate, Envelope] = ValueTree.empty
     for (path, messageMap) <- sentMessages do
       for deviceId <- unalignedDevices do
         messages = messages.updated(deviceId, messages(deviceId).update(path, messageMap(deviceId)))
-    messages
+      default = default.update(path, messageMap.default)
+    MapWithDefault(messages, default)
 
   private val sentMessages: mutable.Map[Path[InvocationCoordinate], MapWithDefault[DeviceId, Envelope]] =
     mutable.Map.empty

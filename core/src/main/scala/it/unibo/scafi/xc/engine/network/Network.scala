@@ -32,5 +32,5 @@ trait Network[DeviceId, Token, Value]:
    * @return
    *   the messages received from neighbors in the network
    */
-  def receive(): Export[DeviceId, Token, Value]
+  def receive(): Import[DeviceId, Token, Value]
 end Network

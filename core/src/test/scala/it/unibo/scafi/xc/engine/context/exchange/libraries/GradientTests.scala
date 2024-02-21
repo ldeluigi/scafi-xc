@@ -1,6 +1,116 @@
 package it.unibo.scafi.xc.engine.context.exchange.libraries
 
 import it.unibo.scafi.xc.UnitTest
+import it.unibo.scafi.xc.collections.ValueTree
+import it.unibo.scafi.xc.engine.context.{ ContextFactory, ProbingContextMixin, TestingNetwork }
+import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
+import it.unibo.scafi.xc.engine.context.exchange.BasicExchangeCalculusContext
+import it.unibo.scafi.xc.engine.network.{ Export, Import }
+import it.unibo.scafi.xc.language.libraries.All.{ *, given }
+import it.unibo.scafi.xc.language.sensors.DistanceSensor
 
 trait GradientTests:
-  this: UnitTest =>
+  this: UnitTest & ProbingContextMixin & BasicFactoryMixin =>
+
+  private val epsilon = 0.0001
+
+  private def gradientWithDistanceSensorSemantics(): Unit =
+    class ContextWithDistanceSensor(self: Int, inboundMessages: Import[Int, InvocationCoordinate, Any])
+        extends BasicExchangeCalculusContext[Int](self, inboundMessages)
+        with DistanceSensor[Double]:
+      override def senseDistance: AggregateValue[Double] = device.map(_.toDouble)
+
+    val factory: ContextFactory[TestingNetwork[Int, InvocationCoordinate, Any], ContextWithDistanceSensor] = n =>
+      new ContextWithDistanceSensor(n.localId, n.receive())
+
+    var gradientValue: Double = 0.0
+    def gradientProgram(using ContextWithDistanceSensor): Unit =
+      gradientValue = sensorDistanceTo(self == 2)
+
+    val exportProbeSource: Export[Int, InvocationCoordinate, Any] = probe(
+      localId = 2,
+      factory = factory,
+      program = gradientProgram,
+    )
+    it should "return 0 for source" in:
+      gradientValue shouldBe 0.0 +- epsilon
+      exportProbeSource(2).single._2.as[Double] shouldBe 0.0 +- epsilon
+      exportProbeSource(3).single._2.as[Double] shouldBe 0.0 +- epsilon
+
+    it should "return the measured distance for source neighbors" in:
+      val exportProbeCloseToSource: Export[Int, InvocationCoordinate, Any] = probe(
+        localId = 3,
+        factory = factory,
+        program = gradientProgram,
+        inboundMessages = Map(
+          2 -> exportProbeSource(3),
+        ),
+      )
+      gradientValue shouldBe 2.0 +- epsilon
+      exportProbeCloseToSource(2).single._2.as[Double] shouldBe 2.0 +- epsilon
+
+  end gradientWithDistanceSensorSemantics
+
+  def gradientSemantics(): Unit =
+    var gradientValue: Double = 0.0
+    def gradientProgram(using BasicExchangeCalculusContext[Int]): Unit =
+      gradientValue = distanceTo(self == 0, 5.0)
+    val exportProbeSource: Export[Int, InvocationCoordinate, Any] = probe(
+      localId = 0,
+      factory = factory,
+      program = gradientProgram,
+    )
+    val sourceGradient: Double = gradientValue
+    val exportProbeCloseToSource = probe(
+      localId = 1,
+      factory = factory,
+      program = gradientProgram,
+      inboundMessages = Map(
+        0 -> exportProbeSource(1),
+      ),
+    )
+    val closeToSourceGradient: Double = gradientValue
+    val exportProbeFarToSource = probe(
+      localId = 2,
+      factory = factory,
+      program = gradientProgram,
+      inboundMessages = Map(
+        1 -> exportProbeCloseToSource(2),
+      ),
+    )
+    val farFromSourceGradient: Double = gradientValue
+
+    it should "return 0 for source" in:
+      sourceGradient shouldBe 0.0 +- epsilon
+      for i <- 0 to 1 do exportProbeSource(i).single._2.as[Double] shouldBe 0.0 +- epsilon
+
+    it should "return infinity for non-source isolated devices" in:
+      val exportProbe = probe(localId = 1, factory = factory, program = gradientProgram)
+      gradientValue shouldBe Double.PositiveInfinity
+      exportProbe(1).single._2.as[Double] shouldBe Double.PositiveInfinity
+
+    it should "return the distance from source for source neighbors" in:
+      closeToSourceGradient shouldBe 5.0 +- epsilon
+      for i <- 0 to 3 do exportProbeCloseToSource(i).single._2.as[Double] shouldBe 5.0 +- epsilon
+
+    it should "sum the distance from source for far devices" in:
+      farFromSourceGradient shouldBe 10.0 +- epsilon
+      exportProbeFarToSource(1).single._2.as[Double] shouldBe 10.0 +- epsilon
+      exportProbeFarToSource(3).single._2.as[Double] shouldBe 10.0 +- epsilon
+
+    it should "return the minimum distance for others" in:
+      val exportProbe = probe(
+        localId = 3,
+        factory = factory,
+        program = gradientProgram,
+        inboundMessages = Map(
+          1 -> exportProbeCloseToSource(3),
+          2 -> exportProbeFarToSource(3),
+        ),
+      )
+      gradientValue shouldBe 10.0 +- epsilon
+      for i <- 1 to 2 do exportProbe(i).single._2.as[Double] shouldBe 10.0 +- epsilon
+
+    "using the distance sensor" should behave like gradientWithDistanceSensorSemantics()
+  end gradientSemantics
+end GradientTests

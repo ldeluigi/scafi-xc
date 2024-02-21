@@ -15,9 +15,8 @@ import scala.collection.{ Iterable, MapView }
  * @tparam V
  *   the value type
  */
-case class MapWithDefault[K, +V](private val underlying: Map[K, V], default: V)
-    extends Iterable[(K, V)]
-    with Function[K, V] derives CanEqual:
+class MapWithDefault[K, +V](underlying: Map[K, V], val default: V) extends Iterable[(K, V)] with Function[K, V]
+    derives CanEqual:
 
   private val inner: Map[K, V] = underlying.withDefaultValue(default)
 
@@ -28,6 +27,12 @@ case class MapWithDefault[K, +V](private val underlying: Map[K, V], default: V)
   override def toString(): String = mkString(s"$className<$default>(", ", ", ")")
 
   override def className: String = "MapWithDefault"
+
+  override def equals(obj: Any): Boolean = obj match
+    case that: MapWithDefault[_, _] => this.inner.equals(that.inner) && this.default.equals(that.default)
+    case _ => false
+
+  override def hashCode(): Int = 31 * underlying.## + default.##
 
   @targetName("addElements")
   inline def ++[V1 >: V](xs: IterableOnce[(K, V1)]): MapWithDefault[K, V1] = new MapWithDefault(inner ++ xs, default)
@@ -86,6 +91,8 @@ case class MapWithDefault[K, +V](private val underlying: Map[K, V], default: V)
   def withDefault[V1 >: V](d: V1): MapWithDefault[K, V1] = new MapWithDefault(inner, d)
 
   override def view: MapView[K, V] = inner.view
+
+  override def toMap[K2, V2](implicit ev: (K, V) <:< (K2, V2)): Map[K2, V2] = inner.toMap
 
   export inner.{
     contains,

@@ -9,7 +9,7 @@ import it.unibo.scafi.xc.engine.network.Export
 import it.unibo.scafi.xc.language.libraries.All.{ *, given }
 
 trait ExchangeCalculusTests:
-  this: UnitTest & ProbingContextMixin & WithBasicFactory =>
+  this: UnitTest & ProbingContextMixin & BasicFactoryMixin =>
 
   def exchangeSemantics(): Unit =
     var neighbors: Set[Int] = Set.empty
@@ -22,17 +22,18 @@ trait ExchangeCalculusTests:
       localId = 142,
       factory = factory,
       program = exchangingProgram,
+      inboundMessages = Map(1000 -> ValueTree.empty), // unaligned devices should be ignored
     )
     it should "exchange with self if the device is alone after reboot" in:
       neighbors shouldBe Set(142) // the device just rebooted and only sees themselves
-      exportProbe.single._1 shouldBe 142
+      exportProbe.map(_._1) should contain(142)
       exportProbe(142).single._1.size shouldBe 1
     it should "exchange with self if the device is alone" in:
       exportProbe = probe(
         localId = 142,
         factory = factory,
         program = exchangingProgram,
-        inboundMessages = exportProbe.filter(_._1 == 142),
+        inboundMessages = Map(142 -> exportProbe(142)),
       )
       neighbors shouldBe Set(142) // the device is still alone
       exportProbe.single._1 shouldBe 142
@@ -42,7 +43,7 @@ trait ExchangeCalculusTests:
         localId = 142,
         factory = factory,
         program = exchangingProgram,
-        inboundMessages = exportProbe.filter(_._1 == 142) + (0 -> ValueTree.empty),
+        inboundMessages = Map(142 -> exportProbe(142)),
       )
       exportProbe = probe(
         localId = 0,
@@ -55,7 +56,7 @@ trait ExchangeCalculusTests:
         localId = 0,
         factory = factory,
         program = exchangingProgram,
-        inboundMessages = exportProbe.filter(_._1 == 0) + (142 -> messageForNewNeighbor(0)),
+        inboundMessages = Map(0 -> exportProbe(0), 142 -> messageForNewNeighbor(0)),
       )
       neighbors shouldBe Set(0, 142) // the device sees themselves after self messaging (memory)
   end exchangeSemantics

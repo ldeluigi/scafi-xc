@@ -1,7 +1,7 @@
 package it.unibo.scafi.xc.engine.context.common
 
 import it.unibo.scafi.xc.engine.context.Context
-import it.unibo.scafi.xc.engine.network.Export
+import it.unibo.scafi.xc.engine.network.Import
 
 /**
  * Implements the semantics related to inbound messages coming from self and neighbors.
@@ -38,10 +38,10 @@ trait InboundMessagesSemantics:
 
   /**
    * @return
-   *   the [[Export]] that contains the inbound messages of visible devices even if they are not aligned with the
+   *   the [[Import]] that contains the inbound messages of visible devices even if they are not aligned with the
    *   current path, always including self
    */
-  private def unalignedMessages: Export[DeviceId, InvocationCoordinate, Envelope] = inboundMessages
+  private def unalignedMessages: Import[DeviceId, InvocationCoordinate, Envelope] = inboundMessages
 
   /**
    * @return
