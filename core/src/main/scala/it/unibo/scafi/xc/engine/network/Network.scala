@@ -20,17 +20,17 @@ trait Network[DeviceId, Token, Value]:
   def localId: DeviceId
 
   /**
-   * Sends messages to neighbors in the network.
+   * Sends messages to neighbours in the network.
    * @param e
    *   the messages to send
    */
   def send(e: Export[DeviceId, Token, Value]): Unit
 
   /**
-   * Captures the last versions of value trees received from neighbors in the network. In the aggregate semantics of
+   * Captures the last versions of value trees received from neighbours in the network. In the aggregate semantics of
    * networks, they must discard stale value trees, according to some expiration policy.
    * @return
-   *   the messages received from neighbors in the network
+   *   the messages received from neighbours in the network
    */
   def receive(): Import[DeviceId, Token, Value]
 end Network

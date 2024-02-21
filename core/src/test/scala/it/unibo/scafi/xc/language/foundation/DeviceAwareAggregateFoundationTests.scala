@@ -13,5 +13,5 @@ trait DeviceAwareAggregateFoundationTests:
     it should "be able to get the device id" in:
       lang.self shouldEqual 0
 
-    it should "provide a field of aligned neighbors" in:
+    it should "provide a field of aligned neighbours" in:
       lang.device.toIterable should contain(lang.self)

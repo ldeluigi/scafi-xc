@@ -4,7 +4,7 @@ import it.unibo.scafi.xc.engine.context.Context
 import it.unibo.scafi.xc.engine.network.Import
 
 /**
- * Implements the semantics related to inbound messages coming from self and neighbors.
+ * Implements the semantics related to inbound messages coming from self and neighbours.
  */
 trait InboundMessagesSemantics:
   this: StackSemantics & MessageSemantics & Context[DeviceId, InvocationCoordinate, Envelope] =>

@@ -9,34 +9,34 @@ class BasicRandomSimulator[C <: Context[Int, InvocationCoordinate, Any]](
     override val parameters: RandomSimulationParameters,
     private val contextFactory: ContextFactory[DeterministicSimulator.SimulatedNetwork[Int], C],
     override val program: C ?=> Any,
-) extends DiscreteSimulator[C]
+) extends DiscreteSimulator[Int, C]
     with RandomSimulator
     with RandomNumberGenerators:
 
-  lazy val devices: List[Device[Int]] = (0 until parameters.deviceCount)
+  override lazy val devices: List[Device[Int]] = (0 until parameters.deviceCount)
     .map(Device.WithFixedSleepTime(_, randomSleepTime))
     .toList
 
-  lazy val neighborhoods: Map[Int, Set[Int]] = initNeighborhoods
+  override lazy val deviceNeighbourhood: Map[Int, Set[Int]] = initNeighbourhoods
 
-  lazy val delegate: DeterministicSimulator[Int, C] = DeterministicSimulator(
+  private lazy val delegate: DeterministicSimulator[Int, C] = DeterministicSimulator(
     contextFactory,
     program,
     devices = devices,
-    deviceNeighbourhood = neighborhoods,
+    deviceNeighbourhood = deviceNeighbourhood,
     deliveredMessageLifetime = parameters.deliveredMessageLifetime,
     messageLossPolicy = _ => messageLost,
     messageDelayPolicy = _ => messageDelay,
   )
 
-  private def initNeighborhoods: Map[Int, Set[Int]] =
+  private def initNeighbourhoods: Map[Int, Set[Int]] =
     var result: Map[Int, Set[Int]] = Map.WithDefault[Int, Set[Int]](Map.empty, Set(_))
     val deviceSet = devices.map(_.id).toSet
     val deviceWithIndex = devices.map(_.id).zipWithIndex.toMap
     for (device, i) <- deviceWithIndex do
       val neighbours = rnd
         .shuffle((deviceSet -- result(device)).toList)
-        .take(randomNeighborCount - result(device).size + 1)
+        .take(randomNeighbourCount - result(device).size + 1)
         .toSet
         .union(result(device))
       result += device -> neighbours

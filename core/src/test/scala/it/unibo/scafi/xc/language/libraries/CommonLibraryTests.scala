@@ -18,5 +18,5 @@ class CommonLibraryTests extends UnitTest:
   "self" should "return the current node id" in:
     self(using lang) shouldBe lang.self
 
-  "device" should "return the device id field of neighbors" in:
+  "device" should "return the device id field of neighbours" in:
     device(using lang).toList shouldBe lang.device.toList

@@ -6,9 +6,9 @@ trait FieldCalculusSyntax:
   self: AggregateFoundation =>
 
   /**
-   * `nbr` sends a local value to <b>neighbors</b> and returns the aggregate value of the received messages.
+   * `nbr` sends a local value to <b>neighbours</b> and returns the aggregate value of the received messages.
    * @param expr
-   *   the local value to send to neighbors
+   *   the local value to send to neighbours
    * @tparam A
    *   the type of the local value
    * @return
@@ -31,7 +31,7 @@ trait FieldCalculusSyntax:
 
   /**
    * `share` computes a value by repeatedly applying a function to an initial value while <b>sharing</b> the result with
-   * neighbors.
+   * neighbours.
    * @param init
    *   the initial value
    * @param f
@@ -39,7 +39,7 @@ trait FieldCalculusSyntax:
    * @tparam A
    *   the type of the value
    * @return
-   *   the value after the last application of the function that has been shared with neighbors
+   *   the value after the last application of the function that has been shared with neighbours
    */
   def share[A](init: A)(f: AggregateValue[A] => A): A
 end FieldCalculusSyntax

@@ -3,7 +3,7 @@ package it.unibo.scafi.xc.abstractions
 import it.unibo.scafi.xc.collections.SafeIterable
 
 /**
- * Type class testifying that a collection of elements is an aggregate of distributed values coming from neighbors. It
+ * Type class testifying that a collection of elements is an aggregate of distributed values coming from neighbours. It
  * provides extension methods to work with the aggregate.
  * @tparam F
  *   the type of the collection

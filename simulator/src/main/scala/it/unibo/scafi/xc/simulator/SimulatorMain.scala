@@ -43,7 +43,7 @@ object SimulatorMain:
       program = program,
     )
     for device <- sim.devices do println(s"Device ${device.id} sleeps for ${device.sleepTime} ticks")
-    for (deviceId, neighbourhood) <- sim.neighborhoods do
+    for (deviceId, neighbourhood) <- sim.deviceNeighbourhood do
       println(s"Device $deviceId has neighbours: ${neighbourhood.mkString(", ")}")
     for tick <- 1 to 20 do
       println(s"--------------- t_$tick ----------------")

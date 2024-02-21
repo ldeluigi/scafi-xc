@@ -33,11 +33,11 @@ trait BranchingTests:
       exportProbeEven(142).single._2 should be(100)
       exportProbeOdd(143).single._2 should be(200)
 
-    var neighborsCount = 0
+    var neighboursCount = 0
     def branchingProgramWithSideEffect(using BasicExchangeCalculusContext[Int]): Unit =
       branch(self % 2 == 0) {
         exchange(100)(x =>
-          neighborsCount = device.size
+          neighboursCount = device.size
           x,
         )
       } {
@@ -53,8 +53,8 @@ trait BranchingTests:
       ),
     )
 
-    it should "restrict domain to aligned neighbors" in:
+    it should "restrict domain to aligned neighbours" in:
       crossingMessagesProbe(0).single._2 should be(100)
-      neighborsCount should be(2)
+      neighboursCount should be(2)
   end branchingSemantics
 end BranchingTests

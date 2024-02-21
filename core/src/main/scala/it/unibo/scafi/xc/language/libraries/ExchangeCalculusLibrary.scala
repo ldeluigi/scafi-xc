@@ -12,7 +12,7 @@ object ExchangeCalculusLibrary:
 
   /**
    * This method is the main construct of the exchange calculus. It allows both to send and receive messages, and to
-   * perform local computation. It allows to send an aggregate value as a message to neighbors, and to return a
+   * perform local computation. It allows to send an aggregate value as a message to neighbours, and to return a
    * different aggregate value as a result of the computation.
    *
    * <h3>Examples</h3>

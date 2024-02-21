@@ -37,7 +37,7 @@ trait GradientTests:
       exportProbeSource(2).single._2.as[Double] shouldBe 0.0 +- epsilon
       exportProbeSource(3).single._2.as[Double] shouldBe 0.0 +- epsilon
 
-    it should "return the measured distance for source neighbors" in:
+    it should "return the measured distance for source neighbours" in:
       val exportProbeCloseToSource: Export[Int, InvocationCoordinate, Any] = probe(
         localId = 3,
         factory = factory,
@@ -89,7 +89,7 @@ trait GradientTests:
       gradientValue shouldBe Double.PositiveInfinity
       exportProbe(1).single._2.as[Double] shouldBe Double.PositiveInfinity
 
-    it should "return the distance from source for source neighbors" in:
+    it should "return the distance from source for source neighbours" in:
       closeToSourceGradient shouldBe 5.0 +- epsilon
       for i <- 0 to 3 do exportProbeCloseToSource(i).single._2.as[Double] shouldBe 5.0 +- epsilon
 

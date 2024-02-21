@@ -27,7 +27,7 @@ trait MathTests:
     it should "return the local value if device is alone" in:
       averageResult shouldBe 42.0 +- epsilon
 
-    it should "return the weighted average with neighbors" in:
+    it should "return the weighted average with neighbours" in:
       probe(
         localId = 42,
         factory = factory,

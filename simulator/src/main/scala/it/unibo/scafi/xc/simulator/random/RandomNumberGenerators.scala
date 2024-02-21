@@ -9,7 +9,7 @@ trait RandomNumberGenerators:
   protected def randomSleepTime: Int =
     randomNumber(parameters.averageSleepTime, parameters.stddevSleepTime).toInt
 
-  protected def randomNeighborCount: Int =
+  protected def randomNeighbourCount: Int =
     randomNumber(parameters.averageNeighbourhood, parameters.stddevNeighbourhood).toInt
 
   protected def isNeighbourhoodUnidirectional: Boolean =

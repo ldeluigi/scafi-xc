@@ -13,13 +13,19 @@ import it.unibo.scafi.xc.simulator.deterministic.DeterministicSimulator.Simulate
 class DeterministicSimulator[Id, C <: Context[Id, InvocationCoordinate, Any]](
     private val contextFactory: ContextFactory[DeterministicSimulator.SimulatedNetwork[Id], C],
     override val program: C ?=> Any,
-    val devices: List[Device[Id]],
-    val deviceNeighbourhood: Map[Id, Set[Id]],
-    val deliveredMessageLifetime: Int,
-    val messageLossPolicy: Message[Id] => Boolean = (_: Message[Id]) => false,
-    val messageDelayPolicy: Message[Id] => Int = (_: Message[Id]) => 1,
+    override val devices: List[Device[Id]],
+    override val deviceNeighbourhood: Map[Id, Set[Id]],
+    private val deliveredMessageLifetime: Int,
+    private val messageLossPolicy: Message[Id] => Boolean = (_: Message[Id]) => false,
+    private val messageDelayPolicy: Message[Id] => Int = (_: Message[Id]) => 1,
 )(using CanEqual[Id, Id])
-    extends DiscreteSimulator[C]:
+    extends DiscreteSimulator[Id, C]:
+
+  require(
+    deviceNeighbourhood.values.forall(_.subsetOf(devices.map(_.id).toSet)),
+    "Invalid neighbourhood: some devices are not in the network",
+  )
+
   private val SEPARATOR = ":::"
   private lazy val devicePool = devices.map(SimulatedDevice.apply(_))
   private val messageQueue: mutable.ListBuffer[TravelingMessage[Id]] = mutable.ListBuffer.empty

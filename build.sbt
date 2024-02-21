@@ -66,7 +66,7 @@ lazy val tests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
     name := "tests",
     commonTestSettings,
   )
-  .dependsOn(core, simulator)
+  .dependsOn(core % "test->test", simulator % "test->test")
 
 // conventional commits
 Global / onLoad ~= (_ andThen ("conventionalCommits" :: _))

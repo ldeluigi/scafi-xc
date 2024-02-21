@@ -12,9 +12,9 @@ trait FieldCalculusTests:
   this: UnitTest & ProbingContextMixin & BasicFactoryMixin =>
 
   def nbrSemantics(): Unit =
-    var neighbors: Set[Int] = Set.empty
+    var neighbours: Set[Int] = Set.empty
     def neighbouringProgram(using BasicExchangeCalculusContext[Int]): Unit =
-      neighbors = nbr(self + 5).toSet
+      neighbours = nbr(self + 5).toSet
 
     var exportProbe: Export[Int, InvocationCoordinate, Any] = probe(
       localId = 66,
@@ -22,12 +22,12 @@ trait FieldCalculusTests:
       program = neighbouringProgram,
     )
 
-    it should "send the value to self without neighbors after boot" in:
+    it should "send the value to self without neighbours after boot" in:
       exportProbe.single._1 shouldBe 66
       exportProbe.single._2.single._2.as[Int] shouldBe 71
-      neighbors shouldBe Set(71)
+      neighbours shouldBe Set(71)
 
-    it should "send the value to self without neighbors" in:
+    it should "send the value to self without neighbours" in:
       exportProbe = probe(
         localId = 66,
         factory = factory,
@@ -36,9 +36,9 @@ trait FieldCalculusTests:
       )
       exportProbe.single._1 shouldBe 66
       exportProbe.single._2.single._2.as[Int] shouldBe 71
-      neighbors shouldBe Set(71)
+      neighbours shouldBe Set(71)
 
-    it should "send the value to self with neighbors" in:
+    it should "send the value to self with neighbours" in:
       exportProbe = probe(
         localId = 1,
         factory = factory,
@@ -63,9 +63,9 @@ trait FieldCalculusTests:
       )
       exportProbe.size shouldBe 3
       exportProbe(1).single._2.as[Int] shouldBe 6
-      neighbors shouldBe Set(6, 7, 8)
+      neighbours shouldBe Set(6, 7, 8)
 
-    it should "always send the result of the expression to neighbors" in:
+    it should "always send the result of the expression to neighbours" in:
       exportProbe = probe(
         localId = 1,
         factory = factory,
@@ -91,9 +91,9 @@ trait FieldCalculusTests:
       factory = factory,
       program = repeatingProgram,
     )
-    val messageFromNeighbor: Import[Int, InvocationCoordinate, Any] = Map(
+    val messageFromNeighbour: Import[Int, InvocationCoordinate, Any] = Map(
       1 ->
-        probe( // adding a neighbor should not alter the result
+        probe( // adding a neighbour should not alter the result
           localId = 1,
           factory = factory,
           program = repeatingProgram,
@@ -110,7 +110,7 @@ trait FieldCalculusTests:
         localId = 66,
         factory = factory,
         program = repeatingProgram,
-        inboundMessages = messageFromNeighbor + (66 -> exportProbe(66)),
+        inboundMessages = messageFromNeighbour + (66 -> exportProbe(66)),
       )
       exportProbe.keySet should contain(66)
       exportProbe(66).single._2.as[Option[Int]] shouldBe Some(4)
@@ -120,7 +120,7 @@ trait FieldCalculusTests:
         localId = 66,
         factory = factory,
         program = repeatingProgram,
-        inboundMessages = messageFromNeighbor + (66 -> exportProbe(66)),
+        inboundMessages = messageFromNeighbour + (66 -> exportProbe(66)),
       )
       exportProbe.keySet should contain(66)
       exportProbe(66).single._2.as[Option[Int]] shouldBe Some(6)
@@ -132,7 +132,7 @@ trait FieldCalculusTests:
         localId = 66,
         factory = factory,
         program = repeatingProgram,
-        inboundMessages = messageFromNeighbor,
+        inboundMessages = messageFromNeighbour,
       )
       exportProbe.keySet should contain(66)
       exportProbe(66).single._2.as[Option[Int]] shouldBe Some(2)
@@ -153,7 +153,7 @@ trait FieldCalculusTests:
       exportProbe.single._1 shouldBe 7
       exportProbe.single._2.single._2.as[Int] shouldBe 1
       res shouldBe 1
-    it should "send the value to self without neighbors" in:
+    it should "send the value to self without neighbours" in:
       exportProbe = probe(
         localId = 7,
         factory = factory,
@@ -163,7 +163,7 @@ trait FieldCalculusTests:
       exportProbe.single._1 shouldBe 7
       exportProbe.single._2.single._2.as[Int] shouldBe 1
       res shouldBe 1
-    it should "send/receive values to/from neighbors" in:
+    it should "send/receive values to/from neighbours" in:
       exportProbe = probe(
         localId = 7,
         factory = factory,

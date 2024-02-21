@@ -9,10 +9,10 @@ import it.unibo.scafi.xc.language.syntax.FieldCalculusSyntax
 object FieldCalculusLibrary:
 
   /**
-   * `nbr` sends a local value to <b>neighbors</b> and returns the aggregate value of the received messages.
+   * `nbr` sends a local value to <b>neighbours</b> and returns the aggregate value of the received messages.
    *
    * @param expr
-   *   the local value to send to neighbors
+   *   the local value to send to neighbours
    * @tparam A
    *   the type of the local value
    * @return
@@ -42,7 +42,7 @@ object FieldCalculusLibrary:
 
   /**
    * `share` computes a value by repeatedly applying a function to an initial value while <b>sharing</b> the result with
-   * neighbors.
+   * neighbours.
    *
    * @param init
    *   the initial value
@@ -51,7 +51,7 @@ object FieldCalculusLibrary:
    * @tparam A
    *   the type of the value
    * @return
-   *   the value after the last application of the function that has been shared with neighbors
+   *   the value after the last application of the function that has been shared with neighbours
    * @see
    *   [[FieldCalculusSyntax.share]]
    */

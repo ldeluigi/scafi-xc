@@ -8,7 +8,7 @@ import it.unibo.scafi.xc.engine.network.Export
 import it.unibo.scafi.xc.engine.path.Path
 
 /**
- * Implements the semantics related to outbound messages directed to self and neighbors.
+ * Implements the semantics related to outbound messages directed to self and neighbours.
  */
 trait OutboundMessagesSemantics:
   this: StackSemantics & MessageSemantics & Context[DeviceId, InvocationCoordinate, Envelope] =>
