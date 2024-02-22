@@ -1,9 +1,10 @@
 package it.unibo.scafi.xc.simulator
 
 import it.unibo.scafi.xc.engine.context.ContextFactory
+import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
 import it.unibo.scafi.xc.engine.context.exchange.BasicExchangeCalculusContext
 import it.unibo.scafi.xc.implementations.CommonBoundaries.given_Bounded_Double
-import it.unibo.scafi.xc.language.libraries.All._
+import it.unibo.scafi.xc.language.libraries.All.*
 import it.unibo.scafi.xc.language.sensors.DistanceSensor
 import it.unibo.scafi.xc.simulator.random.{ BasicRandomSimulator, RandomSimulationParameters }
 
@@ -31,21 +32,23 @@ object SimulatorMain:
     branch(self % 2 == 0)(printDistance(sensorDistanceTo(self == 0)))(printDistance(sensorDistanceTo(self == 1)))
 
   @main def main(): Unit =
-    val sim = new BasicRandomSimulator(
-      parameters = SimulationSettings,
-      contextFactory = n =>
-        new BasicExchangeCalculusContext(n.localId, n.receive()) with DistanceSensor[Double]:
-          override def senseDistance: AggregateValue[Double] = new NValues[Double](
-            default = given_Bounded_Double.upperBound,
-            unalignedDevices.map(id => (id, if id == self then 0.0 else 1.0)).toMap,
-          )
-      ,
-      program = program,
-    )
+    val sim =
+      BasicRandomSimulator[InvocationCoordinate, Any, BasicExchangeCalculusContext[Int] & DistanceSensor[Double]](
+        parameters = SimulationSettings,
+        contextFactory = n =>
+          new BasicExchangeCalculusContext(n.localId, n.receive()) with DistanceSensor[Double]:
+            override def senseDistance: AggregateValue[Double] = new NValues[Double](
+              default = given_Bounded_Double.upperBound,
+              unalignedDevices.map(id => (id, if id == self then 0.0 else 1.0)).toMap,
+            )
+        ,
+        program = program,
+      )
     for device <- sim.devices do println(s"Device ${device.id} sleeps for ${device.sleepTime} ticks")
     for (deviceId, neighbourhood) <- sim.deviceNeighbourhood do
       println(s"Device $deviceId has neighbours: ${neighbourhood.mkString(", ")}")
     for tick <- 1 to 20 do
       println(s"--------------- t_$tick ----------------")
       sim.tick()
+  end main
 end SimulatorMain

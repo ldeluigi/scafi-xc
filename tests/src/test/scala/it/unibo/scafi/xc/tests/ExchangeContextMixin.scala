@@ -3,9 +3,8 @@ package it.unibo.scafi.xc.tests
 import it.unibo.scafi.xc.engine.context.{ Context, ContextFactory }
 import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
 import it.unibo.scafi.xc.engine.context.exchange.BasicExchangeCalculusContext
-import it.unibo.scafi.xc.engine.network.Import
+import it.unibo.scafi.xc.engine.network.{ Import, Network }
 import it.unibo.scafi.xc.language.semantics.exchange.ExchangeCalculusSemantics
-import it.unibo.scafi.xc.simulator.deterministic.DeterministicSimulator.SimulatedNetwork
 
 trait ExchangeContextMixin:
   this: SimpleSimulatorBasedTest =>
@@ -20,5 +19,5 @@ trait ExchangeContextMixin:
 
   override type C = TestContext
 
-  override def contextFactory: ContextFactory[SimulatedNetwork[Int], TestContextImpl] = n =>
+  override def contextFactory: ContextFactory[Network[Int, InvocationCoordinate, Any], TestContextImpl] = n =>
     TestContextImpl(n.localId, n.receive())

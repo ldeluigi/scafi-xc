@@ -1,13 +1,13 @@
 package it.unibo.scafi.xc.simulator.random
 
-import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
 import it.unibo.scafi.xc.engine.context.{ Context, ContextFactory }
-import it.unibo.scafi.xc.simulator.{ deterministic, DiscreteSimulator }
+import it.unibo.scafi.xc.engine.network.Network
 import it.unibo.scafi.xc.simulator.deterministic.{ DeterministicSimulator, Device }
+import it.unibo.scafi.xc.simulator.{ deterministic, DiscreteSimulator }
 
-class BasicRandomSimulator[C <: Context[Int, InvocationCoordinate, Any]](
+class BasicRandomSimulator[Token, Value, C <: Context[Int, Token, Value]](
     override val parameters: RandomSimulationParameters,
-    private val contextFactory: ContextFactory[DeterministicSimulator.SimulatedNetwork[Int], C],
+    private val contextFactory: ContextFactory[Network[Int, Token, Value], C],
     override val program: C ?=> Any,
 ) extends DiscreteSimulator[Int, C]
     with RandomSimulator
@@ -19,7 +19,7 @@ class BasicRandomSimulator[C <: Context[Int, InvocationCoordinate, Any]](
 
   override lazy val deviceNeighbourhood: Map[Int, Set[Int]] = initNeighbourhoods
 
-  private lazy val delegate: DeterministicSimulator[Int, C] = DeterministicSimulator(
+  private lazy val delegate: DeterministicSimulator[Int, Token, Value, C] = DeterministicSimulator(
     contextFactory,
     program,
     devices = devices,

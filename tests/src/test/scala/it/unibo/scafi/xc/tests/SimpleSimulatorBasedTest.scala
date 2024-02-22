@@ -2,6 +2,7 @@ package it.unibo.scafi.xc.tests
 
 import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
 import it.unibo.scafi.xc.engine.context.{ Context, ContextFactory }
+import it.unibo.scafi.xc.engine.network.Network
 import it.unibo.scafi.xc.simulator.DiscreteSimulator
 import it.unibo.scafi.xc.simulator.deterministic.{ DeterministicSimulator, Device }
 
@@ -13,11 +14,11 @@ trait SimpleSimulatorBasedTest extends DiscreteSimulatorBasedTest:
 
   def program(using C): Unit
 
-  def contextFactory: ContextFactory[DeterministicSimulator.SimulatedNetwork[DeviceId], C]
+  def contextFactory: ContextFactory[Network[DeviceId, InvocationCoordinate, Any], C]
 
   override def simulator: DiscreteSimulator[DeviceId, C] =
     val neighbourhoods: Map[Device[DeviceId], Set[DeviceId]] = network
-    DeterministicSimulator[DeviceId, C](
+    DeterministicSimulator[DeviceId, InvocationCoordinate, Any, C](
       contextFactory = contextFactory,
       program = program,
       devices = neighbourhoods.keys.toList,

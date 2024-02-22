@@ -1,6 +1,7 @@
 package it.unibo.scafi.xc.simulator.deterministic
 
 import it.unibo.scafi.xc.UnitTest
+import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
 import it.unibo.scafi.xc.engine.context.exchange.BasicExchangeCalculusContext
 import it.unibo.scafi.xc.language.semantics.exchange.ExchangeCalculusSemantics
 import it.unibo.scafi.xc.simulator.DiscreteSimulator
@@ -16,18 +17,19 @@ class DeterministicSimulatorTests extends UnitTest with BeforeAndAfterEachTestDa
     wakeUpCounts += self -> rep(0)(_ + 1)
     results += self -> distanceTo(self < 5, 1.0)
 
-  def newSimulator: DeterministicSimulator[Int, BasicExchangeCalculusContext[Int]] = DeterministicSimulator(
-    contextFactory = n => BasicExchangeCalculusContext[Int](n.localId, n.receive()),
-    program = aggregateProgram,
-    devices = (0 until deviceCountParameter).map(id => Device.WithFixedSleepTime(id, id % 2 + 2)).toList,
-    deviceNeighbourhood = (0 until deviceCountParameter)
-      .map(i =>
-        i -> // every device is neighbour with the 5 devices before and after it
-          (Math.max(0, i - 5) to Math.min(deviceCountParameter - 1, i + 5)).toSet,
-      )
-      .toMap,
-    deliveredMessageLifetime = 10,
-  )
+  def newSimulator: DeterministicSimulator[Int, InvocationCoordinate, Any, BasicExchangeCalculusContext[Int]] =
+    DeterministicSimulator(
+      contextFactory = n => BasicExchangeCalculusContext[Int](n.localId, n.receive()),
+      program = aggregateProgram,
+      devices = (0 until deviceCountParameter).map(id => Device.WithFixedSleepTime(id, id % 2 + 2)).toList,
+      deviceNeighbourhood = (0 until deviceCountParameter)
+        .map(i =>
+          i -> // every device is neighbour with the 5 devices before and after it
+            (Math.max(0, i - 5) to Math.min(deviceCountParameter - 1, i + 5)).toSet,
+        )
+        .toMap,
+      deliveredMessageLifetime = 10,
+    )
 
   var sut: DiscreteSimulator[Int, BasicExchangeCalculusContext[Int]] = newSimulator
 
