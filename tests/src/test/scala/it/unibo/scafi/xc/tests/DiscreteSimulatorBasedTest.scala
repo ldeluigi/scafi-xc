@@ -4,20 +4,20 @@ import it.unibo.scafi.xc.UnitTest
 import it.unibo.scafi.xc.engine.context.Context
 import it.unibo.scafi.xc.simulator.DiscreteSimulator
 import it.unibo.scafi.xc.simulator.deterministic.Device
-import org.scalatest.BeforeAndAfterEach
+import org.scalatest.{ BeforeAndAfterAll, BeforeAndAfterEach }
 
-trait DiscreteSimulatorBasedTest extends UnitTest with BeforeAndAfterEach:
-  type DeviceId
-  type C <: Context[DeviceId, ?, ?]
-  def simulator: DiscreteSimulator[DeviceId, C]
+trait DiscreteSimulatorBasedTest extends UnitTest with BeforeAndAfterAll:
+  type TestDeviceId
+  type TestToken
+  type TestValue
+  type TestProgramResult
+  type TestContext <: Context[TestDeviceId, TestToken, TestValue]
+  private val sim: DiscreteSimulator[TestDeviceId, TestProgramResult, TestContext] = simulator
+  def simulator: DiscreteSimulator[TestDeviceId, TestProgramResult, TestContext]
+  export sim._
+
   def ticks: Int
-  def cleanup(): Unit = ()
 
-  override def beforeEach(): Unit =
-    val sim = simulator
+  override def beforeAll(): Unit =
     for _ <- 1 to ticks do sim.tick()
-    super.beforeEach()
-
-  override def afterEach(): Unit =
-    cleanup()
-    super.afterEach()
+    super.beforeAll()

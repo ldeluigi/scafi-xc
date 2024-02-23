@@ -33,7 +33,7 @@ object SimulatorMain:
 
   @main def main(): Unit =
     val sim =
-      BasicRandomSimulator[InvocationCoordinate, Any, BasicExchangeCalculusContext[Int] & DistanceSensor[Double]](
+      BasicRandomSimulator[InvocationCoordinate, Any, Unit, BasicExchangeCalculusContext[Int] & DistanceSensor[Double]](
         parameters = SimulationSettings,
         contextFactory = n =>
           new BasicExchangeCalculusContext(n.localId, n.receive()) with DistanceSensor[Double]:

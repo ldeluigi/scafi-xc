@@ -5,11 +5,11 @@ import it.unibo.scafi.xc.engine.network.Network
 import it.unibo.scafi.xc.simulator.deterministic.{ DeterministicSimulator, Device }
 import it.unibo.scafi.xc.simulator.{ deterministic, DiscreteSimulator }
 
-class BasicRandomSimulator[Token, Value, C <: Context[Int, Token, Value]](
+class BasicRandomSimulator[Token, Value, Result, C <: Context[Int, Token, Value]](
     override val parameters: RandomSimulationParameters,
     private val contextFactory: ContextFactory[Network[Int, Token, Value], C],
-    override val program: C ?=> Any,
-) extends DiscreteSimulator[Int, C]
+    override val program: C ?=> Result,
+) extends DiscreteSimulator[Int, Result, C]
     with RandomSimulator
     with RandomNumberGenerators:
 
@@ -19,7 +19,7 @@ class BasicRandomSimulator[Token, Value, C <: Context[Int, Token, Value]](
 
   override lazy val deviceNeighbourhood: Map[Int, Set[Int]] = initNeighbourhoods
 
-  private lazy val delegate: DeterministicSimulator[Int, Token, Value, C] = DeterministicSimulator(
+  private lazy val delegate: DeterministicSimulator[Int, Token, Value, Result, C] = DeterministicSimulator(
     contextFactory,
     program,
     devices = devices,
@@ -45,5 +45,5 @@ class BasicRandomSimulator[Token, Value, C <: Context[Int, Token, Value]](
           result += neighbour -> (result(neighbour) + device)
     result
 
-  override def tick(): Unit = delegate.tick()
+  export delegate.{ results, tick }
 end BasicRandomSimulator

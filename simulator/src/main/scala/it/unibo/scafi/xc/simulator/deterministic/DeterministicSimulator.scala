@@ -7,16 +7,16 @@ import it.unibo.scafi.xc.engine.context.{ Context, ContextFactory }
 import it.unibo.scafi.xc.engine.network.*
 import it.unibo.scafi.xc.simulator.DiscreteSimulator
 
-class DeterministicSimulator[Id, Token, Value, C <: Context[Id, Token, Value]](
+class DeterministicSimulator[Id, Token, Value, Result, C <: Context[Id, Token, Value]](
     private val contextFactory: ContextFactory[Network[Id, Token, Value], C],
-    override val program: C ?=> Any,
+    override val program: C ?=> Result,
     override val devices: List[Device[Id]],
     override val deviceNeighbourhood: Map[Id, Set[Id]],
     private val deliveredMessageLifetime: Int,
     private val messageLossPolicy: Message[Id, Token, Value] => Boolean = (_: Message[Id, Token, Value]) => false,
     private val messageDelayPolicy: Message[Id, Token, Value] => Int = (_: Message[Id, Token, Value]) => 1,
 )(using CanEqual[Id, Id])
-    extends DiscreteSimulator[Id, C]:
+    extends DiscreteSimulator[Id, Result, C]:
 
   require(
     deviceNeighbourhood.values.forall(_.subsetOf(devices.map(_.id).toSet)),
@@ -24,6 +24,7 @@ class DeterministicSimulator[Id, Token, Value, C <: Context[Id, Token, Value]](
   )
 
   private lazy val devicePool = devices.map(SimulatedDevice.apply(_))
+  private val resultMap: mutable.Map[Id, Result] = mutable.Map.empty
   private val messageQueue: mutable.ListBuffer[TravelingMessage[Id, Token, Value]] = mutable.ListBuffer.empty
   private val deliveredMessages: mutable.Map[(Id, Id), DeliveredMessage[Id, Token, Value]] = mutable.Map.empty
 
@@ -31,7 +32,7 @@ class DeterministicSimulator[Id, Token, Value, C <: Context[Id, Token, Value]](
     private var slept = 0
     private var sleepTime = device.sleepTime
 
-    private val engine = Engine[Id, Any, Token, Value, Network[Id, Token, Value], C](
+    private val engine = Engine[Id, Result, Token, Value, Network[Id, Token, Value], C](
       net = BasicNetwork(device.id),
       factory = contextFactory,
       program = program,
@@ -41,7 +42,7 @@ class DeterministicSimulator[Id, Token, Value, C <: Context[Id, Token, Value]](
       if slept >= sleepTime then
         slept = 0
         sleepTime = device.sleepTime
-        engine.cycle()
+        resultMap.update(device.id, engine.cycle())
       else slept += 1
   end SimulatedDevice
 
@@ -71,4 +72,6 @@ class DeterministicSimulator[Id, Token, Value, C <: Context[Id, Token, Value]](
     deliveredMessages.filterInPlace((_, v) => v.lifetime <= deliveredMessageLifetime)
     messageQueue.filterInPlace(_.delay > 0)
     devicePool.foreach(_.fire())
+
+  override def results: Map[Id, Result] = resultMap.toMap
 end DeterministicSimulator

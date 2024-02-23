@@ -19,7 +19,7 @@ class BasicRandomSimulatorTests extends UnitTest with RandomSimulationParameters
   override def seed: Int = 1000
 
   "BasicRandomSimulator" should "create a randomized network according to the simulation parameters" in:
-    val sut = BasicRandomSimulator[InvocationCoordinate, Any, BasicExchangeCalculusContext[Int]](
+    val sut = BasicRandomSimulator[InvocationCoordinate, Any, Any, BasicExchangeCalculusContext[Int]](
       contextFactory = n => new BasicExchangeCalculusContext[Int](n.localId, n.receive()),
       parameters = this,
       program = () => (),

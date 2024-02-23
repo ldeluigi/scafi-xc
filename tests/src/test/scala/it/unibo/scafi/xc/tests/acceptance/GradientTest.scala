@@ -4,19 +4,18 @@ import it.unibo.scafi.xc.simulator.deterministic.Device
 import it.unibo.scafi.xc.language.libraries.All.{ _, given }
 
 class GradientTest extends AcceptanceTest:
+  override type TestDeviceId = Int
+  override type TestProgramResult = Double
   override val ticks = 10
 
-  override val network: Map[Device[DeviceId], Set[DeviceId]] = Map(
+  override def network: Map[Device[TestDeviceId], Set[TestDeviceId]] = Map(
     Device.WithFixedSleepTime(id = 1, sleepTime = 2) -> Set(1, 2),
     Device.WithFixedSleepTime(id = 2, sleepTime = 1) -> Set(1, 2, 3),
     Device.WithFixedSleepTime(id = 3, sleepTime = 3) -> Set(2, 3),
   )
 
-  var results: Map[DeviceId, Double] = Map.empty
-  override def cleanup(): Unit = results = Map.empty
-
-  override def program(using C): Unit =
-    results += self -> distanceTo(self == 1, 1.0)
+  override def program(using TestProgramContext): Double =
+    distanceTo(self == 1, 1.0)
 
   "The hop distance" should "be calculated correctly" in:
     results(1) should be(0.0)

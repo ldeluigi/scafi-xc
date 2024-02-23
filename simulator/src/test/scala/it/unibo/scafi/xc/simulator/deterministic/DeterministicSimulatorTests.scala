@@ -17,7 +17,7 @@ class DeterministicSimulatorTests extends UnitTest with BeforeAndAfterEachTestDa
     wakeUpCounts += self -> rep(0)(_ + 1)
     results += self -> distanceTo(self < 5, 1.0)
 
-  def newSimulator: DeterministicSimulator[Int, InvocationCoordinate, Any, BasicExchangeCalculusContext[Int]] =
+  def newSimulator: DeterministicSimulator[Int, InvocationCoordinate, Any, Any, BasicExchangeCalculusContext[Int]] =
     DeterministicSimulator(
       contextFactory = n => BasicExchangeCalculusContext[Int](n.localId, n.receive()),
       program = aggregateProgram,
@@ -31,7 +31,7 @@ class DeterministicSimulatorTests extends UnitTest with BeforeAndAfterEachTestDa
       deliveredMessageLifetime = 10,
     )
 
-  var sut: DiscreteSimulator[Int, BasicExchangeCalculusContext[Int]] = newSimulator
+  var sut: DiscreteSimulator[Int, Any, BasicExchangeCalculusContext[Int]] = newSimulator
 
   val deviceCountParameters: TableFor1[Int] = TableFor1("device count", 5 to 300 by 65*)
 
