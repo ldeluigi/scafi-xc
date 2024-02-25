@@ -8,7 +8,7 @@ import it.unibo.scafi.xc.language.syntax.common.RetSend
  * This library provides the exchange calculus primitive, `exchange`.
  */
 object ExchangeCalculusLibrary:
-  export RetSend.{ _, given }
+  export RetSend.{ *, given }
 
   /**
    * This method is the main construct of the exchange calculus. It allows both to send and receive messages, and to

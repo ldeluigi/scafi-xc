@@ -16,7 +16,7 @@ trait UnitTest
     with TableDrivenPropertyChecks:
 
   export scala.language.postfixOps
-  export org.scalatest.matchers.should.Matchers._
+  export org.scalatest.matchers.should.Matchers.*
   export math.Numeric.Implicits.infixNumericOps
   export org.scalatest.prop.{ TableFor1, TableFor2, TableFor3 }
 

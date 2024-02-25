@@ -29,7 +29,7 @@ class MapWithDefault[K, +V](underlying: Map[K, V], val default: V) extends Itera
   override def className: String = "MapWithDefault"
 
   override def equals(obj: Any): Boolean = obj match
-    case that: MapWithDefault[_, _] => this.inner.equals(that.inner) && this.default.equals(that.default)
+    case that: MapWithDefault[?, ?] => this.inner.equals(that.inner) && this.default.equals(that.default)
     case _ => false
 
   override def hashCode(): Int = 31 * underlying.## + default.##

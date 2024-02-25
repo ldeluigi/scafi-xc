@@ -1,6 +1,6 @@
 package it.unibo.scafi.xc.language.foundation
 
-import it.unibo.scafi.xc.abstractions._
+import it.unibo.scafi.xc.abstractions.*
 import it.unibo.scafi.xc.abstractions.Liftable.*
 import it.unibo.scafi.xc.UnitTest
 

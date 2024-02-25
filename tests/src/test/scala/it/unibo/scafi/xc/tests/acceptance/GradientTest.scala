@@ -1,7 +1,7 @@
 package it.unibo.scafi.xc.tests.acceptance
 
 import it.unibo.scafi.xc.simulator.deterministic.Device
-import it.unibo.scafi.xc.language.libraries.All.{ _, given }
+import it.unibo.scafi.xc.language.libraries.All.{ *, given }
 
 class GradientTest extends AcceptanceTest:
   override type TestDeviceId = Int

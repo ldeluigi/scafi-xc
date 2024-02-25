@@ -3,7 +3,7 @@ package it.unibo.scafi.xc.language.syntax
 import it.unibo.scafi.xc.UnitTest
 import it.unibo.scafi.xc.language.foundation.{ AggregateFoundation, AggregateFoundationMock }
 import it.unibo.scafi.xc.language.syntax.common.RetSend
-import it.unibo.scafi.xc.language.syntax.common.RetSend._
+import it.unibo.scafi.xc.language.syntax.common.RetSend.*
 
 class ExchangeCalculusSyntaxCompilationTests extends UnitTest:
 

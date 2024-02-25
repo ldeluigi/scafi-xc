@@ -14,7 +14,7 @@ trait DiscreteSimulatorBasedTest extends UnitTest with BeforeAndAfterAll:
   type TestContext <: Context[TestDeviceId, TestToken, TestValue]
   private val sim: DiscreteSimulator[TestDeviceId, TestProgramResult, TestContext] = simulator
   def simulator: DiscreteSimulator[TestDeviceId, TestProgramResult, TestContext]
-  export sim._
+  export sim.*
 
   def ticks: Int
 
