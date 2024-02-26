@@ -23,6 +23,7 @@ class ExchangeCalculusSyntaxCompilationTests extends UnitTest:
     "val _: language.AggregateValue[Int] = language.exchange(field)(x => x)" shouldNot typeCheck
 
   it should "not compile if exchanging non serializable values or aggregate values" in:
-    "val _ = language.exchange(field)(x => x)" shouldNot compile
+    "val _ = language.exchange(field.map(x => 1))(x => x)" should compile
+    "val _ = language.exchange(field.map(x => field))(x => x)" shouldNot compile
     "val _ = language.exchange(new Object)(x => x)" shouldNot compile
 end ExchangeCalculusSyntaxCompilationTests

@@ -29,7 +29,7 @@ trait AggregateFoundation:
   @implicitNotFound(
     "Cannot share value of type ${T}. ${T} must be either a primitive type or a serializable type, and cannot be an aggregate value",
   )
-  sealed trait Shareable[+T]
+  final class Shareable[T] private[AggregateFoundation] ()
 
   /**
    * A type class that can be used to ensure that a type does not satisfy the [[Shareable]] type class.
@@ -37,7 +37,7 @@ trait AggregateFoundation:
    * @tparam T
    *   the type to check
    */
-  sealed trait NotShareable[+T]
+  final class NotShareable[T]
 
   /**
    * An aggregate value is not shareable to other devices.
@@ -46,7 +46,7 @@ trait AggregateFoundation:
    * @return
    *   a [[NotShareable]] instance for the aggregate value
    */
-  given [T, AV <: AggregateValue[T]]: NotShareable[AV] = new NotShareable[AV] {}
+  given [T, A <: AggregateValue[T]]: NotShareable[A] = NotShareable[A]()
 
   /**
    * A type is shareable if it is a primitive type or a serializable type, and it is not marked as [[NotShareable]].
@@ -57,5 +57,5 @@ trait AggregateFoundation:
    * @return
    *   a [[Shareable]] instance for the type
    */
-  given [T <: AnyVal | Serializable](using NotGiven[NotShareable[T]]): Shareable[T] = new Shareable[T] {}
+  given [T <: AnyVal | Serializable](using NotGiven[NotShareable[T]]): Shareable[T] = Shareable[T]()
 end AggregateFoundation
