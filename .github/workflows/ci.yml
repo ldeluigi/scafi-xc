@@ -2,15 +2,8 @@ name: CI/CD
 
 on:
   push:
-    branches-ignore:
-      - 'autodelivery**'
-      - 'bump-**'
-      - 'renovate/**'
-      - 'feature/**'
-      - 'fix/**'
     paths-ignore:
       - '*.md'
-      - 'renovate.json'
   pull_request:
 
 
