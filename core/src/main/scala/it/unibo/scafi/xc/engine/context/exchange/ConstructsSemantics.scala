@@ -13,7 +13,7 @@ trait ConstructsSemantics:
   override protected def br[T](cond: Boolean)(th: => T)(el: => T): T = scope(s"branch/$cond"): () =>
     if cond then th else el
 
-  override protected def xc[T](init: AggregateValue[T])(
+  override protected def xc[T: Shareable](init: AggregateValue[T])(
       f: AggregateValue[T] => (AggregateValue[T], AggregateValue[T]),
   ): AggregateValue[T] =
     scope("exchange"): () =>

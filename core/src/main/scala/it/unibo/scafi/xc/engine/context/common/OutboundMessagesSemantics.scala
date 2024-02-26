@@ -6,12 +6,13 @@ import it.unibo.scafi.xc.collections.{ MapWithDefault, ValueTree }
 import it.unibo.scafi.xc.engine.context.Context
 import it.unibo.scafi.xc.engine.network.Export
 import it.unibo.scafi.xc.engine.path.Path
+import it.unibo.scafi.xc.language.foundation.AggregateFoundation
 
 /**
  * Implements the semantics related to outbound messages directed to self and neighbours.
  */
 trait OutboundMessagesSemantics:
-  this: StackSemantics & MessageSemantics & Context[DeviceId, InvocationCoordinate, Envelope] =>
+  this: AggregateFoundation & StackSemantics & MessageSemantics & Context[DeviceId, InvocationCoordinate, Envelope] =>
 
   /**
    * The type of device ids.
@@ -46,7 +47,7 @@ trait OutboundMessagesSemantics:
    * @tparam T
    *   the type of the messages
    */
-  protected def sendMessages[T](messages: MapView[DeviceId, T], default: T): Unit =
+  protected def sendMessages[T: Shareable](messages: MapView[DeviceId, T], default: T): Unit =
     sentMessages.update(
       currentPath.toList,
       MapWithDefault(

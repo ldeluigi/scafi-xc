@@ -52,7 +52,7 @@ trait ExchangeCalculusSemantics
    * @return
    *   the neighbouring value providing for the next local state
    */
-  protected def xc[T](init: AggregateValue[T])(
+  protected def xc[T: Shareable](init: AggregateValue[T])(
       f: AggregateValue[T] => (AggregateValue[T], AggregateValue[T]),
   ): AggregateValue[T]
 end ExchangeCalculusSemantics
