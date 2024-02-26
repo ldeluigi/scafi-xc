@@ -24,7 +24,9 @@ object MathLibrary:
    * @return
    *   the weighted average of the value
    */
-  def average[N: Fractional](using language: AggregateFoundation & FieldCalculusSyntax)(weight: N, value: N): N =
+  def average[N: Fractional: language.Shareable](using
+      language: AggregateFoundation & FieldCalculusSyntax,
+  )(weight: N, value: N): N =
     val totW = nbr(weight).nfold(weight)(_ + _)
     val totV = nbr(weight * value).nfold(weight * value)(_ + _)
     totV / totW

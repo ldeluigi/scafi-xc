@@ -1,5 +1,8 @@
 package it.unibo.scafi.xc.language.foundation
 
+import scala.util.NotGiven
+import scala.annotation.implicitNotFound
+
 import it.unibo.scafi.xc.abstractions.{ Aggregate, Liftable }
 import it.unibo.scafi.xc.collections.SafeIterable
 
@@ -15,3 +18,44 @@ trait AggregateFoundation:
    * Aggregate values can be composed and mapped.
    */
   given liftable: Liftable[AggregateValue]
+
+  /**
+   * A type class that can be used to ensure that a type is shareable. A type is shareable if it is either a primitive
+   * type or a serializable type. Additionally, if a type is also marked as [[NotShareable]], it becomes not shareable.
+   *
+   * @tparam T
+   *   the type to check
+   */
+  @implicitNotFound(
+    "Cannot share value of type ${T}. ${T} must be either a primitive type or a serializable type, and cannot be an aggregate value",
+  )
+  sealed trait Shareable[+T]
+
+  /**
+   * A type class that can be used to ensure that a type does not satisfy the [[Shareable]] type class.
+   *
+   * @tparam T
+   *   the type to check
+   */
+  sealed trait NotShareable[+T]
+
+  /**
+   * An aggregate value is not shareable to other devices.
+   * @tparam T
+   *   the type of the aggregate value
+   * @return
+   *   a [[NotShareable]] instance for the aggregate value
+   */
+  given [T, AV <: AggregateValue[T]]: NotShareable[AV] = new NotShareable[AV] {}
+
+  /**
+   * A type is shareable if it is a primitive type or a serializable type, and it is not marked as [[NotShareable]].
+   * @param x$1
+   *   a proof that the type is not [[NotShareable]]
+   * @tparam T
+   *   the type to check
+   * @return
+   *   a [[Shareable]] instance for the type
+   */
+  given [T <: AnyVal | Serializable](using NotGiven[NotShareable[T]]): Shareable[T] = new Shareable[T] {}
+end AggregateFoundation

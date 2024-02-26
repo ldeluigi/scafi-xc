@@ -33,7 +33,9 @@ object ExchangeCalculusLibrary:
    * @see
    *   [[RetSend]] [[ExchangeCalculusSyntax.exchange]]
    */
-  def exchange[T](using language: AggregateFoundation & ExchangeCalculusSyntax)(initial: language.AggregateValue[T])(
+  def exchange[T: language.Shareable](using language: AggregateFoundation & ExchangeCalculusSyntax)(
+      initial: language.AggregateValue[T],
+  )(
       f: language.AggregateValue[T] => RetSend[language.AggregateValue[T]],
   ): language.AggregateValue[T] = language.exchange(initial)(f)
 end ExchangeCalculusLibrary

@@ -30,7 +30,7 @@ object GradientLibrary:
    * @return
    *   the distance estimate from a source to a node
    */
-  def distanceEstimate[N: Numeric: UpperBounded](using language: AggregateFoundation)(
+  def distanceEstimate[N: Numeric: UpperBounded: language.Shareable](using language: AggregateFoundation)(
       neighboursEstimates: language.AggregateValue[N],
       distances: language.AggregateValue[N],
   ): N = lift(neighboursEstimates, distances)(_ + _).withoutSelf.min
@@ -47,7 +47,7 @@ object GradientLibrary:
    * @return
    *   the distance from the source to this node
    */
-  def distanceTo[N: Numeric: UpperBounded](using
+  def distanceTo[N: Numeric: UpperBounded: language.Shareable](using
       language: AggregateFoundation & FieldCalculusSyntax,
   )(source: Boolean, distances: language.AggregateValue[N]): N =
     share[N](summon[UpperBounded[N]].upperBound)(av =>
@@ -66,7 +66,7 @@ object GradientLibrary:
    * @see
    *   [[DistanceSensor.senseDistance]]
    */
-  def sensorDistanceEstimate[N: Numeric: UpperBounded](using
+  def sensorDistanceEstimate[N: Numeric: UpperBounded: language.Shareable](using
       language: AggregateFoundation & DistanceSensor[N],
   )(neighboursEstimates: language.AggregateValue[N]): N =
     distanceEstimate(neighboursEstimates, senseDistance[N])
@@ -83,7 +83,7 @@ object GradientLibrary:
    * @see
    *   [[DistanceSensor.senseDistance]]
    */
-  def sensorDistanceTo[N: Numeric: UpperBounded](using
+  def sensorDistanceTo[N: Numeric: UpperBounded: language.Shareable](using
       language: AggregateFoundation & FieldCalculusSyntax & DistanceSensor[N],
   )(source: Boolean): N =
     distanceTo(source, senseDistance[N])

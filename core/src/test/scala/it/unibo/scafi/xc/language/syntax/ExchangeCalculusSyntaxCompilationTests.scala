@@ -9,14 +9,20 @@ class ExchangeCalculusSyntaxCompilationTests extends UnitTest:
 
   val language: ExchangeCalculusSyntax & AggregateFoundation = new AggregateFoundationMock with ExchangeCalculusSyntax:
 
-    override def exchange[T](initial: AggregateValue[T])(
+    override def exchange[T: Shareable](initial: AggregateValue[T])(
         f: AggregateValue[T] => RetSend[AggregateValue[T]],
     ): AggregateValue[T] = mock[AggregateValue[T]]
 
+  val field: language.AggregateValue[Boolean] = mock[language.AggregateValue[Boolean]]
+
   "ExchangeCalculus Syntax" should "compile" in:
-    val field: language.AggregateValue[Boolean] = mock[language.AggregateValue[Boolean]]
     val intField = mock[language.AggregateValue[Int]]
     "val _: language.AggregateValue[Boolean] = language.exchange(field)(x => x)" should compile
     "val _: language.AggregateValue[Int] = language.exchange(intField)(x => ret (x) send x)" should compile
     "val _: language.AggregateValue[Boolean] = language.exchange(field)(x => (x, x))" should compile
     "val _: language.AggregateValue[Int] = language.exchange(field)(x => x)" shouldNot typeCheck
+
+  it should "not compile if exchanging non serializable values or aggregate values" in:
+    "val _ = language.exchange(field)(x => x)" shouldNot compile
+    "val _ = language.exchange(new Object)(x => x)" shouldNot compile
+end ExchangeCalculusSyntaxCompilationTests

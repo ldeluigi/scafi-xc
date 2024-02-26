@@ -10,14 +10,14 @@ import it.unibo.scafi.xc.language.syntax.common.RetSend.ret
 trait FieldCalculusByExchangeSemantics extends FieldCalculusSyntax:
   this: ExchangeCalculusSemantics & ExchangeCalculusSyntax =>
 
-  override def nbr[V](expr: V): AggregateValue[V] =
+  override def nbr[V: Shareable](expr: V): AggregateValue[V] =
     exchange(expr)(nv => ret(nv) send expr)
 
-  override def rep[A](init: A)(f: A => A): A =
+  override def rep[A: Shareable](init: A)(f: A => A): A =
     exchange[Option[A]](None)(nones =>
       val previousValue = nones(self).getOrElse(init)
       nones.set(self, Some(f(previousValue))),
-    )(self).get
+    ).get(self).get
 
-  override def share[A](init: A)(f: AggregateValue[A] => A): A =
-    exchange(init)(nv => f(nv))(self)
+  override def share[A: Shareable](init: A)(f: AggregateValue[A] => A): A =
+    exchange(init)(nv => f(nv)).get(self)

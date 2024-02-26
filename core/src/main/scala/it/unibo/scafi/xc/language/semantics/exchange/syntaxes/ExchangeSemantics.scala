@@ -10,7 +10,7 @@ import it.unibo.scafi.xc.language.syntax.common.RetSend
 trait ExchangeSemantics extends ExchangeCalculusSyntax:
   self: ExchangeCalculusSemantics =>
 
-  override def exchange[T](initial: AggregateValue[T])(
+  override def exchange[T: Shareable](initial: AggregateValue[T])(
       f: AggregateValue[T] => RetSend[AggregateValue[T]],
   ): AggregateValue[T] =
     xc(initial)(f.andThen(rs => (rs.ret, rs.send)))
