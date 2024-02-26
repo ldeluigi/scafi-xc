@@ -13,7 +13,7 @@ trait DistributedSystemFoundation:
    *   the type to check
    */
   @implicitNotFound(
-    "Cannot share value of type ${T}. ${T} must provide evidence for ShareableContext[${T}], and cannot be an aggregate value",
+    "Cannot share value of type ${T}. ${T} must be a primitive value type or a serializable type, and it must not be marked as NotShareable.",
   )
   final class Shareable[T] private[DistributedSystemFoundation] (using val serializable: T <:< (AnyVal | Serializable))
 
