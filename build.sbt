@@ -68,6 +68,18 @@ lazy val tests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   )
   .dependsOn(core % "test->test", simulator % "test->test")
 
+lazy val `alchemist-incarnation` = project
+  .settings(
+    name := "alchemist-incarnation",
+    libraryDependencies ++= Seq(
+      "it.unibo.alchemist" % "alchemist" % "30.1.11",
+      "it.unibo.alchemist" % "alchemist-api" % "30.1.11",
+      "it.unibo.alchemist" % "alchemist-test" % "30.1.11",
+    ),
+    commonTestSettings,
+  )
+  .dependsOn(core.jvm)
+
 // conventional commits
 Global / onLoad ~= (_ andThen ("conventionalCommits" :: _))
 

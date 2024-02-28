@@ -1,0 +1,18 @@
+incarnation: exchange
+
+network-model:
+  type: ConnectWithinDistance
+  parameters: [5]
+
+_pool: &program
+  - time-distribution: 1
+    type: Event
+    actions:
+      - type: it.unibo.scafi.xc.alchemist.actions.RunScafiProgram
+        parameters: [it.unibo.scafi.xc.alchemist.main.TestProgram.myProgram]
+
+deployments:
+  - type: Rectangle
+    parameters: [200, 0, 0, 20, 20]
+    programs:
+      - *program
