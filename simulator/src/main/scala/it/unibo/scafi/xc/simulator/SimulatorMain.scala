@@ -8,7 +8,7 @@ import it.unibo.scafi.xc.language.libraries.All.*
 import it.unibo.scafi.xc.language.sensors.DistanceSensor
 import it.unibo.scafi.xc.simulator.random.{ BasicRandomSimulator, RandomSimulationParameters }
 
-object SimulatorMain:
+private object SimulatorMain:
 
   private object SimulationSettings extends RandomSimulationParameters:
     override val averageSleepTime: Double = 2
