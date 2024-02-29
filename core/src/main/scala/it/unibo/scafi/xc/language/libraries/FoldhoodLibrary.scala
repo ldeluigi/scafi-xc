@@ -84,7 +84,8 @@ object FoldhoodLibrary:
 
     private def submit[A](expr: => A): A =
       val value: A = expr
-      values = value :: values; value
+      values = value :: values
+      value
 
     private[FoldhoodLibrary] def current[A](expr: => A): A = neighborValues.map(_.next).getOrElse(submit(expr)) match
       case x: A @unchecked => x
