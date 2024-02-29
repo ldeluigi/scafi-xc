@@ -5,6 +5,7 @@ import it.unibo.scafi.xc.language.foundation.AggregateFoundation
 import it.unibo.scafi.xc.language.syntax.FieldCalculusSyntax
 
 import FieldCalculusLibrary.nbr as fcNbr
+import FoldingLibrary.nfold
 
 object FoldhoodLibrary:
   def nbr[A](expr: => A)(using c: FoldhoodContext): A = c.current(expr)
@@ -22,23 +23,21 @@ object FoldhoodLibrary:
   ): B =
     val initial = FoldhoodContext()
     val selfExprValue: A = expr(using initial)
-    val selfValues: List[Any | Null] = initial.selfValues
+    val selfValues: List[Any | Null] = initial.values
     val neighbouringValues: List[language.AggregateValue[Any | Null]] = for value <- selfValues yield fcNbr(value)
-    var tupledNeighbouringValues: language.AggregateValue[List[Any | Null]] = fcNbr(List.empty[Any | Null])
+    var zippedNeighbouringValues: language.AggregateValue[List[Any | Null]] = fcNbr(List.empty[Any | Null])
     for nv <- neighbouringValues do
-      tupledNeighbouringValues = lift(tupledNeighbouringValues, nv)((list, value) => list :+ value)
-    var finalResult: B = if withSelf then f(base, selfExprValue) else base
-    for neighbourValues <- tupledNeighbouringValues.withoutSelf.toIterable do
-      val result = expr(using FoldhoodContext(Some(neighbourValues.iterator)))
-      finalResult = f(finalResult, result)
-    finalResult
+      zippedNeighbouringValues = lift(zippedNeighbouringValues, nv)((list, value) => value :: list)
+    zippedNeighbouringValues.nfold(if withSelf then f(base, selfExprValue) else base): (acc, values) =>
+      val result = expr(using FoldhoodContext(Some(values.iterator)))
+      f(acc, result)
 
   sealed class FoldhoodContext private[FoldhoodLibrary] (neighborValues: Option[Iterator[Any | Null]] = None):
-    private[FoldhoodLibrary] var selfValues: List[Any | Null] = List.empty
+    private[FoldhoodLibrary] var values: List[Any | Null] = List.empty
 
     private def submit[A](expr: => A): A =
       val value: A = expr
-      selfValues = selfValues :+ value; value
+      values = value :: values; value
 
     private[FoldhoodLibrary] def current[A](expr: => A): A = neighborValues.map(_.next).getOrElse(submit(expr)) match
       case x: A @unchecked => x
