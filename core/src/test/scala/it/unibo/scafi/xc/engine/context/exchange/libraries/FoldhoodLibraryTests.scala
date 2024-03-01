@@ -18,7 +18,7 @@ trait FoldhoodLibraryTests:
         inboundMessages: Import[Int, InvocationCoordinate, Any],
     ) extends BasicExchangeCalculusContext[Int](self, inboundMessages)
         with DistanceSensor[Int]:
-      override def senseDistance: AggregateValue[Int] = 1
+      override def senseDistance: AggregateValue[Int] = device.map(id => if id == self then 0 else 1)
 
     val factory
         : ContextFactory[TestingNetwork[Int, InvocationCoordinate, Any], BasicExchangeCalculusContextWithHopDistance] =
@@ -46,7 +46,7 @@ trait FoldhoodLibraryTests:
 
     it should "evaluate foldhoodPlus expression only for self without neighbors" in:
       exportProbe.single._1 shouldBe 66
-      results(66) shouldBe 70
+      results(66) shouldBe 69
 
     it should "evaluate foldhoodPlus expression for self and neighbors" in:
       exportProbe = probe(
@@ -73,7 +73,7 @@ trait FoldhoodLibraryTests:
         ),
       )
       exportProbe.size shouldBe 4
-      results(66) shouldBe 88
+      results(66) shouldBe 87
 
     it should "not evaluate foldhood expression for self without neighbors" in:
       exportProbe = probe(
