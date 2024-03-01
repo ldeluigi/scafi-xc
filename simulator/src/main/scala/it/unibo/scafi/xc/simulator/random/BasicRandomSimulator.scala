@@ -2,7 +2,7 @@ package it.unibo.scafi.xc.simulator.random
 
 import it.unibo.scafi.xc.engine.context.{ Context, ContextFactory }
 import it.unibo.scafi.xc.engine.network.Network
-import it.unibo.scafi.xc.simulator.deterministic.{ DeterministicSimulator, Device }
+import it.unibo.scafi.xc.simulator.deterministic.{ DeterministicSimulator, SleepingDevice }
 import it.unibo.scafi.xc.simulator.{ deterministic, DiscreteSimulator }
 
 class BasicRandomSimulator[Token, Value, Result, C <: Context[Int, Token, Value]](
@@ -13,8 +13,8 @@ class BasicRandomSimulator[Token, Value, Result, C <: Context[Int, Token, Value]
     with RandomSimulator
     with RandomNumberGenerators:
 
-  override lazy val devices: List[Device[Int]] = (0 until parameters.deviceCount)
-    .map(Device.WithFixedSleepTime(_, randomSleepTime))
+  lazy val devices: List[SleepingDevice[Int]] = (0 until parameters.deviceCount)
+    .map(SleepingDevice.WithFixedSleepTime(_, randomSleepTime))
     .toList
 
   override lazy val deviceNeighbourhood: Map[Int, Set[Int]] = initNeighbourhoods
