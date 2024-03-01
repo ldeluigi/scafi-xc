@@ -4,7 +4,7 @@ ThisBuild / version := "0.1.0-SNAPSHOT"
 val ci = scala.sys.env.get("CI").contains("true")
 
 // scala
-ThisBuild / scalaVersion := "3.3.3"
+ThisBuild / scalaVersion := "3.4.0"
 
 ThisBuild / scalacOptions ++= Seq(
   "-new-syntax",
