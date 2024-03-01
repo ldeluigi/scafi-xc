@@ -3,6 +3,11 @@ on:
   push:
     branches:
       - master # default branch of the project
+  schedule:
+    - cron: "0 0 1 * *"
+
+permissions:
+  contents: write
 
 jobs:
   dependency-graph:
