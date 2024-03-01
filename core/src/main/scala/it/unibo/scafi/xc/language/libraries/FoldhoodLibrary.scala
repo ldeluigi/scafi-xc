@@ -68,26 +68,26 @@ object FoldhoodLibrary:
   private def foldhoodImpl[A, B](withSelf: Boolean)(base: B)(f: (B, A) => B)(expr: FoldhoodContext ?=> A)(using
       language: AggregateFoundation & FieldCalculusSyntax,
   ): B =
-    val initial = FoldhoodContext()
-    val selfExprValue: A = expr(using initial)
-    val selfValues: List[Any | Null] = initial.values
-    val neighbouringValues: List[language.AggregateValue[Any | Null]] = for value <- selfValues yield fcNbr(value)
+    var neighbouringValues: List[language.AggregateValue[Any | Null]] = List.empty
+    val initial = new FoldhoodContext():
+      override def current[X](expr: => X): X =
+        val value: X = expr
+        neighbouringValues = fcNbr(value) :: neighbouringValues
+        value
     var zippedNeighbouringValues: language.AggregateValue[List[Any | Null]] = fcNbr(List.empty[Any | Null])
+    val selfExprValue: A = expr(using initial)
     for nv <- neighbouringValues do
       zippedNeighbouringValues = lift(zippedNeighbouringValues, nv)((list, value) => value :: list)
     zippedNeighbouringValues.nfold(if withSelf then f(base, selfExprValue) else base): (acc, values) =>
-      val result = expr(using FoldhoodContext(Some(values.iterator)))
+      val iterator = values.iterator
+      val context = new FoldhoodContext:
+        override def current[X](expr: => X): X = iterator.next match
+          case x: X @unchecked => x
+          case _ => throw new ClassCastException("Type mismatch")
+      val result = expr(using context)
       f(acc, result)
+  end foldhoodImpl
 
-  sealed class FoldhoodContext private[FoldhoodLibrary] (neighborValues: Option[Iterator[Any | Null]] = None):
-    private[FoldhoodLibrary] var values: List[Any | Null] = List.empty
-
-    private def submit[A](expr: => A): A =
-      val value: A = expr
-      values = value :: values
-      value
-
-    private[FoldhoodLibrary] def current[A](expr: => A): A = neighborValues.map(_.next).getOrElse(submit(expr)) match
-      case x: A @unchecked => x
-      case _ => throw new ClassCastException("Type mismatch")
+  sealed abstract class FoldhoodContext:
+    private[FoldhoodLibrary] def current[A](expr: => A): A
 end FoldhoodLibrary
