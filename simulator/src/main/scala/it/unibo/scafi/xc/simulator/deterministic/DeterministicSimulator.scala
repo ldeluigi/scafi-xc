@@ -33,7 +33,7 @@ class DeterministicSimulator[Id, Token, Value, Result, C <: Context[Id, Token, V
     private var sleepTime = device.sleepTime
 
     private val engine = Engine[Id, Result, Token, Value, Network[Id, Token, Value], C](
-      net = BasicNetwork(device.id),
+      network = BasicNetwork(device.id),
       factory = contextFactory,
       program = program,
     )

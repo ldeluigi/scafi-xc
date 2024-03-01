@@ -39,7 +39,7 @@ class EngineTests extends UnitTest:
     TestingNetwork[Int, InvocationCoordinate, Any],
     ContextMock,
   ] = Engine(
-    net = network,
+    network = network,
     factory = n => ContextMock(n.localId, n.receive()),
     program = programCounter,
   )

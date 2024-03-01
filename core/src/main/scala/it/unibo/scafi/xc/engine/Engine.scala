@@ -6,7 +6,7 @@ import it.unibo.scafi.xc.engine.network.{ Export, Import, Network }
 /**
  * The engine is responsible for linking a context with a network and a program and handling the program execution for
  * every cycle.
- * @param net
+ * @param network
  *   the network interface
  * @param factory
  *   the context factory, used to create a new context for every cycle
@@ -33,16 +33,16 @@ class Engine[
     N <: Network[DeviceId, Token, Value],
     C <: Context[DeviceId, Token, Value],
 ](
-    private val net: N,
+    private val network: N,
     private val factory: ContextFactory[N, C],
     private val program: C ?=> Result,
 ):
 
   private def round(): AggregateResult =
-    given context: C = factory.create(net)
+    given context: C = factory.create(network)
     val result: Result = program
     val outMessages = context.outboundMessages
-    net.send(outMessages)
+    network.send(outMessages)
     AggregateResult(result, context.inboundMessages, outMessages)
 
   /**
