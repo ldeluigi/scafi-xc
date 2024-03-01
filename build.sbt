@@ -4,7 +4,7 @@ ThisBuild / version := "0.1.0-SNAPSHOT"
 val ci = scala.sys.env.get("CI").contains("true")
 
 // scala
-ThisBuild / scalaVersion := "3.3.1"
+ThisBuild / scalaVersion := "3.3.3"
 
 ThisBuild / scalacOptions ++= Seq(
   "-new-syntax",
@@ -24,7 +24,7 @@ ThisBuild / scalacOptions ++= Seq(
 ) ++ (if (ci) Seq("-explain") else Nil)
 
 // testing
-ThisBuild / libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.17" % Test
+ThisBuild / libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.18" % Test
 
 lazy val commonTestSettings = Seq(
   Test / scalacOptions --= Seq(
