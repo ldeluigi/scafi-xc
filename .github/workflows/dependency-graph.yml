@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - master # default branch of the project
+    paths:
+      - "**.sbt"
+      - .github/**
   schedule:
     - cron: "0 0 1 * *"
 
