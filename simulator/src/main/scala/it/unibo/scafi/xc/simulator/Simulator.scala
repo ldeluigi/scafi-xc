@@ -4,7 +4,7 @@ import it.unibo.scafi.xc.engine.context.Context
 import it.unibo.scafi.xc.simulator.deterministic.Device
 
 trait Simulator[Id, Result, C <: Context[Id, ?, ?]]:
-  def program: C ?=> Any
+  def program: C ?=> Result
 
   def devices: Iterable[Device[Id]]
 
