@@ -7,15 +7,16 @@ object DistributedSystemUtilities:
 
   /**
    * A type class that can be used to ensure that a type is shareable. A type is shareable if it is either a primitive
-   * type or a serializable type. Additionally, if a type is also marked as [[NotShareable]], it becomes not shareable.
+   * type or a serializable type or has been explicitly marked as shareable. Additionally, if a type is also marked as
+   * [[NotShareable]], it becomes not shareable.
    *
    * @tparam T
    *   the type to check
    */
   @implicitNotFound(
-    "Cannot share value of type ${T}. ${T} must be a primitive value type or a serializable type, and it must not be marked as NotShareable.",
+    "Cannot share value of type ${T}. ${T} must be a primitive value type or a serializable type, and it must not be marked as NotShareable",
   )
-  final class Shareable[T] private[DistributedSystemUtilities] (using val serializable: T <:< (AnyVal | Serializable))
+  open class Shareable[T](using NotGiven[NotShareable[T]])
 
   /**
    * A type class that can be used to ensure that a type does not satisfy the [[Shareable]] type class.
@@ -26,7 +27,7 @@ object DistributedSystemUtilities:
   final class NotShareable[T]
 
   /**
-   * A type is shareable if it provides a [[ShareContext]] instance and it is not marked as [[NotShareable]].
+   * A type is shareable if it is primitive or serializable and it is not marked as [[NotShareable]].
    *
    * @param x$1
    *   a proof that the type is not [[NotShareable]]
