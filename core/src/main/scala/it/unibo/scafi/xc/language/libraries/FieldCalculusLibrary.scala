@@ -23,8 +23,7 @@ object FieldCalculusLibrary:
    */
   def nbr[A: Shareable](using language: AggregateFoundation & FieldCalculusSyntax)(
       expr: A,
-  ): language.AggregateValue[A] =
-    language.nbr(expr)
+  ): language.AggregateValue[A] = language.nbr(expr)
 
   /**
    * `rep` <b>repeatedly</b> applies a function to an initial value for every execution round.
