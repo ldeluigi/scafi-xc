@@ -1,6 +1,7 @@
 package it.unibo.scafi.xc.engine.context.exchange
 
 import it.unibo.scafi.xc.engine.context.common.*
+import it.unibo.scafi.xc.language.foundation.DistributedSystemUtilities.Shareable
 import it.unibo.scafi.xc.language.semantics.exchange.ExchangeCalculusSemantics
 
 /**

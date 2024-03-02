@@ -1,6 +1,7 @@
 package it.unibo.scafi.xc.engine.context.common
 
 import it.unibo.scafi.xc.language.foundation.AggregateFoundation
+import it.unibo.scafi.xc.language.foundation.DistributedSystemUtilities.Shareable
 
 /**
  * Defines the basic operations to work with a type that wraps any object, useful to define a collection of values with

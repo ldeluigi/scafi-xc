@@ -1,5 +1,6 @@
 package it.unibo.scafi.xc.language.semantics.exchange
 
+import it.unibo.scafi.xc.language.foundation.DistributedSystemUtilities.Shareable
 import it.unibo.scafi.xc.language.foundation.{ AggregateFoundation, DeviceAwareAggregateFoundation }
 import it.unibo.scafi.xc.language.semantics.exchange
 import it.unibo.scafi.xc.language.semantics.exchange.syntaxes.{

@@ -1,6 +1,7 @@
 package it.unibo.scafi.xc.language.syntax
 
 import it.unibo.scafi.xc.language.foundation.AggregateFoundation
+import it.unibo.scafi.xc.language.foundation.DistributedSystemUtilities.Shareable
 import it.unibo.scafi.xc.language.syntax.common.RetSend
 
 /**

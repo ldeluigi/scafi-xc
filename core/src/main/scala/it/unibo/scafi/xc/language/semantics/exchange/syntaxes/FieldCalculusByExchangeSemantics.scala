@@ -1,5 +1,6 @@
 package it.unibo.scafi.xc.language.semantics.exchange.syntaxes
 
+import it.unibo.scafi.xc.language.foundation.DistributedSystemUtilities.Shareable
 import it.unibo.scafi.xc.language.semantics.exchange.ExchangeCalculusSemantics
 import it.unibo.scafi.xc.language.syntax.{ ExchangeCalculusSyntax, FieldCalculusSyntax }
 import it.unibo.scafi.xc.language.syntax.common.RetSend.ret

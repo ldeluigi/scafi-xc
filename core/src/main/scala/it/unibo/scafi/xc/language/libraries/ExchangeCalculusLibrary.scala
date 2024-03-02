@@ -1,6 +1,7 @@
 package it.unibo.scafi.xc.language.libraries
 
 import it.unibo.scafi.xc.language.foundation.AggregateFoundation
+import it.unibo.scafi.xc.language.foundation.DistributedSystemUtilities.Shareable
 import it.unibo.scafi.xc.language.syntax.ExchangeCalculusSyntax
 import it.unibo.scafi.xc.language.syntax.common.RetSend
 
@@ -33,7 +34,7 @@ object ExchangeCalculusLibrary:
    * @see
    *   [[RetSend]] [[ExchangeCalculusSyntax.exchange]]
    */
-  def exchange[T: language.Shareable](using language: AggregateFoundation & ExchangeCalculusSyntax)(
+  def exchange[T: Shareable](using language: AggregateFoundation & ExchangeCalculusSyntax)(
       initial: language.AggregateValue[T],
   )(
       f: language.AggregateValue[T] => RetSend[language.AggregateValue[T]],

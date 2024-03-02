@@ -7,6 +7,7 @@ import it.unibo.scafi.xc.engine.context.Context
 import it.unibo.scafi.xc.engine.network.Export
 import it.unibo.scafi.xc.engine.path.Path
 import it.unibo.scafi.xc.language.foundation.AggregateFoundation
+import it.unibo.scafi.xc.language.foundation.DistributedSystemUtilities.Shareable
 
 /**
  * Implements the semantics related to outbound messages directed to self and neighbours.

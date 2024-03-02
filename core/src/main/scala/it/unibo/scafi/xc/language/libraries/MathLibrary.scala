@@ -2,6 +2,7 @@ package it.unibo.scafi.xc.language.libraries
 
 import it.unibo.scafi.xc.language.foundation.AggregateFoundation
 import it.unibo.scafi.xc.language.syntax.FieldCalculusSyntax
+import it.unibo.scafi.xc.language.foundation.DistributedSystemUtilities.Shareable
 
 import FieldCalculusLibrary.nbr
 import FoldingLibrary.nfold
@@ -24,7 +25,7 @@ object MathLibrary:
    * @return
    *   the weighted average of the value
    */
-  def average[N: Fractional: language.Shareable](using
+  def average[N: Fractional: Shareable](using
       language: AggregateFoundation & FieldCalculusSyntax,
   )(weight: N, value: N): N =
     val totW = nbr(weight).nfold(weight)(_ + _)

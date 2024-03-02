@@ -3,7 +3,9 @@ package it.unibo.scafi.xc.language.foundation
 import it.unibo.scafi.xc.abstractions.{ Aggregate, Liftable }
 import it.unibo.scafi.xc.collections.SafeIterable
 
-trait AggregateFoundation extends DistributedSystemFoundation:
+import DistributedSystemUtilities.NotShareable
+
+trait AggregateFoundation:
   type AggregateValue[T] <: SafeIterable[T]
 
   /**

@@ -3,7 +3,7 @@ package it.unibo.scafi.xc.language.foundation
 import scala.util.NotGiven
 import scala.annotation.implicitNotFound
 
-trait DistributedSystemFoundation:
+object DistributedSystemUtilities:
 
   /**
    * A type class that can be used to ensure that a type is shareable. A type is shareable if it is either a primitive
@@ -15,7 +15,7 @@ trait DistributedSystemFoundation:
   @implicitNotFound(
     "Cannot share value of type ${T}. ${T} must be a primitive value type or a serializable type, and it must not be marked as NotShareable.",
   )
-  final class Shareable[T] private[DistributedSystemFoundation] (using val serializable: T <:< (AnyVal | Serializable))
+  final class Shareable[T] private[DistributedSystemUtilities] (using val serializable: T <:< (AnyVal | Serializable))
 
   /**
    * A type class that can be used to ensure that a type does not satisfy the [[Shareable]] type class.
@@ -36,4 +36,4 @@ trait DistributedSystemFoundation:
    *   a [[Shareable]] instance for the type
    */
   given [T <: AnyVal | Serializable](using NotGiven[NotShareable[T]]): Shareable[T] = Shareable[T]()
-end DistributedSystemFoundation
+end DistributedSystemUtilities
