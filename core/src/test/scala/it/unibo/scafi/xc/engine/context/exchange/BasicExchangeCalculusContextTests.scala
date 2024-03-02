@@ -21,7 +21,8 @@ class BasicExchangeCalculusContextTests
     with FieldCalculusTests
     with FoldingTests
     with GradientTests
-    with MathTests:
+    with MathTests
+    with FoldhoodLibraryTests:
 
   class BasicExchangeCalculusContextWithTestHelpers(
       self: Int,
@@ -54,4 +55,5 @@ class BasicExchangeCalculusContextTests
   "Basic ExchangeCalculusContext folding" should behave like foldingSemantics()
   "Basic ExchangeCalculusContext gradient library" should behave like gradientSemantics()
   "Basic ExchangeCalculusContext math library" should behave like mathLibrarySemantics()
+  "Basic ExchangeCalculusContext folshood library" should behave like foldhoodSemantics()
 end BasicExchangeCalculusContextTests

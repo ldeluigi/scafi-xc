@@ -10,7 +10,7 @@ import it.unibo.scafi.xc.simulator.DiscreteSimulator
 class DeterministicSimulator[Id, Token, Value, Result, C <: Context[Id, Token, Value]](
     private val contextFactory: ContextFactory[Network[Id, Token, Value], C],
     override val program: C ?=> Result,
-    override val devices: List[Device[Id]],
+    val devices: List[SleepingDevice[Id]],
     override val deviceNeighbourhood: Map[Id, Set[Id]],
     private val deliveredMessageLifetime: Int,
     private val messageLossPolicy: Message[Id, Token, Value] => Boolean = (_: Message[Id, Token, Value]) => false,
@@ -28,12 +28,12 @@ class DeterministicSimulator[Id, Token, Value, Result, C <: Context[Id, Token, V
   private val messageQueue: mutable.ListBuffer[TravelingMessage[Id, Token, Value]] = mutable.ListBuffer.empty
   private val deliveredMessages: mutable.Map[(Id, Id), DeliveredMessage[Id, Token, Value]] = mutable.Map.empty
 
-  private case class SimulatedDevice(device: Device[Id]):
+  private case class SimulatedDevice(device: SleepingDevice[Id]):
     private var slept = 0
     private var sleepTime = device.sleepTime
 
     private val engine = Engine[Id, Result, Token, Value, Network[Id, Token, Value], C](
-      net = BasicNetwork(device.id),
+      network = BasicNetwork(device.id),
       factory = contextFactory,
       program = program,
     )

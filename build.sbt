@@ -4,7 +4,7 @@ ThisBuild / version := "0.1.0-SNAPSHOT"
 val ci = scala.sys.env.get("CI").contains("true")
 
 // scala
-ThisBuild / scalaVersion := "3.3.1"
+ThisBuild / scalaVersion := "3.4.0"
 
 ThisBuild / scalacOptions ++= Seq(
   "-new-syntax",
@@ -24,7 +24,7 @@ ThisBuild / scalacOptions ++= Seq(
 ) ++ (if (ci) Seq("-explain") else Nil)
 
 // testing
-ThisBuild / libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.17" % Test
+ThisBuild / libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.18" % Test
 
 lazy val commonTestSettings = Seq(
   Test / scalacOptions --= Seq(
@@ -67,6 +67,18 @@ lazy val tests = crossProject(JVMPlatform, JSPlatform, NativePlatform)
     commonTestSettings,
   )
   .dependsOn(core % "test->test", simulator % "test->test")
+
+lazy val `alchemist-incarnation` = project
+  .settings(
+    name := "alchemist-incarnation",
+    libraryDependencies ++= Seq(
+      "it.unibo.alchemist" % "alchemist" % "30.1.11",
+      "it.unibo.alchemist" % "alchemist-api" % "30.1.11",
+      "it.unibo.alchemist" % "alchemist-test" % "30.1.11",
+    ),
+    commonTestSettings,
+  )
+  .dependsOn(core.jvm)
 
 // conventional commits
 Global / onLoad ~= (_ andThen ("conventionalCommits" :: _))

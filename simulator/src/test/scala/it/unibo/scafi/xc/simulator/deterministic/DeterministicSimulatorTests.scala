@@ -21,7 +21,7 @@ class DeterministicSimulatorTests extends UnitTest with BeforeAndAfterEachTestDa
     DeterministicSimulator(
       contextFactory = n => BasicExchangeCalculusContext[Int](n.localId, n.receive()),
       program = aggregateProgram,
-      devices = (0 until deviceCountParameter).map(id => Device.WithFixedSleepTime(id, id % 2 + 2)).toList,
+      devices = (0 until deviceCountParameter).map(id => SleepingDevice.WithFixedSleepTime(id, id % 2 + 2)).toList,
       deviceNeighbourhood = (0 until deviceCountParameter)
         .map(i =>
           i -> // every device is neighbour with the 5 devices before and after it
@@ -59,7 +59,7 @@ class DeterministicSimulatorTests extends UnitTest with BeforeAndAfterEachTestDa
     sut = DeterministicSimulator(
       contextFactory = n => BasicExchangeCalculusContext[Int](n.localId, n.receive()),
       program = aggregateProgram,
-      devices = (0 until deviceCountParameter).map(id => Device.WithFixedSleepTime(id, id % 2 + 2)).toList,
+      devices = (0 until deviceCountParameter).map(id => SleepingDevice.WithFixedSleepTime(id, id % 2 + 2)).toList,
       deviceNeighbourhood = (0 until deviceCountParameter)
         .map(i =>
           i -> // every device is neighbour with the 5 devices before and after it
@@ -77,7 +77,7 @@ class DeterministicSimulatorTests extends UnitTest with BeforeAndAfterEachTestDa
     sut = DeterministicSimulator(
       contextFactory = n => BasicExchangeCalculusContext[Int](n.localId, n.receive()),
       program = aggregateProgram,
-      devices = (0 until deviceCountParameter).map(id => Device.WithFixedSleepTime(id, id % 2 + 2)).toList,
+      devices = (0 until deviceCountParameter).map(id => SleepingDevice.WithFixedSleepTime(id, id % 2 + 2)).toList,
       deviceNeighbourhood = (0 until deviceCountParameter)
         .map(i =>
           i -> // every device is neighbour with the 5 devices before and after it
@@ -95,7 +95,7 @@ class DeterministicSimulatorTests extends UnitTest with BeforeAndAfterEachTestDa
     sut = DeterministicSimulator(
       contextFactory = n => BasicExchangeCalculusContext[Int](n.localId, n.receive()),
       program = aggregateProgram,
-      devices = (0 until deviceCountParameter).map(id => Device.WithFixedSleepTime(id, id % 2 + 2)).toList,
+      devices = (0 until deviceCountParameter).map(id => SleepingDevice.WithFixedSleepTime(id, id % 2 + 2)).toList,
       deviceNeighbourhood = (0 until deviceCountParameter)
         .map(i =>
           i -> // every device is neighbour with the 5 devices before and after it

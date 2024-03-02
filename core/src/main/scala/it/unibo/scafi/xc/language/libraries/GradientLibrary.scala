@@ -1,7 +1,5 @@
 package it.unibo.scafi.xc.language.libraries
 
-import scala.runtime.stdLibPatches.Predef.summon
-
 import it.unibo.scafi.xc.abstractions.Liftable.*
 import it.unibo.scafi.xc.abstractions.boundaries.UpperBounded
 import it.unibo.scafi.xc.language.foundation.AggregateFoundation

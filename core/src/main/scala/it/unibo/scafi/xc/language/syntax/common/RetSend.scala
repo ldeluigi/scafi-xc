@@ -46,7 +46,7 @@ object RetSend:
      * @return
      *   a RetSend instance with the value to return and the value to send
      */
-    inline def send[T2 >: T](send: T2): RetSend[T2] = RetSend(ret, send)
+    inline infix def send[T2 >: T](send: T2): RetSend[T2] = RetSend(ret, send)
 
   /**
    * The value to return. It enables the syntax to send a different value from the one to return, using the send method
