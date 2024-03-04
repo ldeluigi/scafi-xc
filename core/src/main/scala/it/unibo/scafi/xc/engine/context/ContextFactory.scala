@@ -9,7 +9,7 @@ import it.unibo.scafi.xc.engine.network.Network
  * @tparam C
  *   the context type
  */
-trait ContextFactory[-N <: Network[?, ?, ?], +C <: Context[?, ?, ?]]:
+trait ContextFactory[-N <: Network[?, ?], +C <: Context[?, ?]]:
   /**
    * Creates a context from a given [[Network]], that provides the local id and inbound messages.
    * @param network

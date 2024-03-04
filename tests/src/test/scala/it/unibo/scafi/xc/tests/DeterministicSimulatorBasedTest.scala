@@ -10,9 +10,9 @@ trait DeterministicSimulatorBasedTest extends DiscreteSimulatorBasedTest:
   type TestProgramContext >: TestContext
   def network: Map[SleepingDevice[TestDeviceId], Set[TestDeviceId]]
 
-  override def simulator: DeterministicSimulator[TestDeviceId, TestToken, TestValue, TestProgramResult, TestContext] =
+  override def simulator: DeterministicSimulator[TestDeviceId, TestValue, TestProgramResult, TestContext] =
     val neighbourhoods: Map[SleepingDevice[TestDeviceId], Set[TestDeviceId]] = network
-    DeterministicSimulator[TestDeviceId, TestToken, TestValue, TestProgramResult, TestContext](
+    DeterministicSimulator[TestDeviceId, TestValue, TestProgramResult, TestContext](
       contextFactory = contextFactory,
       program = program,
       devices = neighbourhoods.keys.toList,
@@ -24,6 +24,6 @@ trait DeterministicSimulatorBasedTest extends DiscreteSimulatorBasedTest:
 
   def program(using TestProgramContext): TestProgramResult
 
-  def contextFactory: ContextFactory[Network[TestDeviceId, TestToken, TestValue], TestContext]
+  def contextFactory: ContextFactory[Network[TestDeviceId, TestValue], TestContext]
 
 end DeterministicSimulatorBasedTest

@@ -6,12 +6,10 @@ package it.unibo.scafi.xc.engine.network
  * [[it.unibo.scafi.xc.engine.context.Context Context]].
  * @tparam DeviceId
  *   the type of the device id
- * @tparam Token
- *   the type of the tokens that compose a path to a value in the tree
  * @tparam Value
  *   the type of the values in the tree
  */
-trait Network[DeviceId, Token, Value]:
+trait Network[DeviceId, Value]:
 
   /**
    * @return
@@ -24,7 +22,7 @@ trait Network[DeviceId, Token, Value]:
    * @param e
    *   the messages to send
    */
-  def send(e: Export[DeviceId, Token, Value]): Unit
+  def send(e: Export[DeviceId, Value]): Unit
 
   /**
    * Captures the last versions of value trees received from neighbours in the network. In the aggregate semantics of
@@ -32,5 +30,5 @@ trait Network[DeviceId, Token, Value]:
    * @return
    *   the messages received from neighbours in the network
    */
-  def receive(): Import[DeviceId, Token, Value]
+  def receive(): Import[DeviceId, Value]
 end Network

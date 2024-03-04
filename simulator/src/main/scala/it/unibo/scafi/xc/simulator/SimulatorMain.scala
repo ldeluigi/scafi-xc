@@ -1,5 +1,6 @@
 package it.unibo.scafi.xc.simulator
 
+import it.unibo.scafi.xc.collections.ValueTree
 import it.unibo.scafi.xc.engine.context.ContextFactory
 import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
 import it.unibo.scafi.xc.engine.context.exchange.BasicExchangeCalculusContext
@@ -33,7 +34,11 @@ private object SimulatorMain:
 
   @main def main(): Unit =
     val sim =
-      BasicRandomSimulator[InvocationCoordinate, Any, Unit, BasicExchangeCalculusContext[Int] & DistanceSensor[Double]](
+      BasicRandomSimulator[
+        ValueTree[InvocationCoordinate, Any],
+        Unit,
+        BasicExchangeCalculusContext[Int] & DistanceSensor[Double],
+      ](
         parameters = SimulationSettings,
         contextFactory = n =>
           new BasicExchangeCalculusContext(n.localId, n.receive()) with DistanceSensor[Double]:

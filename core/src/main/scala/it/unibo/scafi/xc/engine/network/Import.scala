@@ -1,7 +1,5 @@
 package it.unibo.scafi.xc.engine.network
 
-import it.unibo.scafi.xc.collections.ValueTree
-
 /**
  * An Import consists of a map of value trees, where the key is the device id and the value is the value tree
  * corresponding.
@@ -13,4 +11,4 @@ import it.unibo.scafi.xc.collections.ValueTree
  * @tparam Value
  *   the type of the values in the tree
  */
-type Import[DeviceId, Token, Value] = Map[DeviceId, ValueTree[Token, Value]]
+type Import[DeviceId, Value] = Map[DeviceId, Value]

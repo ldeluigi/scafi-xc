@@ -1,6 +1,7 @@
 package it.unibo.scafi.xc.engine.context.exchange.libraries
 
 import it.unibo.scafi.xc.UnitTest
+import it.unibo.scafi.xc.collections.ValueTree
 import it.unibo.scafi.xc.engine.context.{ ContextFactory, ProbingContextMixin, TestingNetwork }
 import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
 import it.unibo.scafi.xc.engine.context.exchange.BasicExchangeCalculusContext
@@ -15,13 +16,15 @@ trait FoldhoodLibraryTests:
   def foldhoodSemantics(): Unit =
     class BasicExchangeCalculusContextWithHopDistance(
         self: Int,
-        inboundMessages: Import[Int, InvocationCoordinate, Any],
+        inboundMessages: Import[Int, ValueTree[InvocationCoordinate, Any]],
     ) extends BasicExchangeCalculusContext[Int](self, inboundMessages)
         with DistanceSensor[Int]:
       override def senseDistance: AggregateValue[Int] = device.map(id => if id == self then 0 else 1)
 
-    val factory
-        : ContextFactory[TestingNetwork[Int, InvocationCoordinate, Any], BasicExchangeCalculusContextWithHopDistance] =
+    val factory: ContextFactory[
+      TestingNetwork[Int, InvocationCoordinate, Any],
+      BasicExchangeCalculusContextWithHopDistance,
+    ] =
       n => new BasicExchangeCalculusContextWithHopDistance(n.localId, n.received)
 
     var results: Map[Int, Int] = Map.empty
@@ -38,7 +41,7 @@ trait FoldhoodLibraryTests:
       val foldhoodResult = foldhood(0)(sum) { nbr(self) + nbr("3").toInt + nbrRange(using Numeric.IntIsIntegral) }
       results += (self -> foldhoodResult)
 
-    var exportProbe: Export[Int, InvocationCoordinate, Any] = probe(
+    var exportProbe: Export[Int, ValueTree[InvocationCoordinate, Any]] = probe(
       localId = 66,
       factory = factory,
       program = foldhoodingPlusProgram,

@@ -16,8 +16,6 @@ import it.unibo.scafi.xc.engine.network.{ Export, Import, Network }
  *   the type of the device id
  * @tparam Result
  *   the type of the result of the program
- * @tparam Token
- *   the type of the token
  * @tparam Value
  *   the type of the value
  * @tparam N
@@ -28,10 +26,9 @@ import it.unibo.scafi.xc.engine.network.{ Export, Import, Network }
 class Engine[
     DeviceId,
     Result,
-    Token,
     Value,
-    N <: Network[DeviceId, Token, Value],
-    C <: Context[DeviceId, Token, Value],
+    N <: Network[DeviceId, Value],
+    C <: Context[DeviceId, Value],
 ](
     private val network: N,
     private val factory: ContextFactory[N, C],
@@ -75,7 +72,7 @@ class Engine[
    */
   case class AggregateResult(
       result: Result,
-      inboundMessages: Import[DeviceId, Token, Value],
-      outboundMessages: Export[DeviceId, Token, Value],
+      inboundMessages: Import[DeviceId, Value],
+      outboundMessages: Export[DeviceId, Value],
   )
 end Engine
