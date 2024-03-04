@@ -15,7 +15,7 @@ trait GradientTests:
   private val epsilon = 0.0001
 
   private def gradientWithDistanceSensorSemantics(): Unit =
-    class ContextWithDistanceSensor(self: Int, inboundMessages: Import[Int, InvocationCoordinate, Any])
+    class ContextWithDistanceSensor(self: Int, inboundMessages: Import[Int, ValueTree[InvocationCoordinate, Any]])
         extends BasicExchangeCalculusContext[Int](self, inboundMessages)
         with DistanceSensor[Double]:
       override def senseDistance: AggregateValue[Double] = device.map(_.toDouble)
@@ -27,7 +27,7 @@ trait GradientTests:
     def gradientProgram(using ContextWithDistanceSensor): Unit =
       gradientValue = sensorDistanceTo(self == 2)
 
-    val exportProbeSource: Export[Int, InvocationCoordinate, Any] = probe(
+    val exportProbeSource: Export[Int, ValueTree[InvocationCoordinate, Any]] = probe(
       localId = 2,
       factory = factory,
       program = gradientProgram,
@@ -38,7 +38,7 @@ trait GradientTests:
       exportProbeSource(3).single._2.as[Double] shouldBe 0.0 +- epsilon
 
     it should "return the measured distance for source neighbours" in:
-      val exportProbeCloseToSource: Export[Int, InvocationCoordinate, Any] = probe(
+      val exportProbeCloseToSource: Export[Int, ValueTree[InvocationCoordinate, Any]] = probe(
         localId = 3,
         factory = factory,
         program = gradientProgram,
@@ -55,7 +55,7 @@ trait GradientTests:
     var gradientValue: Double = 0.0
     def gradientProgram(using BasicExchangeCalculusContext[Int]): Unit =
       gradientValue = distanceTo(self == 0, 5.0)
-    val exportProbeSource: Export[Int, InvocationCoordinate, Any] = probe(
+    val exportProbeSource: Export[Int, ValueTree[InvocationCoordinate, Any]] = probe(
       localId = 0,
       factory = factory,
       program = gradientProgram,

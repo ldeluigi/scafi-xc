@@ -1,6 +1,7 @@
 package it.unibo.scafi.xc.engine.network
 
 import it.unibo.scafi.xc.abstractions.BidirectionalFunction.<=>
+import it.unibo.scafi.xc.collections.ValueTree
 
 /**
  * Adapts a network to a new token and value type.
@@ -23,16 +24,16 @@ import it.unibo.scafi.xc.abstractions.BidirectionalFunction.<=>
  * @tparam ValueB
  *   the type of the value in the new network
  */
-class NetworkAdapter[DeviceIdA, DeviceIdB, TokenA, TokenB, ValueA, ValueB](
-    val network: Network[DeviceIdA, TokenA, ValueA],
+class ValueTreeNetworkAdapter[DeviceIdA, DeviceIdB, TokenA, TokenB, ValueA, ValueB](
+    val network: Network[DeviceIdA, ValueTree[TokenA, ValueA]],
     val deviceIdAdapter: DeviceIdA <=> DeviceIdB,
     val tokenAdapter: TokenA <=> TokenB,
     val valueAdapter: ValueA <=> ValueB,
-) extends Network[DeviceIdB, TokenB, ValueB]:
+) extends Network[DeviceIdB, ValueTree[TokenB, ValueB]]:
 
   override def localId: DeviceIdB = deviceIdAdapter.forward(network.localId)
 
-  override def send(e: Export[DeviceIdB, TokenB, ValueB]): Unit =
+  override def send(e: Export[DeviceIdB, ValueTree[TokenB, ValueB]]): Unit =
     network.send(
       e
         .mapKeys(deviceIdAdapter.backward)
@@ -41,15 +42,15 @@ class NetworkAdapter[DeviceIdA, DeviceIdB, TokenA, TokenB, ValueA, ValueB](
         ),
     )
 
-  override def receive(): Import[DeviceIdB, TokenB, ValueB] = network
+  override def receive(): Import[DeviceIdB, ValueTree[TokenB, ValueB]] = network
     .receive()
     .map(
       deviceIdAdapter.forward(_) ->
         _.map((path, value) => path.map(tokenAdapter.forward) -> valueAdapter.forward(value)),
     )
-end NetworkAdapter
+end ValueTreeNetworkAdapter
 
-object NetworkAdapter:
+object ValueTreeNetworkAdapter:
 
   /**
    * Wraps a network in a network adapter with the same token and value type.
@@ -65,11 +66,11 @@ object NetworkAdapter:
    *   the adapted network
    */
   def apply[DeviceId, Token, Value](
-      network: Network[DeviceId, Token, Value],
-  ): NetworkAdapter[DeviceId, DeviceId, Token, Token, Value, Value] =
-    new NetworkAdapter(network, <=>, <=>, <=>)
+      network: Network[DeviceId, ValueTree[Token, Value]],
+  ): ValueTreeNetworkAdapter[DeviceId, DeviceId, Token, Token, Value, Value] =
+    new ValueTreeNetworkAdapter(network, <=>, <=>, <=>)
 
-  extension [DeviceIdA, TokenA, ValueA](network: Network[DeviceIdA, TokenA, ValueA])
+  extension [DeviceIdA, TokenA, ValueA](network: Network[DeviceIdA, ValueTree[TokenA, ValueA]])
 
     /**
      * Adapts a network to a new device id type.
@@ -81,8 +82,8 @@ object NetworkAdapter:
      */
     def byDeviceId[DeviceIdB](
         deviceIdAdapter: DeviceIdA <=> DeviceIdB,
-    ): NetworkAdapter[DeviceIdA, DeviceIdB, TokenA, TokenA, ValueA, ValueA] =
-      new NetworkAdapter(network, deviceIdAdapter = deviceIdAdapter, tokenAdapter = <=>, valueAdapter = <=>)
+    ): ValueTreeNetworkAdapter[DeviceIdA, DeviceIdB, TokenA, TokenA, ValueA, ValueA] =
+      new ValueTreeNetworkAdapter(network, deviceIdAdapter = deviceIdAdapter, tokenAdapter = <=>, valueAdapter = <=>)
 
     /**
      * Adapts a network to a new token type.
@@ -95,8 +96,8 @@ object NetworkAdapter:
      */
     def byToken[TokenB](
         tokenAdapter: TokenA <=> TokenB,
-    ): NetworkAdapter[DeviceIdA, DeviceIdA, TokenA, TokenB, ValueA, ValueA] =
-      new NetworkAdapter(network, deviceIdAdapter = <=>, tokenAdapter = tokenAdapter, valueAdapter = <=>)
+    ): ValueTreeNetworkAdapter[DeviceIdA, DeviceIdA, TokenA, TokenB, ValueA, ValueA] =
+      new ValueTreeNetworkAdapter(network, deviceIdAdapter = <=>, tokenAdapter = tokenAdapter, valueAdapter = <=>)
 
     /**
      * Adapts a network to a new value type.
@@ -108,7 +109,7 @@ object NetworkAdapter:
      */
     def byValue[ValueB](
         valueAdapter: ValueA <=> ValueB,
-    ): NetworkAdapter[DeviceIdA, DeviceIdA, TokenA, TokenA, ValueA, ValueB] =
-      new NetworkAdapter(network, deviceIdAdapter = <=>, tokenAdapter = <=>, valueAdapter = valueAdapter)
+    ): ValueTreeNetworkAdapter[DeviceIdA, DeviceIdA, TokenA, TokenA, ValueA, ValueB] =
+      new ValueTreeNetworkAdapter(network, deviceIdAdapter = <=>, tokenAdapter = <=>, valueAdapter = valueAdapter)
   end extension
-end NetworkAdapter
+end ValueTreeNetworkAdapter

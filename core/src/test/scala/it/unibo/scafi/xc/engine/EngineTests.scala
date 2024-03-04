@@ -10,10 +10,10 @@ class EngineTests extends UnitTest:
 
   case class ContextMock(
       localId: Int,
-      override val inboundMessages: Import[Int, InvocationCoordinate, Any],
-  ) extends Context[Int, InvocationCoordinate, Any]:
+      override val inboundMessages: Import[Int, ValueTree[InvocationCoordinate, Any]],
+  ) extends Context[Int, ValueTree[InvocationCoordinate, Any]]:
 
-    override def outboundMessages: Export[Int, InvocationCoordinate, Any] = MapWithDefault(
+    override def outboundMessages: Export[Int, ValueTree[InvocationCoordinate, Any]] = MapWithDefault(
       default = ValueTree.empty,
       underlying = Map(
         localId -> ValueTree.empty,
@@ -34,8 +34,7 @@ class EngineTests extends UnitTest:
   val sut: Engine[
     Int,
     Int,
-    InvocationCoordinate,
-    Any,
+    ValueTree[InvocationCoordinate, Any],
     TestingNetwork[Int, InvocationCoordinate, Any],
     ContextMock,
   ] = Engine(

@@ -20,7 +20,7 @@ trait FoldingTests:
         neighbouringFoldingResult = nbr(self).nfold(1)(_ * _)
       } {}
 
-    var exportProbe: Export[Int, InvocationCoordinate, Any] = probe(
+    var exportProbe: Export[Int, ValueTree[InvocationCoordinate, Any]] = probe(
       localId = 2,
       factory = factory,
       program = foldingProgram,

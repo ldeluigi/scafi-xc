@@ -13,7 +13,8 @@ import it.unibo.scafi.xc.language.foundation.DistributedSystemUtilities.Shareabl
  * Implements the semantics related to outbound messages directed to self and neighbours.
  */
 trait OutboundMessagesSemantics:
-  this: AggregateFoundation & StackSemantics & MessageSemantics & Context[DeviceId, InvocationCoordinate, Envelope] =>
+  this: AggregateFoundation & StackSemantics & MessageSemantics &
+    Context[DeviceId, ValueTree[InvocationCoordinate, Envelope]] =>
 
   /**
    * The type of device ids.
@@ -25,7 +26,7 @@ trait OutboundMessagesSemantics:
    */
   override type Envelope
 
-  override def outboundMessages: Export[DeviceId, InvocationCoordinate, Envelope] =
+  override def outboundMessages: Export[DeviceId, ValueTree[InvocationCoordinate, Envelope]] =
     var messages: Map[DeviceId, ValueTree[InvocationCoordinate, Envelope]] = Map
       .empty[DeviceId, ValueTree[InvocationCoordinate, Envelope]]
       .withDefaultValue(ValueTree.empty)

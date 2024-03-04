@@ -8,10 +8,9 @@ import org.scalatest.{ BeforeAndAfterAll, BeforeAndAfterEach }
 
 trait DiscreteSimulatorBasedTest extends UnitTest with BeforeAndAfterAll:
   type TestDeviceId
-  type TestToken
   type TestValue
   type TestProgramResult
-  type TestContext <: Context[TestDeviceId, TestToken, TestValue]
+  type TestContext <: Context[TestDeviceId, TestValue]
   private val sim: DiscreteSimulator[TestDeviceId, TestProgramResult, TestContext] = simulator
   def simulator: DiscreteSimulator[TestDeviceId, TestProgramResult, TestContext]
   export sim.*
