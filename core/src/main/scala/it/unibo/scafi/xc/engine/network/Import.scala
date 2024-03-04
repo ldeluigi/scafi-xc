@@ -1,8 +1,7 @@
 package it.unibo.scafi.xc.engine.network
 
 /**
- * An Import consists of a map of value trees, where the key is the device id and the value is the value tree
- * corresponding.
+ * An Import consists of a map of values, where the key is the device id and the value is the value tree corresponding.
  *
  * @tparam DeviceId
  *   the type of the device id

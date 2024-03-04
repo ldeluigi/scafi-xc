@@ -25,8 +25,8 @@ trait Network[DeviceId, Value]:
   def send(e: Export[DeviceId, Value]): Unit
 
   /**
-   * Captures the last versions of value trees received from neighbours in the network. In the aggregate semantics of
-   * networks, they must discard stale value trees, according to some expiration policy.
+   * Captures the last versions of values received from neighbours in the network. In the aggregate semantics of
+   * networks, they must discard stale values, according to some expiration policy.
    * @return
    *   the messages received from neighbours in the network
    */
