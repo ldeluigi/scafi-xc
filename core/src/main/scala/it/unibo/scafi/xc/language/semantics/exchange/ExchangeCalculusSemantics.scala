@@ -1,5 +1,6 @@
 package it.unibo.scafi.xc.language.semantics.exchange
 
+import it.unibo.scafi.xc.language.foundation.DistributedSystemUtilities.Shareable
 import it.unibo.scafi.xc.language.foundation.{ AggregateFoundation, DeviceAwareAggregateFoundation }
 import it.unibo.scafi.xc.language.semantics.exchange
 import it.unibo.scafi.xc.language.semantics.exchange.syntaxes.{
@@ -52,7 +53,7 @@ trait ExchangeCalculusSemantics
    * @return
    *   the neighbouring value providing for the next local state
    */
-  protected def xc[T](init: AggregateValue[T])(
+  protected def xc[T: Shareable](init: AggregateValue[T])(
       f: AggregateValue[T] => (AggregateValue[T], AggregateValue[T]),
   ): AggregateValue[T]
 end ExchangeCalculusSemantics

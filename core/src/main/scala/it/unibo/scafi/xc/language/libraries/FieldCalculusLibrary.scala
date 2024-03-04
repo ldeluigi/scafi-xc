@@ -2,6 +2,7 @@ package it.unibo.scafi.xc.language.libraries
 
 import it.unibo.scafi.xc.language.foundation.AggregateFoundation
 import it.unibo.scafi.xc.language.syntax.FieldCalculusSyntax
+import it.unibo.scafi.xc.language.foundation.DistributedSystemUtilities.Shareable
 
 /**
  * This library provides the field calculus primitives: `nbr`, `rep`, and `share`.
@@ -20,8 +21,9 @@ object FieldCalculusLibrary:
    * @see
    *   [[FieldCalculusSyntax.nbr]]
    */
-  def nbr[A](using language: AggregateFoundation & FieldCalculusSyntax)(expr: A): language.AggregateValue[A] =
-    language.nbr(expr)
+  def nbr[A: Shareable](using language: AggregateFoundation & FieldCalculusSyntax)(
+      expr: A,
+  ): language.AggregateValue[A] = language.nbr(expr)
 
   /**
    * `rep` <b>repeatedly</b> applies a function to an initial value for every execution round.
@@ -37,7 +39,7 @@ object FieldCalculusLibrary:
    * @see
    *   [[FieldCalculusSyntax.rep]]
    */
-  def rep[A](using language: AggregateFoundation & FieldCalculusSyntax)(init: A)(f: A => A): A =
+  def rep[A: Shareable](using language: AggregateFoundation & FieldCalculusSyntax)(init: A)(f: A => A): A =
     language.rep(init)(f)
 
   /**
@@ -55,7 +57,7 @@ object FieldCalculusLibrary:
    * @see
    *   [[FieldCalculusSyntax.share]]
    */
-  def share[A](using language: AggregateFoundation & FieldCalculusSyntax)(init: A)(
+  def share[A: Shareable](using language: AggregateFoundation & FieldCalculusSyntax)(init: A)(
       f: language.AggregateValue[A] => A,
   ): A = language.share(init)(f)
 end FieldCalculusLibrary

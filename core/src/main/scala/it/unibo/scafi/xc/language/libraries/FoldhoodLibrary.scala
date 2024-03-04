@@ -5,6 +5,7 @@ import it.unibo.scafi.xc.language.foundation.AggregateFoundation
 import it.unibo.scafi.xc.language.syntax.FieldCalculusSyntax
 import it.unibo.scafi.xc.language.sensors.DistanceSensor.senseDistance
 import it.unibo.scafi.xc.language.sensors.DistanceSensor
+import it.unibo.scafi.xc.language.foundation.DistributedSystemUtilities.Shareable
 
 import FieldCalculusLibrary.nbr as fcNbr
 import FoldingLibrary.nfold
@@ -25,7 +26,7 @@ object FoldhoodLibrary:
    * @return
    *   the value of the expression
    */
-  def nbr[A, L <: AggregateFoundation & FieldCalculusSyntax](expr: => A)(using c: FoldhoodContext[L]): A =
+  def nbr[A: Shareable, L <: AggregateFoundation & FieldCalculusSyntax](expr: => A)(using c: FoldhoodContext[L]): A =
     c.current(fcNbr[A](expr))
 
   /**

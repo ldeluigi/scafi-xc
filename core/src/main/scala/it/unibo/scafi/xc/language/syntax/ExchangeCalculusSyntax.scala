@@ -1,6 +1,7 @@
 package it.unibo.scafi.xc.language.syntax
 
 import it.unibo.scafi.xc.language.foundation.AggregateFoundation
+import it.unibo.scafi.xc.language.foundation.DistributedSystemUtilities.Shareable
 import it.unibo.scafi.xc.language.syntax.common.RetSend
 
 /**
@@ -32,7 +33,7 @@ trait ExchangeCalculusSyntax:
    * @see
    *   [[common.RetSend]]
    */
-  def exchange[T](initial: AggregateValue[T])(
+  def exchange[T: Shareable](initial: AggregateValue[T])(
       f: AggregateValue[T] => RetSend[AggregateValue[T]],
   ): AggregateValue[T]
 end ExchangeCalculusSyntax
