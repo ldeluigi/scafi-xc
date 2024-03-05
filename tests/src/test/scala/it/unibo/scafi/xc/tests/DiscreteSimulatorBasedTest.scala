@@ -3,15 +3,14 @@ package it.unibo.scafi.xc.tests
 import it.unibo.scafi.xc.UnitTest
 import it.unibo.scafi.xc.engine.context.Context
 import it.unibo.scafi.xc.simulator.DiscreteSimulator
-import it.unibo.scafi.xc.simulator.deterministic.Device
+import it.unibo.scafi.xc.simulator.deterministic.SleepingDevice
 import org.scalatest.{ BeforeAndAfterAll, BeforeAndAfterEach }
 
 trait DiscreteSimulatorBasedTest extends UnitTest with BeforeAndAfterAll:
   type TestDeviceId
-  type TestToken
   type TestValue
   type TestProgramResult
-  type TestContext <: Context[TestDeviceId, TestToken, TestValue]
+  type TestContext <: Context[TestDeviceId, TestValue]
   private val sim: DiscreteSimulator[TestDeviceId, TestProgramResult, TestContext] = simulator
   def simulator: DiscreteSimulator[TestDeviceId, TestProgramResult, TestContext]
   export sim.*

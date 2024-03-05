@@ -3,12 +3,12 @@ package it.unibo.scafi.xc.engine.context
 import it.unibo.scafi.xc.collections.{ MapWithDefault, ValueTree }
 import it.unibo.scafi.xc.engine.network.{ Export, Import, Network }
 
-class TestingNetwork[Id, Tokens, Values](
+class TestingNetwork[Id, Token, Value](
     var localId: Id,
-    var received: Import[Id, Tokens, Values] = Map.empty,
-) extends Network[Id, Tokens, Values]:
-  var sent: Export[Id, Tokens, Values] = MapWithDefault.empty(ValueTree.empty)
+    var received: Import[Id, ValueTree[Token, Value]] = Map.empty,
+) extends Network[Id, ValueTree[Token, Value]]:
+  var sent: Export[Id, ValueTree[Token, Value]] = MapWithDefault.empty(ValueTree.empty)
 
-  override def send(e: Export[Id, Tokens, Values]): Unit = sent = e
+  override def send(e: Export[Id, ValueTree[Token, Value]]): Unit = sent = e
 
-  override def receive(): Import[Id, Tokens, Values] = received
+  override def receive(): Import[Id, ValueTree[Token, Value]] = received

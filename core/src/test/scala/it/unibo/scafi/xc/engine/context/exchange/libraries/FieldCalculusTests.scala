@@ -16,7 +16,7 @@ trait FieldCalculusTests:
     def neighbouringProgram(using BasicExchangeCalculusContext[Int]): Unit =
       neighbours = nbr(self + 5).toSet
 
-    var exportProbe: Export[Int, InvocationCoordinate, Any] = probe(
+    var exportProbe: Export[Int, ValueTree[InvocationCoordinate, Any]] = probe(
       localId = 66,
       factory = factory,
       program = neighbouringProgram,
@@ -86,12 +86,12 @@ trait FieldCalculusTests:
     def repeatingProgram(using BasicExchangeCalculusContext[Int]): Unit =
       last = rep(0)(_ + 2)
 
-    var exportProbe: Export[Int, InvocationCoordinate, Any] = probe(
+    var exportProbe: Export[Int, ValueTree[InvocationCoordinate, Any]] = probe(
       localId = 66,
       factory = factory,
       program = repeatingProgram,
     )
-    val messageFromNeighbour: Import[Int, InvocationCoordinate, Any] = Map(
+    val messageFromNeighbour: Import[Int, ValueTree[InvocationCoordinate, Any]] = Map(
       1 ->
         probe( // adding a neighbour should not alter the result
           localId = 1,
@@ -144,7 +144,7 @@ trait FieldCalculusTests:
     var res: Int = 0
     def sharingProgram(using BasicExchangeCalculusContext[Int]): Unit =
       res = share(1)(_.sum)
-    var exportProbe: Export[Int, InvocationCoordinate, Any] = probe(
+    var exportProbe: Export[Int, ValueTree[InvocationCoordinate, Any]] = probe(
       localId = 7,
       factory = factory,
       program = sharingProgram,

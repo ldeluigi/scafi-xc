@@ -1,6 +1,7 @@
 package it.unibo.scafi.xc.simulator.deterministic
 
 import it.unibo.scafi.xc.UnitTest
+import it.unibo.scafi.xc.collections.ValueTree
 import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
 import it.unibo.scafi.xc.engine.context.exchange.BasicExchangeCalculusContext
 import it.unibo.scafi.xc.language.semantics.exchange.ExchangeCalculusSemantics
@@ -17,11 +18,12 @@ class DeterministicSimulatorTests extends UnitTest with BeforeAndAfterEachTestDa
     wakeUpCounts += self -> rep(0)(_ + 1)
     results += self -> distanceTo(self < 5, 1.0)
 
-  def newSimulator: DeterministicSimulator[Int, InvocationCoordinate, Any, Any, BasicExchangeCalculusContext[Int]] =
+  def newSimulator
+      : DeterministicSimulator[Int, ValueTree[InvocationCoordinate, Any], Any, BasicExchangeCalculusContext[Int]] =
     DeterministicSimulator(
       contextFactory = n => BasicExchangeCalculusContext[Int](n.localId, n.receive()),
       program = aggregateProgram,
-      devices = (0 until deviceCountParameter).map(id => Device.WithFixedSleepTime(id, id % 2 + 2)).toList,
+      devices = (0 until deviceCountParameter).map(id => SleepingDevice.WithFixedSleepTime(id, id % 2 + 2)).toList,
       deviceNeighbourhood = (0 until deviceCountParameter)
         .map(i =>
           i -> // every device is neighbour with the 5 devices before and after it
@@ -59,7 +61,7 @@ class DeterministicSimulatorTests extends UnitTest with BeforeAndAfterEachTestDa
     sut = DeterministicSimulator(
       contextFactory = n => BasicExchangeCalculusContext[Int](n.localId, n.receive()),
       program = aggregateProgram,
-      devices = (0 until deviceCountParameter).map(id => Device.WithFixedSleepTime(id, id % 2 + 2)).toList,
+      devices = (0 until deviceCountParameter).map(id => SleepingDevice.WithFixedSleepTime(id, id % 2 + 2)).toList,
       deviceNeighbourhood = (0 until deviceCountParameter)
         .map(i =>
           i -> // every device is neighbour with the 5 devices before and after it
@@ -77,7 +79,7 @@ class DeterministicSimulatorTests extends UnitTest with BeforeAndAfterEachTestDa
     sut = DeterministicSimulator(
       contextFactory = n => BasicExchangeCalculusContext[Int](n.localId, n.receive()),
       program = aggregateProgram,
-      devices = (0 until deviceCountParameter).map(id => Device.WithFixedSleepTime(id, id % 2 + 2)).toList,
+      devices = (0 until deviceCountParameter).map(id => SleepingDevice.WithFixedSleepTime(id, id % 2 + 2)).toList,
       deviceNeighbourhood = (0 until deviceCountParameter)
         .map(i =>
           i -> // every device is neighbour with the 5 devices before and after it
@@ -95,7 +97,7 @@ class DeterministicSimulatorTests extends UnitTest with BeforeAndAfterEachTestDa
     sut = DeterministicSimulator(
       contextFactory = n => BasicExchangeCalculusContext[Int](n.localId, n.receive()),
       program = aggregateProgram,
-      devices = (0 until deviceCountParameter).map(id => Device.WithFixedSleepTime(id, id % 2 + 2)).toList,
+      devices = (0 until deviceCountParameter).map(id => SleepingDevice.WithFixedSleepTime(id, id % 2 + 2)).toList,
       deviceNeighbourhood = (0 until deviceCountParameter)
         .map(i =>
           i -> // every device is neighbour with the 5 devices before and after it

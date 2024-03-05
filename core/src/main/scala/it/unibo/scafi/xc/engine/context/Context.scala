@@ -8,23 +8,21 @@ import it.unibo.scafi.xc.engine.network.{ Export, Import }
  * computation.
  * @tparam DeviceId
  *   the type of the device identifiers
- * @tparam Token
- *   the type used to track the location of values in value trees
  * @tparam Value
  *   the type that wraps all the values exchanged between devices
  */
-trait Context[DeviceId, Token, Value]:
+trait Context[DeviceId, Value]:
 
   /**
    * @return
    *   the [[Import]] that contains all the inbound value trees from self and neighbours.
    */
-  def inboundMessages: Import[DeviceId, Token, Value]
+  def inboundMessages: Import[DeviceId, Value]
 
   /**
    * @return
    *   the [[Export]] that contains all the outbound value trees to self and neighbours, and a default value tree for
    *   new neighbours.
    */
-  def outboundMessages: Export[DeviceId, Token, Value]
+  def outboundMessages: Export[DeviceId, Value]
 end Context

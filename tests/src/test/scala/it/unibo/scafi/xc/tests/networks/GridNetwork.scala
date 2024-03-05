@@ -1,6 +1,6 @@
 package it.unibo.scafi.xc.tests.networks
 
-import it.unibo.scafi.xc.simulator.deterministic.Device
+import it.unibo.scafi.xc.simulator.deterministic.SleepingDevice
 import it.unibo.scafi.xc.tests.DeterministicSimulatorBasedTest
 
 trait GridNetwork:
@@ -12,9 +12,9 @@ trait GridNetwork:
 
   def columns: Int
 
-  def device(row: Int, col: Int): Device[PositionInGrid]
+  def device(row: Int, col: Int): SleepingDevice[PositionInGrid]
 
-  override def network: Map[Device[TestDeviceId], Set[TestDeviceId]] =
+  override def network: Map[SleepingDevice[TestDeviceId], Set[TestDeviceId]] =
     Map.from(for
       row <- 0 until rows
       col <- 0 until columns

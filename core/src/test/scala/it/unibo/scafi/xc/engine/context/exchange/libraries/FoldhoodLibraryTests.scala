@@ -1,28 +1,47 @@
 package it.unibo.scafi.xc.engine.context.exchange.libraries
 
 import it.unibo.scafi.xc.UnitTest
-import it.unibo.scafi.xc.engine.context.ProbingContextMixin
+import it.unibo.scafi.xc.collections.ValueTree
+import it.unibo.scafi.xc.engine.context.{ ContextFactory, ProbingContextMixin, TestingNetwork }
 import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
 import it.unibo.scafi.xc.engine.context.exchange.BasicExchangeCalculusContext
-import it.unibo.scafi.xc.language.libraries.FoldhoodLibrary.{ foldhood, foldhoodPlus, nbr }
+import it.unibo.scafi.xc.language.libraries.FoldhoodLibrary.*
 import it.unibo.scafi.xc.language.libraries.CommonLibrary.self
 import it.unibo.scafi.xc.engine.network.{ Export, Import }
+import it.unibo.scafi.xc.language.sensors.DistanceSensor
 
 trait FoldhoodLibraryTests:
-  this: UnitTest & ProbingContextMixin & BasicFactoryMixin =>
+  this: UnitTest & ProbingContextMixin =>
 
   def foldhoodSemantics(): Unit =
+    class BasicExchangeCalculusContextWithHopDistance(
+        self: Int,
+        inboundMessages: Import[Int, ValueTree[InvocationCoordinate, Any]],
+    ) extends BasicExchangeCalculusContext[Int](self, inboundMessages)
+        with DistanceSensor[Int]:
+      override def senseDistance: AggregateValue[Int] = device.map(id => if id == self then 0 else 1)
+
+    val factory: ContextFactory[
+      TestingNetwork[Int, InvocationCoordinate, Any],
+      BasicExchangeCalculusContextWithHopDistance,
+    ] =
+      n => new BasicExchangeCalculusContextWithHopDistance(n.localId, n.received)
+
     var results: Map[Int, Int] = Map.empty
 
-    def foldhoodingPlusProgram(using BasicExchangeCalculusContext[Int]): Unit =
-      val foldhoodResult = foldhoodPlus[Int, Int](0)(_ + _) { nbr(self) + nbr("3").toInt + 1 }
+    def sum(x: Int, y: Int): Int = x + y
+
+    def foldhoodingPlusProgram(using BasicExchangeCalculusContextWithHopDistance): Unit =
+      val foldhoodResult = foldhoodPlus(0)(sum) {
+        nbr(self) + nbr("3").toInt + nbrRange(using Numeric.IntIsIntegral)
+      }
       results += (self -> foldhoodResult)
 
-    def foldhoodingProgram(using BasicExchangeCalculusContext[Int]): Unit =
-      val foldhoodResult = foldhood[Int, Int](0)(_ + _) { nbr(self) + nbr("3").toInt + 1 }
+    def foldhoodingProgram(using BasicExchangeCalculusContextWithHopDistance): Unit =
+      val foldhoodResult = foldhood(0)(sum) { nbr(self) + nbr("3").toInt + nbrRange(using Numeric.IntIsIntegral) }
       results += (self -> foldhoodResult)
 
-    var exportProbe: Export[Int, InvocationCoordinate, Any] = probe(
+    var exportProbe: Export[Int, ValueTree[InvocationCoordinate, Any]] = probe(
       localId = 66,
       factory = factory,
       program = foldhoodingPlusProgram,
@@ -30,7 +49,7 @@ trait FoldhoodLibraryTests:
 
     it should "evaluate foldhoodPlus expression only for self without neighbors" in:
       exportProbe.single._1 shouldBe 66
-      results(66) shouldBe 70
+      results(66) shouldBe 69
 
     it should "evaluate foldhoodPlus expression for self and neighbors" in:
       exportProbe = probe(
@@ -57,7 +76,7 @@ trait FoldhoodLibraryTests:
         ),
       )
       exportProbe.size shouldBe 4
-      results(66) shouldBe 88
+      results(66) shouldBe 87
 
     it should "not evaluate foldhood expression for self without neighbors" in:
       exportProbe = probe(

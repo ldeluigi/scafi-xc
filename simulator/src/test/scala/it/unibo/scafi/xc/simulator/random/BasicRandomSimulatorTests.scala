@@ -1,6 +1,7 @@
 package it.unibo.scafi.xc.simulator.random
 
 import it.unibo.scafi.xc.UnitTest
+import it.unibo.scafi.xc.collections.ValueTree
 import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
 import it.unibo.scafi.xc.engine.context.exchange.BasicExchangeCalculusContext
 
@@ -19,7 +20,7 @@ class BasicRandomSimulatorTests extends UnitTest with RandomSimulationParameters
   override def seed: Int = 1000
 
   "BasicRandomSimulator" should "create a randomized network according to the simulation parameters" in:
-    val sut = BasicRandomSimulator[InvocationCoordinate, Any, Any, BasicExchangeCalculusContext[Int]](
+    val sut = BasicRandomSimulator[ValueTree[InvocationCoordinate, Any], Any, BasicExchangeCalculusContext[Int]](
       contextFactory = n => new BasicExchangeCalculusContext[Int](n.localId, n.receive()),
       parameters = this,
       program = () => (),

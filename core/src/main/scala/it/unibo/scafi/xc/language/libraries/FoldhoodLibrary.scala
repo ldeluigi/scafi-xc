@@ -3,6 +3,8 @@ package it.unibo.scafi.xc.language.libraries
 import it.unibo.scafi.xc.abstractions.Liftable.lift
 import it.unibo.scafi.xc.language.foundation.AggregateFoundation
 import it.unibo.scafi.xc.language.syntax.FieldCalculusSyntax
+import it.unibo.scafi.xc.language.sensors.DistanceSensor.senseDistance
+import it.unibo.scafi.xc.language.sensors.DistanceSensor
 
 import FieldCalculusLibrary.nbr as fcNbr
 import FoldingLibrary.nfold
@@ -18,10 +20,29 @@ object FoldhoodLibrary:
    *   the foldhood context
    * @tparam A
    *   the type of the expression
+   * @tparam L
+   *   the language context
    * @return
    *   the value of the expression
    */
-  def nbr[A](expr: => A)(using c: FoldhoodContext): A = c.current(expr)
+  def nbr[A, L <: AggregateFoundation & FieldCalculusSyntax](expr: => A)(using c: FoldhoodContext[L]): A =
+    c.current(fcNbr[A](expr))
+
+  /**
+   * The nbrRange construct is used to access the distance from the corresponding neighbors during the evaluation of a
+   * foldhood expression.
+   * @param c
+   *   the foldhood context
+   * @tparam N
+   *   the type of the distance
+   * @tparam L
+   *   the language context
+   * @return
+   *   the distance from the neighbor
+   */
+  def nbrRange[N, L <: AggregateFoundation & FieldCalculusSyntax & DistanceSensor[N]](using Numeric[N])(using
+      c: FoldhoodContext[L],
+  ): N = c.current(senseDistance)
 
   /**
    * The foldhood construct is used to aggregate the results of an expression over the neighborhood, excluding self.
@@ -37,11 +58,15 @@ object FoldhoodLibrary:
    *   the type of the expression
    * @tparam B
    *   the type of the aggregation
+   * @tparam L
+   *   the language context
    * @return
    *   the aggregated value
    */
-  def foldhood[A, B](base: B)(f: (B, A) => B)(expr: FoldhoodContext ?=> A)(using
-      language: AggregateFoundation & FieldCalculusSyntax,
+  def foldhood[A, B, L <: AggregateFoundation & FieldCalculusSyntax](
+      base: B,
+  )(f: (B, A) => B)(expr: FoldhoodContext[L] ?=> A)(using
+      language: L,
   ): B = foldhoodImpl(false)(base)(f)(expr)
 
   /**
@@ -58,36 +83,42 @@ object FoldhoodLibrary:
    *   the type of the expression
    * @tparam B
    *   the type of the aggregation
+   * @tparam L
+   *   the language context
    * @return
    *   the aggregated value
    */
-  def foldhoodPlus[A, B](base: B)(f: (B, A) => B)(expr: FoldhoodContext ?=> A)(using
-      language: AggregateFoundation & FieldCalculusSyntax,
+  def foldhoodPlus[A, B, L <: AggregateFoundation & FieldCalculusSyntax](
+      base: B,
+  )(f: (B, A) => B)(expr: FoldhoodContext[L] ?=> A)(using
+      language: L,
   ): B = foldhoodImpl(true)(base)(f)(expr)
 
-  private def foldhoodImpl[A, B](withSelf: Boolean)(base: B)(f: (B, A) => B)(expr: FoldhoodContext ?=> A)(using
-      language: AggregateFoundation & FieldCalculusSyntax,
+  private def foldhoodImpl[A, B, L <: AggregateFoundation & FieldCalculusSyntax](
+      withSelf: Boolean,
+  )(base: B)(f: (B, A) => B)(expr: FoldhoodContext[L] ?=> A)(using
+      lang: L,
   ): B =
-    val initial = FoldhoodContext()
+    var neighbouringValues: List[lang.AggregateValue[Any | Null]] = List.empty
+    val initial: FoldhoodContext[L] = new FoldhoodContext[L]:
+      override def current[X](expr: (lang: L) ?=> lang.AggregateValue[X]): X =
+        val value: lang.AggregateValue[X] = expr
+        neighbouringValues = value.map[Any | Null](x => x) :: neighbouringValues
+        value.onlySelf
+    var zippedNeighbouringValues: lang.AggregateValue[List[Any | Null]] = fcNbr(List.empty[Any | Null])
     val selfExprValue: A = expr(using initial)
-    val selfValues: List[Any | Null] = initial.values
-    val neighbouringValues: List[language.AggregateValue[Any | Null]] = for value <- selfValues yield fcNbr(value)
-    var zippedNeighbouringValues: language.AggregateValue[List[Any | Null]] = fcNbr(List.empty[Any | Null])
     for nv <- neighbouringValues do
       zippedNeighbouringValues = lift(zippedNeighbouringValues, nv)((list, value) => value :: list)
     zippedNeighbouringValues.nfold(if withSelf then f(base, selfExprValue) else base): (acc, values) =>
-      val result = expr(using FoldhoodContext(Some(values.iterator)))
+      val iterator = values.iterator
+      val context: FoldhoodContext[L] = new FoldhoodContext[L]:
+        override def current[X](expr: (lang: L) ?=> lang.AggregateValue[X]): X = iterator.next match
+          case x: X @unchecked => x
+          case _ => throw new ClassCastException("Type mismatch")
+      val result = expr(using context)
       f(acc, result)
+  end foldhoodImpl
 
-  sealed class FoldhoodContext private[FoldhoodLibrary] (neighborValues: Option[Iterator[Any | Null]] = None):
-    private[FoldhoodLibrary] var values: List[Any | Null] = List.empty
-
-    private def submit[A](expr: => A): A =
-      val value: A = expr
-      values = value :: values
-      value
-
-    private[FoldhoodLibrary] def current[A](expr: => A): A = neighborValues.map(_.next).getOrElse(submit(expr)) match
-      case x: A @unchecked => x
-      case _ => throw new ClassCastException("Type mismatch")
+  sealed abstract class FoldhoodContext[L <: AggregateFoundation]:
+    private[FoldhoodLibrary] def current[A](expr: (lang: L) ?=> lang.AggregateValue[A]): A
 end FoldhoodLibrary

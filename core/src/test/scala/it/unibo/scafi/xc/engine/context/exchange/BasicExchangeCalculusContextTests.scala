@@ -26,7 +26,7 @@ class BasicExchangeCalculusContextTests
 
   class BasicExchangeCalculusContextWithTestHelpers(
       self: Int,
-      inboundMessages: Import[Int, InvocationCoordinate, Any],
+      inboundMessages: Import[Int, ValueTree[InvocationCoordinate, Any]],
   ) extends BasicExchangeCalculusContext[Int](self, inboundMessages)
       with ExchangeCalculusSemanticsTestHelper:
 

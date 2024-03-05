@@ -33,7 +33,7 @@ class RunScaFiProgram[Position <: AlchemistPosition[Position]](
       )
 
   private val engine = Engine(
-    net = node.asProperty(classOf[ScaFiDevice[Position]]),
+    network = node.asProperty(classOf[ScaFiDevice[Position]]),
     factory = Factory,
     program = runProgram,
   )

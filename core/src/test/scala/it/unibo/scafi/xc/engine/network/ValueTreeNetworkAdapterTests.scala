@@ -5,7 +5,7 @@ import it.unibo.scafi.xc.collections.{ MapWithDefault, ValueTree }
 import it.unibo.scafi.xc.engine.context.TestingNetwork
 import it.unibo.scafi.xc.abstractions.BidirectionalFunction.<=>
 
-class NetworkAdapterTests extends UnitTest:
+class ValueTreeNetworkAdapterTests extends UnitTest:
 
   val network: TestingNetwork[Int, String, Int] = TestingNetwork(
     localId = 10,
@@ -19,7 +19,7 @@ class NetworkAdapterTests extends UnitTest:
     ),
   )
 
-  val adaptedNetwork: Network[String, String, Double] = NetworkAdapter(network)
+  val adaptedNetwork: Network[String, ValueTree[String, Double]] = ValueTreeNetworkAdapter(network)
     .byDeviceId(<=>(_.toString, _.toInt))
     .byToken(<=>(_ + "kek", _.dropRight(3)))
     .byValue(<=>(_.toDouble, _.toInt))
@@ -53,4 +53,4 @@ class NetworkAdapterTests extends UnitTest:
         Seq("g", "h", "i") -> 30.toDouble.toInt,
       ),
     )
-end NetworkAdapterTests
+end ValueTreeNetworkAdapterTests

@@ -2,7 +2,7 @@ package it.unibo.scafi.xc.tests.acceptance
 
 import scala.collection.mutable
 
-import it.unibo.scafi.xc.simulator.deterministic.Device
+import it.unibo.scafi.xc.simulator.deterministic.SleepingDevice
 import it.unibo.scafi.xc.tests.networks.GridNetwork
 import it.unibo.scafi.xc.language.libraries.All.{ *, given }
 
@@ -33,8 +33,8 @@ class GradientWithObstacleTest extends AcceptanceTest with GridNetwork:
   // * * * * | * * * * *
   // * * * * | * * * * *
 
-  override def device(row: Int, col: Int): Device[PositionInGrid] =
-    Device.WithFixedSleepTime(PositionInGrid(row, col), ((row + 1) * col % 3) + 1)
+  override def device(row: Int, col: Int): SleepingDevice[PositionInGrid] =
+    SleepingDevice.WithFixedSleepTime(PositionInGrid(row, col), ((row + 1) * col % 3) + 1)
 
   override def program(using TestProgramContext): Double =
     val round = rep(0)(_ + 1)

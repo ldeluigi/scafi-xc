@@ -18,7 +18,7 @@ trait MathTests:
     def averagingProgram(using BasicExchangeCalculusContext[Int]): Unit =
       averageResult = average(weight = self / 10, value = self)
 
-    val exportProbe: Export[Int, InvocationCoordinate, Any] = probe(
+    val exportProbe: Export[Int, ValueTree[InvocationCoordinate, Any]] = probe(
       localId = 42,
       factory = factory,
       program = averagingProgram,
