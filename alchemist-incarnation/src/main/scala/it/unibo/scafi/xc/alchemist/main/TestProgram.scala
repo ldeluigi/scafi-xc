@@ -5,4 +5,4 @@ import it.unibo.scafi.xc.language.libraries.All.*
 
 object TestProgram:
 
-  def myProgram(using ExchangeCalculusSemantics): Int = grep(0)(_ + 1)
+  def myProgram(using ExchangeCalculusSemantics): Int = rep(0)(_ + 1)
