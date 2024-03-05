@@ -3,17 +3,18 @@ package it.unibo.scafi.xc.alchemist.actions
 import it.unibo.alchemist.model.actions.AbstractAction
 import it.unibo.alchemist.model.molecules.SimpleMolecule
 import it.unibo.alchemist.model.{ Position as AlchemistPosition, * }
+import it.unibo.scafi.xc.alchemist
+import it.unibo.scafi.xc.alchemist.AlchemistContext
 import it.unibo.scafi.xc.alchemist.device.ScaFiDevice
 import it.unibo.scafi.xc.engine.Engine
 import it.unibo.scafi.xc.engine.context.ContextFactory
-import it.unibo.scafi.xc.engine.context.exchange.BasicExchangeCalculusContext
 
 class RunScaFiProgram[Position <: AlchemistPosition[Position]](
-    val node: Node[Any | Null],
-    val time: TimeDistribution[Any | Null],
+    val node: Node[Any],
+    val environment: Environment[Any, Position],
+    val time: TimeDistribution[Any],
     val program: String,
-) extends AbstractAction[Any | Null](node):
-  private type DeviceId = Int
+) extends AbstractAction[Any](node):
   private val programPath: Array[String] = program.split('.')
   private val classPath: String = programPath.take(programPath.length - 1).mkString("", ".", "$")
   private val clazz = Class.forName(classPath).nn
@@ -21,13 +22,14 @@ class RunScaFiProgram[Position <: AlchemistPosition[Position]](
   private val method = clazz.getMethods.nn.toList.find(_.nn.getName.nn == programPath.last).get.nn
 
   @SuppressWarnings(Array("DisableSyntax.asInstanceOf"))
-  private def runProgram(using context: BasicExchangeCalculusContext[Int]): Any =
+  private def runProgram(using context: AlchemistContext[Position]): Any =
     method.invoke(module, context).nn.asInstanceOf[Any]
 
-  private object Factory extends ContextFactory[ScaFiDevice[Position], BasicExchangeCalculusContext[Int]]:
+  private object Factory extends ContextFactory[ScaFiDevice[Position], AlchemistContext[Position]]:
 
-    override def create(network: ScaFiDevice[Position]): BasicExchangeCalculusContext[DeviceId] =
-      BasicExchangeCalculusContext[Int](
+    override def create(network: ScaFiDevice[Position]): AlchemistContext[Position] =
+      alchemist.AlchemistContext(
+        environment,
         network.localId,
         network.receive(),
       )
@@ -42,7 +44,7 @@ class RunScaFiProgram[Position <: AlchemistPosition[Position]](
     val result = engine.cycle()
     node.setConcentration(SimpleMolecule(programPath.last), result)
 
-  override def cloneAction(node: Node[Any | Null], reaction: Reaction[Any | Null]): Action[Any | Null] = ???
+  override def cloneAction(node: Node[Any], reaction: Reaction[Any]): Action[Any] = ???
 
   override def getContext: Context = Context.NEIGHBORHOOD
 end RunScaFiProgram
