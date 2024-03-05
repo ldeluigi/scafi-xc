@@ -1,5 +1,7 @@
 incarnation: exchange
 
+launcher: { parameters: { autoStart: false } }
+
 network-model:
   type: ConnectWithinDistance
   parameters: [5]
@@ -9,7 +11,7 @@ _pool: &program
     type: Event
     actions:
       - type: it.unibo.scafi.xc.alchemist.actions.RunScafiProgram
-        parameters: [it.unibo.scafi.xc.alchemist.main.TestProgram.myProgram]
+        parameters: [it.unibo.scafi.xc.alchemist.main.TestProgram.myProgram2]
 
 deployments:
   - type: Rectangle
@@ -19,3 +21,4 @@ deployments:
 
 monitors:
   type: SwingGUI
+  parameters: { graphics: alchemist-incarnation/src/main/resources/effect.json }
