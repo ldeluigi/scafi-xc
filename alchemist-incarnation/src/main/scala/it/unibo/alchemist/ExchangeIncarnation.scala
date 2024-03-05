@@ -1,5 +1,8 @@
 package it.unibo.alchemist
 
+import javax.script.ScriptEngineManager
+
+import com.github.benmanes.caffeine.cache.{ Caffeine, LoadingCache }
 import it.unibo.alchemist.model.conditions.AbstractCondition
 import it.unibo.alchemist.model.molecules.SimpleMolecule
 import it.unibo.alchemist.model.nodes.GenericNode
@@ -12,11 +15,25 @@ import it.unibo.scafi.xc.alchemist.device.ScaFiDevice
 import org.apache.commons.math3.random.RandomGenerator
 
 class ExchangeIncarnation[Position <: AlchemistPosition[Position]] extends Incarnation[Any | Null, Position]:
-  override def getProperty(node: Node[Any | Null], molecule: Molecule, property: String): Double = ???
+
+  override def getProperty(node: Node[Any | Null], molecule: Molecule, property: String): Double =
+    val concentration = node.getConcentration(molecule)
+    val result = property match
+      case property if property.isEmpty || property.isBlank => concentration
+      case property =>
+        val f = ScalaScriptEngine.propertyCache.get(property).nn
+        f(concentration)
+
+    result match
+      case double: Double => double
+      case number: Number => number.doubleValue()
+      case string: String => string.toDoubleOption.getOrElse(Double.NaN)
+      case _ => Double.NaN
 
   override def createMolecule(s: String): Molecule = SimpleMolecule(s)
 
-  override def createConcentration(s: String): Any | Null = s // TODO: fix this // TODO: use cache
+  override def createConcentration(s: String): Any | Null =
+    ScalaScriptEngine.concentrationCache.get(s) // TODO: fix this // TODO: use cache
 
   @SuppressWarnings(Array("DisableSyntax.null"))
   override def createConcentration(): Any | Null = null
@@ -74,4 +91,21 @@ class ExchangeIncarnation[Position <: AlchemistPosition[Position]] extends Incar
       additionalParameters: String,
   ): Action[Any | Null] =
     RunScaFiProgram[Position](node, time, additionalParameters)
+
+  private object ScalaScriptEngine:
+    val engine = ScriptEngineManager().getEngineByName("scala").nn
+
+    val concentrationCache: LoadingCache[String, Any] =
+      Caffeine.newBuilder().nn.build[String, Any] { s => engine.eval(s) }.nn
+
+    @SuppressWarnings(Array("scalafix:DisableSyntax.asInstanceOf"))
+    val propertyCache: LoadingCache[String, (Any => Double)] = Caffeine
+      .newBuilder()
+      .nn
+      .build[String, (Any => Double)] { property =>
+        engine.eval(property).asInstanceOf[Any => Double]
+      }
+      .nn
+  end ScalaScriptEngine
+
 end ExchangeIncarnation

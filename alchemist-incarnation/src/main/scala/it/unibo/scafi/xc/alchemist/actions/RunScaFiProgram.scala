@@ -1,6 +1,7 @@
 package it.unibo.scafi.xc.alchemist.actions
 
 import it.unibo.alchemist.model.actions.AbstractAction
+import it.unibo.alchemist.model.molecules.SimpleMolecule
 import it.unibo.alchemist.model.{ Position as AlchemistPosition, * }
 import it.unibo.scafi.xc.alchemist.device.ScaFiDevice
 import it.unibo.scafi.xc.engine.Engine
@@ -38,7 +39,8 @@ class RunScaFiProgram[Position <: AlchemistPosition[Position]](
   )
 
   override def execute(): Unit =
-    val _ = engine.cycle()
+    val result = engine.cycle()
+    node.setConcentration(SimpleMolecule(programPath.last), result)
 
   override def cloneAction(node: Node[Any | Null], reaction: Reaction[Any | Null]): Action[Any | Null] = ???
 
