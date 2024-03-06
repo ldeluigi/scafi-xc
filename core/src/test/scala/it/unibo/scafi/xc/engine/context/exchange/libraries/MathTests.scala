@@ -2,14 +2,14 @@ package it.unibo.scafi.xc.engine.context.exchange.libraries
 
 import it.unibo.scafi.xc.UnitTest
 import it.unibo.scafi.xc.collections.ValueTree
-import it.unibo.scafi.xc.engine.context.ProbingContextMixin
+import it.unibo.scafi.xc.engine.context.ValueTreeProbingContextMixin
 import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
 import it.unibo.scafi.xc.engine.context.exchange.BasicExchangeCalculusContext
 import it.unibo.scafi.xc.engine.network.Export
 import it.unibo.scafi.xc.language.libraries.All.{ *, given }
 
 trait MathTests:
-  this: UnitTest & ProbingContextMixin & BasicFactoryMixin =>
+  this: UnitTest & ValueTreeProbingContextMixin & BasicFactoryMixin =>
 
   private val epsilon: Double = 0.0001
 
@@ -18,7 +18,7 @@ trait MathTests:
     def averagingProgram(using BasicExchangeCalculusContext[Int]): Unit =
       averageResult = average(weight = self / 10, value = self)
 
-    val exportProbe: Export[Int, ValueTree[InvocationCoordinate, Any]] = probe(
+    val exportProbe: Export[Int, BasicExchangeCalculusContext.ExportValue] = probe(
       localId = 42,
       factory = factory,
       program = averagingProgram,

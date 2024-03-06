@@ -2,25 +2,36 @@ package it.unibo.scafi.xc.engine
 
 import it.unibo.scafi.xc.UnitTest
 import it.unibo.scafi.xc.collections.{ MapWithDefault, ValueTree }
-import it.unibo.scafi.xc.engine.context.{ Context, TestingNetwork }
+import it.unibo.scafi.xc.engine.context.{ Context, ValueTreeTestingNetwork }
 import it.unibo.scafi.xc.engine.network.{ Export, Import }
 import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
+import it.unibo.scafi.xc.engine.context.exchange.BasicExchangeCalculusContext
 
 class EngineTests extends UnitTest:
+  type TestNetwork = ValueTreeTestingNetwork[Int, InvocationCoordinate, Any]
+  type TestExportValue = BasicExchangeCalculusContext.ExportValue
+
+  type TestEngine = Engine[
+    Int,
+    Int,
+    BasicExchangeCalculusContext.ExportValue,
+    TestNetwork,
+    ContextMock,
+  ]
 
   case class ContextMock(
       localId: Int,
-      override val inboundMessages: Import[Int, ValueTree[InvocationCoordinate, Any]],
-  ) extends Context[Int, ValueTree[InvocationCoordinate, Any]]:
+      override val inboundMessages: Import[Int, TestExportValue],
+  ) extends Context[Int, TestExportValue]:
 
-    override def outboundMessages: Export[Int, ValueTree[InvocationCoordinate, Any]] = MapWithDefault(
+    override def outboundMessages: Export[Int, TestExportValue] = MapWithDefault(
       default = ValueTree.empty,
       underlying = Map(
         localId -> ValueTree.empty,
       ),
     )
 
-  val network: TestingNetwork[Int, InvocationCoordinate, Any] = TestingNetwork(
+  val network: TestNetwork = ValueTreeTestingNetwork(
     localId = 5,
     received = Map(3 -> ValueTree.empty),
   )
@@ -31,13 +42,7 @@ class EngineTests extends UnitTest:
     count += 1
     count
 
-  val sut: Engine[
-    Int,
-    Int,
-    ValueTree[InvocationCoordinate, Any],
-    TestingNetwork[Int, InvocationCoordinate, Any],
-    ContextMock,
-  ] = Engine(
+  val sut: TestEngine = Engine(
     network = network,
     factory = n => ContextMock(n.localId, n.receive()),
     program = programCounter,

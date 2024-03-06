@@ -17,11 +17,15 @@ trait ExchangeCalculusContextMixin:
    * This trait hides all the implementation details introduced by the [[BasicTestExchangeSemantics]] from the test
    * program.
    */
-  trait TestExchangeSemantics extends ExchangeCalculusSemantics with Context[TestDeviceId, TestValue]:
+  trait TestExchangeSemantics
+      extends ExchangeCalculusSemantics
+      with Context[TestDeviceId, ValueTree[InvocationCoordinate, Any]]:
     override type DeviceId = TestDeviceId
 
-  class BasicTestExchangeSemantics(id: TestDeviceId, messages: Import[TestDeviceId, TestValue])
-      extends BasicExchangeCalculusContext[TestDeviceId](id, messages)
+  class BasicTestExchangeSemantics(
+      id: TestDeviceId,
+      messages: Import[TestDeviceId, ValueTree[InvocationCoordinate, Any]],
+  ) extends BasicExchangeCalculusContext[TestDeviceId](id, messages)
       with TestExchangeSemantics
 
   override def contextFactory: ContextFactory[Network[TestDeviceId, TestValue], TestContext] = n =>

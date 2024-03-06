@@ -3,13 +3,13 @@ package it.unibo.scafi.xc.engine.context.exchange.libraries
 import it.unibo.scafi.xc.UnitTest
 import it.unibo.scafi.xc.collections.{ MapWithDefault, ValueTree }
 import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
-import it.unibo.scafi.xc.engine.context.{ ContextFactory, ProbingContextMixin, TestingNetwork }
+import it.unibo.scafi.xc.engine.context.{ ContextFactory, ValueTreeProbingContextMixin, ValueTreeTestingNetwork }
 import it.unibo.scafi.xc.engine.context.exchange.BasicExchangeCalculusContext
 import it.unibo.scafi.xc.engine.network.Export
 import it.unibo.scafi.xc.language.libraries.All.{ *, given }
 
 trait ExchangeCalculusTests:
-  this: UnitTest & ProbingContextMixin & BasicFactoryMixin =>
+  this: UnitTest & ValueTreeProbingContextMixin & BasicFactoryMixin =>
 
   def exchangeSemantics(): Unit =
     var neighbours: Set[Int] = Set.empty
@@ -18,7 +18,7 @@ trait ExchangeCalculusTests:
         neighbours = ids.toSet
         ret(ids.map(_ + 1)) send ids,
       ).toSet == neighbours.map(_ + 1)) // assert the ret/send semantics
-    var exportProbe: Export[Int, ValueTree[InvocationCoordinate, Any]] = probe(
+    var exportProbe: Export[Int, BasicExchangeCalculusContext.ExportValue] = probe(
       localId = 142,
       factory = factory,
       program = exchangingProgram,
@@ -39,7 +39,7 @@ trait ExchangeCalculusTests:
       exportProbe.single._1 shouldBe 142
       exportProbe(142).single._1.size shouldBe 1
     it should "exchange with neighbours" in:
-      val messageForNewNeighbour: Export[Int, ValueTree[InvocationCoordinate, Any]] = probe(
+      val messageForNewNeighbour: Export[Int, BasicExchangeCalculusContext.ExportValue] = probe(
         localId = 142,
         factory = factory,
         program = exchangingProgram,

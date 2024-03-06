@@ -2,12 +2,12 @@ package it.unibo.scafi.xc.engine.network
 
 import it.unibo.scafi.xc.UnitTest
 import it.unibo.scafi.xc.collections.{ MapWithDefault, ValueTree }
-import it.unibo.scafi.xc.engine.context.TestingNetwork
+import it.unibo.scafi.xc.engine.context.ValueTreeTestingNetwork
 import it.unibo.scafi.xc.abstractions.BidirectionalFunction.<=>
 
 class ValueTreeNetworkAdapterTests extends UnitTest:
 
-  val network: TestingNetwork[Int, String, Int] = TestingNetwork(
+  val network: ValueTreeTestingNetwork[Int, String, Int] = ValueTreeTestingNetwork(
     localId = 10,
     received = Map(
       1 -> ValueTree(

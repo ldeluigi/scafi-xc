@@ -2,21 +2,21 @@ package it.unibo.scafi.xc.engine.context.exchange.libraries
 
 import it.unibo.scafi.xc.UnitTest
 import it.unibo.scafi.xc.collections.{ MapWithDefault, ValueTree }
-import it.unibo.scafi.xc.engine.context.{ ContextFactory, ProbingContextMixin, TestingNetwork }
+import it.unibo.scafi.xc.engine.context.{ ContextFactory, ValueTreeProbingContextMixin, ValueTreeTestingNetwork }
 import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
 import it.unibo.scafi.xc.engine.context.exchange.BasicExchangeCalculusContext
 import it.unibo.scafi.xc.engine.network.{ Export, Import }
 import it.unibo.scafi.xc.language.libraries.All.{ *, given }
 
 trait FieldCalculusTests:
-  this: UnitTest & ProbingContextMixin & BasicFactoryMixin =>
+  this: UnitTest & ValueTreeProbingContextMixin & BasicFactoryMixin =>
 
   def nbrSemantics(): Unit =
     var neighbours: Set[Int] = Set.empty
     def neighbouringProgram(using BasicExchangeCalculusContext[Int]): Unit =
       neighbours = nbr(self + 5).toSet
 
-    var exportProbe: Export[Int, ValueTree[InvocationCoordinate, Any]] = probe(
+    var exportProbe: Export[Int, BasicExchangeCalculusContext.ExportValue] = probe(
       localId = 66,
       factory = factory,
       program = neighbouringProgram,
@@ -86,12 +86,12 @@ trait FieldCalculusTests:
     def repeatingProgram(using BasicExchangeCalculusContext[Int]): Unit =
       last = rep(0)(_ + 2)
 
-    var exportProbe: Export[Int, ValueTree[InvocationCoordinate, Any]] = probe(
+    var exportProbe: Export[Int, BasicExchangeCalculusContext.ExportValue] = probe(
       localId = 66,
       factory = factory,
       program = repeatingProgram,
     )
-    val messageFromNeighbour: Import[Int, ValueTree[InvocationCoordinate, Any]] = Map(
+    val messageFromNeighbour: Import[Int, BasicExchangeCalculusContext.ExportValue] = Map(
       1 ->
         probe( // adding a neighbour should not alter the result
           localId = 1,
@@ -144,7 +144,7 @@ trait FieldCalculusTests:
     var res: Int = 0
     def sharingProgram(using BasicExchangeCalculusContext[Int]): Unit =
       res = share(1)(_.sum)
-    var exportProbe: Export[Int, ValueTree[InvocationCoordinate, Any]] = probe(
+    var exportProbe: Export[Int, BasicExchangeCalculusContext.ExportValue] = probe(
       localId = 7,
       factory = factory,
       program = sharingProgram,

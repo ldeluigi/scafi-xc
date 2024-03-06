@@ -3,7 +3,7 @@ package it.unibo.scafi.xc.engine.context
 import it.unibo.scafi.xc.collections.{ MapWithDefault, ValueTree }
 import it.unibo.scafi.xc.engine.network.{ Export, Import, Network }
 
-class TestingNetwork[Id, Token, Value](
+class ValueTreeTestingNetwork[Id, Token, Value](
     var localId: Id,
     var received: Import[Id, ValueTree[Token, Value]] = Map.empty,
 ) extends Network[Id, ValueTree[Token, Value]]:

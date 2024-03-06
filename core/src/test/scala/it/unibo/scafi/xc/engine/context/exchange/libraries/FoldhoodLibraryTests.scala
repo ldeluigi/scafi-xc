@@ -2,7 +2,7 @@ package it.unibo.scafi.xc.engine.context.exchange.libraries
 
 import it.unibo.scafi.xc.UnitTest
 import it.unibo.scafi.xc.collections.ValueTree
-import it.unibo.scafi.xc.engine.context.{ ContextFactory, ProbingContextMixin, TestingNetwork }
+import it.unibo.scafi.xc.engine.context.{ ContextFactory, ValueTreeProbingContextMixin, ValueTreeTestingNetwork }
 import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
 import it.unibo.scafi.xc.engine.context.exchange.BasicExchangeCalculusContext
 import it.unibo.scafi.xc.language.libraries.FoldhoodLibrary.*
@@ -11,18 +11,18 @@ import it.unibo.scafi.xc.engine.network.{ Export, Import }
 import it.unibo.scafi.xc.language.sensors.DistanceSensor
 
 trait FoldhoodLibraryTests:
-  this: UnitTest & ProbingContextMixin =>
+  this: UnitTest & ValueTreeProbingContextMixin =>
 
   def foldhoodSemantics(): Unit =
     class BasicExchangeCalculusContextWithHopDistance(
         self: Int,
-        inboundMessages: Import[Int, ValueTree[InvocationCoordinate, Any]],
+        inboundMessages: Import[Int, BasicExchangeCalculusContext.ExportValue],
     ) extends BasicExchangeCalculusContext[Int](self, inboundMessages)
         with DistanceSensor[Int]:
       override def senseDistance: AggregateValue[Int] = device.map(id => if id == self then 0 else 1)
 
     val factory: ContextFactory[
-      TestingNetwork[Int, InvocationCoordinate, Any],
+      ValueTreeTestingNetwork[Int, InvocationCoordinate, Any],
       BasicExchangeCalculusContextWithHopDistance,
     ] =
       n => new BasicExchangeCalculusContextWithHopDistance(n.localId, n.received)
@@ -41,7 +41,7 @@ trait FoldhoodLibraryTests:
       val foldhoodResult = foldhood(0)(sum) { nbr(self) + nbr("3").toInt + nbrRange(using Numeric.IntIsIntegral) }
       results += (self -> foldhoodResult)
 
-    var exportProbe: Export[Int, ValueTree[InvocationCoordinate, Any]] = probe(
+    var exportProbe: Export[Int, BasicExchangeCalculusContext.ExportValue] = probe(
       localId = 66,
       factory = factory,
       program = foldhoodingPlusProgram,

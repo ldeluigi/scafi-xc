@@ -19,7 +19,7 @@ class DeterministicSimulatorTests extends UnitTest with BeforeAndAfterEachTestDa
     results += self -> distanceTo(self < 5, 1.0)
 
   def newSimulator
-      : DeterministicSimulator[Int, ValueTree[InvocationCoordinate, Any], Any, BasicExchangeCalculusContext[Int]] =
+      : DeterministicSimulator[Int, BasicExchangeCalculusContext.ExportValue, Any, BasicExchangeCalculusContext[Int]] =
     DeterministicSimulator(
       contextFactory = n => BasicExchangeCalculusContext[Int](n.localId, n.receive()),
       program = aggregateProgram,

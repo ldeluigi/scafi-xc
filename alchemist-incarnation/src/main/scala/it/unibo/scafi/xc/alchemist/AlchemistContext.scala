@@ -2,11 +2,8 @@ package it.unibo.scafi.xc.alchemist
 
 import scala.jdk.CollectionConverters.*
 
-import it.unibo.alchemist.model.Environment
-import it.unibo.alchemist.model.Position as AlchemistPosition
+import it.unibo.alchemist.model.{ Environment, Node, Position as AlchemistPosition }
 import it.unibo.alchemist.model.molecules.SimpleMolecule
-import it.unibo.scafi.xc.collections.ValueTree
-import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
 import it.unibo.scafi.xc.engine.network.Import
 import it.unibo.scafi.xc.engine.context.exchange.BasicExchangeCalculusContext
 import it.unibo.scafi.xc.language.sensors.DistanceSensor
@@ -14,11 +11,13 @@ import it.unibo.scafi.xc.language.sensors.DistanceSensor
 class AlchemistContext[Position <: AlchemistPosition[Position]](
     environment: Environment[Any, Position],
     deviceId: Int,
-    inbox: Import[Int, ValueTree[InvocationCoordinate, Any]],
+    inbox: Import[Int, AlchemistContext.ExportValue],
 ) extends BasicExchangeCalculusContext[Int](deviceId, inbox)
     with DistanceSensor[Double]
     with AlchemistActuators
     with AlchemistSensors:
+
+  def me: Node[Any] = environment.getNodeByID(deviceId).nn
 
   @SuppressWarnings(Array("DisableSyntax.asInstanceOf"))
   override def sense[Value](name: String): Value =
@@ -30,10 +29,22 @@ class AlchemistContext[Position <: AlchemistPosition[Position]](
   override def senseDistance: AggregateValue[Double] =
     val me = environment.getNodeByID(deviceId)
     val myPosition = environment.getPosition(me).nn
-    NValues(
-      Double.PositiveInfinity,
-      device.toList
-        .map(id => id -> environment.getPosition(environment.getNodeByID(id)).nn.distanceTo(myPosition))
-        .toMap,
-    )
+    val distances = environment
+      .getNeighborhood(me)
+      .nn
+      .asScala
+      .map(n =>
+        n.getId ->
+          environment.getPosition(n).nn.distanceTo(myPosition),
+      )
+      .toMap
+    NValues(Double.PositiveInfinity, distances)
 end AlchemistContext
+
+object AlchemistContext:
+  type ExportValue = BasicExchangeCalculusContext.ExportValue
+
+  def sense[Value](sensor: String)(using AlchemistContext[?]): Value = summon[AlchemistContext[?]].sense(sensor)
+
+  def update[Value](actuator: String, value: Value)(using AlchemistContext[?]): Unit =
+    summon[AlchemistContext[?]].update(actuator, value)

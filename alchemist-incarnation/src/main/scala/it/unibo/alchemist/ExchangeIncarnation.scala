@@ -33,7 +33,7 @@ class ExchangeIncarnation[Position <: AlchemistPosition[Position]] extends Incar
   override def createMolecule(s: String): Molecule = SimpleMolecule(s)
 
   override def createConcentration(s: String): Any =
-    ScalaScriptEngine.concentrationCache.get(s) // TODO: fix this // TODO: use cache
+    ScalaScriptEngine.concentrationCache.get(s)
 
   @SuppressWarnings(Array("DisableSyntax.null"))
   override def createConcentration(): Any = null
@@ -44,7 +44,7 @@ class ExchangeIncarnation[Position <: AlchemistPosition[Position]] extends Incar
       parameter: String,
   ): Node[Any] =
     val node = GenericNode[Any](environment)
-    node.addProperty(ScaFiDevice[Position](node, environment, DoubleTime(1))) // TODO: take retention as parameter
+    node.addProperty(ScaFiDevice[Position, Any](node, environment, DoubleTime(1))) // TODO: take retention as parameter
     node
 
   override def createTimeDistribution(
@@ -53,7 +53,7 @@ class ExchangeIncarnation[Position <: AlchemistPosition[Position]] extends Incar
       node: Node[Any],
       parameter: String,
   ): TimeDistribution[Any] =
-    val frequency = 1.0 // TODO: fix to parameter.toDoubleOption.getOrElse(1.0)
+    val frequency = parameter.toDoubleOption.getOrElse(1.0)
     val initialDelay = randomGenerator.nextDouble() / frequency
     DiracComb(DoubleTime(initialDelay), frequency)
 
@@ -93,16 +93,16 @@ class ExchangeIncarnation[Position <: AlchemistPosition[Position]] extends Incar
     RunScaFiProgram[Position](node, environment, time, additionalParameters)
 
   private object ScalaScriptEngine:
-    val engine = ScriptEngineManager().getEngineByName("scala").nn
+    private val engine = ScriptEngineManager().getEngineByName("scala").nn
 
     val concentrationCache: LoadingCache[String, Any] =
       Caffeine.newBuilder().nn.build[String, Any] { s => engine.eval(s) }.nn
 
     @SuppressWarnings(Array("scalafix:DisableSyntax.asInstanceOf"))
-    val propertyCache: LoadingCache[String, (Any => Double)] = Caffeine
+    val propertyCache: LoadingCache[String, Any => Double] = Caffeine
       .newBuilder()
       .nn
-      .build[String, (Any => Double)] { property =>
+      .build[String, Any => Double] { property =>
         engine.eval(property).asInstanceOf[Any => Double]
       }
       .nn

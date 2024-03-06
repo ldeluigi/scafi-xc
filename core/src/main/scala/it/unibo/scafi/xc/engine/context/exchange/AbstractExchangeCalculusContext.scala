@@ -3,6 +3,7 @@ package it.unibo.scafi.xc.engine.context.exchange
 import it.unibo.scafi.xc.collections.ValueTree
 import it.unibo.scafi.xc.engine.context.Context
 import it.unibo.scafi.xc.engine.context.common.*
+import it.unibo.scafi.xc.engine.context.exchange.AbstractExchangeCalculusContext.ExportValue
 import it.unibo.scafi.xc.engine.network.Import
 import it.unibo.scafi.xc.language.semantics.exchange.ExchangeCalculusSemantics
 
@@ -19,8 +20,8 @@ import it.unibo.scafi.xc.language.semantics.exchange.ExchangeCalculusSemantics
  */
 abstract class AbstractExchangeCalculusContext[Id, Wrapper](
     override val self: Id,
-    override val inboundMessages: Import[Id, ValueTree[InvocationCoordinate, Wrapper]],
-) extends Context[Id, ValueTree[InvocationCoordinate, Wrapper]]
+    override val inboundMessages: Import[Id, ExportValue[Wrapper]],
+) extends Context[Id, ExportValue[Wrapper]]
     with ExchangeCalculusSemantics
     with NValuesSemantics
     with ConstructsSemantics
@@ -31,3 +32,6 @@ abstract class AbstractExchangeCalculusContext[Id, Wrapper](
   override type DeviceId = Id
   override type Envelope = Wrapper
 end AbstractExchangeCalculusContext
+
+object AbstractExchangeCalculusContext:
+  type ExportValue[Wrapper] = ValueTree[InvocationCoordinate, Wrapper]

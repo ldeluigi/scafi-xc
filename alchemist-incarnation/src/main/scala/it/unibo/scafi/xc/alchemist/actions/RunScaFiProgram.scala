@@ -25,9 +25,10 @@ class RunScaFiProgram[Position <: AlchemistPosition[Position]](
   private def runProgram(using context: AlchemistContext[Position]): Any =
     method.invoke(module, context).nn.asInstanceOf[Any]
 
-  private object Factory extends ContextFactory[ScaFiDevice[Position], AlchemistContext[Position]]:
+  private object Factory
+      extends ContextFactory[ScaFiDevice[Position, AlchemistContext.ExportValue], AlchemistContext[Position]]:
 
-    override def create(network: ScaFiDevice[Position]): AlchemistContext[Position] =
+    override def create(network: ScaFiDevice[Position, AlchemistContext.ExportValue]): AlchemistContext[Position] =
       alchemist.AlchemistContext(
         environment,
         network.localId,
@@ -35,7 +36,7 @@ class RunScaFiProgram[Position <: AlchemistPosition[Position]](
       )
 
   private val engine = Engine(
-    network = node.asProperty(classOf[ScaFiDevice[Position]]),
+    network = node.asProperty(classOf[ScaFiDevice[Position, AlchemistContext.ExportValue]]),
     factory = Factory,
     program = runProgram,
   )
@@ -44,7 +45,8 @@ class RunScaFiProgram[Position <: AlchemistPosition[Position]](
     val result = engine.cycle()
     node.setConcentration(SimpleMolecule(programPath.last), result)
 
-  override def cloneAction(node: Node[Any], reaction: Reaction[Any]): Action[Any] = ???
+  override def cloneAction(node: Node[Any], reaction: Reaction[Any]): Action[Any] =
+    RunScaFiProgram[Position](node, environment, time, program)
 
   override def getContext: Context = Context.NEIGHBORHOOD
 end RunScaFiProgram

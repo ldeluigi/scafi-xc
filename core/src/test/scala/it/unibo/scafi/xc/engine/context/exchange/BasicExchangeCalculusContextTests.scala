@@ -2,8 +2,9 @@ package it.unibo.scafi.xc.engine.context.exchange
 
 import it.unibo.scafi.xc.UnitTest
 import it.unibo.scafi.xc.collections.{ MapWithDefault, ValueTree }
-import it.unibo.scafi.xc.engine.context.ProbingContextMixin
+import it.unibo.scafi.xc.engine.context.ValueTreeProbingContextMixin
 import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
+import it.unibo.scafi.xc.engine.context.exchange.BasicExchangeCalculusContext.ExportValue
 import it.unibo.scafi.xc.engine.context.exchange.libraries.*
 import it.unibo.scafi.xc.engine.network.Import
 import it.unibo.scafi.xc.language.semantics.exchange.{
@@ -13,7 +14,7 @@ import it.unibo.scafi.xc.language.semantics.exchange.{
 
 class BasicExchangeCalculusContextTests
     extends UnitTest
-    with ProbingContextMixin
+    with ValueTreeProbingContextMixin
     with BasicFactoryMixin
     with ExchangeCalculusSemanticsTests
     with BranchingTests
@@ -26,7 +27,7 @@ class BasicExchangeCalculusContextTests
 
   class BasicExchangeCalculusContextWithTestHelpers(
       self: Int,
-      inboundMessages: Import[Int, ValueTree[InvocationCoordinate, Any]],
+      inboundMessages: Import[Int, ExportValue],
   ) extends BasicExchangeCalculusContext[Int](self, inboundMessages)
       with ExchangeCalculusSemanticsTestHelper:
 

@@ -2,14 +2,14 @@ package it.unibo.scafi.xc.engine.context.exchange.libraries
 
 import it.unibo.scafi.xc.UnitTest
 import it.unibo.scafi.xc.collections.ValueTree
-import it.unibo.scafi.xc.engine.context.ProbingContextMixin
+import it.unibo.scafi.xc.engine.context.ValueTreeProbingContextMixin
 import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
 import it.unibo.scafi.xc.engine.context.exchange.BasicExchangeCalculusContext
 import it.unibo.scafi.xc.engine.network.Export
 import it.unibo.scafi.xc.language.libraries.All.{ *, given }
 
 trait FoldingTests:
-  this: UnitTest & ProbingContextMixin & BasicFactoryMixin =>
+  this: UnitTest & ValueTreeProbingContextMixin & BasicFactoryMixin =>
 
   def foldingSemantics(): Unit =
     var foldingResult: Long = 0
@@ -20,7 +20,7 @@ trait FoldingTests:
         neighbouringFoldingResult = nbr(self).nfold(1)(_ * _)
       } {}
 
-    var exportProbe: Export[Int, ValueTree[InvocationCoordinate, Any]] = probe(
+    var exportProbe: Export[Int, BasicExchangeCalculusContext.ExportValue] = probe(
       localId = 2,
       factory = factory,
       program = foldingProgram,

@@ -1,6 +1,8 @@
 incarnation: exchange
 
-launcher: { parameters: { autoStart: false } }
+launcher:
+  parameters:
+    autoStart: false
 
 network-model:
   type: ConnectWithinDistance
@@ -21,4 +23,5 @@ deployments:
 
 monitors:
   type: SwingGUI
-  parameters: { graphics: alchemist-incarnation/src/main/resources/effect.json }
+  parameters:
+    graphics: alchemist-incarnation/src/main/resources/effect.json

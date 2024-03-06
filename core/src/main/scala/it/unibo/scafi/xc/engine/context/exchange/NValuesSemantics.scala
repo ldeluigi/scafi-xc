@@ -50,7 +50,7 @@ trait NValuesSemantics:
       override def default: T = nv.default
       override def values: MapView[DeviceId, T] = nv.alignedValues
 
-      override def set(id: DeviceId, value: T): AggregateValue[T] = new NValues[T](
+      override def set(id: DeviceId, value: T): AggregateValue[T] = NValues[T](
         nv.default,
         nv.unalignedValues + (id -> value),
       )
@@ -68,7 +68,7 @@ trait NValuesSemantics:
 
     override def lift[A, B, C, D](a: NValues[A], b: NValues[B], c: NValues[C])(
         f: (A, B, C) => D,
-    ): NValues[D] = new NValues[D](
+    ): NValues[D] = NValues[D](
       f(a.default, b.default, c.default),
       (a.unalignedValues.keySet ++ b.unalignedValues.keySet ++ c.unalignedValues.keySet)
         .map(k => k -> f(a(k), b(k), c(k)))
@@ -84,9 +84,9 @@ trait NValuesSemantics:
         SafeIterable(filtered)
       override def onlySelf: A = a(self)
 
-  override given convert[T]: Conversion[T, AggregateValue[T]] = new NValues[T](_)
+  override given convert[T]: Conversion[T, AggregateValue[T]] = NValues[T](_)
 
-  override def device: AggregateValue[DeviceId] = new NValues[DeviceId](self, alignedDevices.map(id => (id, id)).toMap)
+  override def device: AggregateValue[DeviceId] = NValues[DeviceId](self, alignedDevices.map(id => (id, id)).toMap)
 
   /**
    * @return

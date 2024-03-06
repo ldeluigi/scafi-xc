@@ -2,7 +2,7 @@ package it.unibo.scafi.xc.engine.context.exchange.libraries
 
 import it.unibo.scafi.xc.UnitTest
 import it.unibo.scafi.xc.collections.ValueTree
-import it.unibo.scafi.xc.engine.context.{ ContextFactory, ProbingContextMixin, TestingNetwork }
+import it.unibo.scafi.xc.engine.context.{ ContextFactory, ValueTreeProbingContextMixin, ValueTreeTestingNetwork }
 import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
 import it.unibo.scafi.xc.engine.context.exchange.BasicExchangeCalculusContext
 import it.unibo.scafi.xc.engine.network.{ Export, Import }
@@ -10,24 +10,24 @@ import it.unibo.scafi.xc.language.libraries.All.{ *, given }
 import it.unibo.scafi.xc.language.sensors.DistanceSensor
 
 trait GradientTests:
-  this: UnitTest & ProbingContextMixin & BasicFactoryMixin =>
+  this: UnitTest & ValueTreeProbingContextMixin & BasicFactoryMixin =>
 
   private val epsilon = 0.0001
 
   private def gradientWithDistanceSensorSemantics(): Unit =
-    class ContextWithDistanceSensor(self: Int, inboundMessages: Import[Int, ValueTree[InvocationCoordinate, Any]])
+    class ContextWithDistanceSensor(self: Int, inboundMessages: Import[Int, BasicExchangeCalculusContext.ExportValue])
         extends BasicExchangeCalculusContext[Int](self, inboundMessages)
         with DistanceSensor[Double]:
       override def senseDistance: AggregateValue[Double] = device.map(_.toDouble)
 
-    val factory: ContextFactory[TestingNetwork[Int, InvocationCoordinate, Any], ContextWithDistanceSensor] = n =>
-      new ContextWithDistanceSensor(n.localId, n.receive())
+    val factory: ContextFactory[ValueTreeTestingNetwork[Int, InvocationCoordinate, Any], ContextWithDistanceSensor] =
+      n => new ContextWithDistanceSensor(n.localId, n.receive())
 
     var gradientValue: Double = 0.0
     def gradientProgram(using ContextWithDistanceSensor): Unit =
       gradientValue = sensorDistanceTo(self == 2)
 
-    val exportProbeSource: Export[Int, ValueTree[InvocationCoordinate, Any]] = probe(
+    val exportProbeSource: Export[Int, BasicExchangeCalculusContext.ExportValue] = probe(
       localId = 2,
       factory = factory,
       program = gradientProgram,
@@ -38,7 +38,7 @@ trait GradientTests:
       exportProbeSource(3).single._2.as[Double] shouldBe 0.0 +- epsilon
 
     it should "return the measured distance for source neighbours" in:
-      val exportProbeCloseToSource: Export[Int, ValueTree[InvocationCoordinate, Any]] = probe(
+      val exportProbeCloseToSource: Export[Int, BasicExchangeCalculusContext.ExportValue] = probe(
         localId = 3,
         factory = factory,
         program = gradientProgram,
@@ -55,7 +55,7 @@ trait GradientTests:
     var gradientValue: Double = 0.0
     def gradientProgram(using BasicExchangeCalculusContext[Int]): Unit =
       gradientValue = distanceTo(self == 0, 5.0)
-    val exportProbeSource: Export[Int, ValueTree[InvocationCoordinate, Any]] = probe(
+    val exportProbeSource: Export[Int, BasicExchangeCalculusContext.ExportValue] = probe(
       localId = 0,
       factory = factory,
       program = gradientProgram,

@@ -3,14 +3,14 @@ package it.unibo.scafi.xc.engine.context.exchange.libraries
 import it.unibo.scafi.xc.UnitTest
 import it.unibo.scafi.xc.collections.ValueTree
 import it.unibo.scafi.xc.engine.context.common.InvocationCoordinate
-import it.unibo.scafi.xc.engine.context.{ ContextFactory, ProbingContextMixin, TestingNetwork }
+import it.unibo.scafi.xc.engine.context.{ ContextFactory, ValueTreeProbingContextMixin, ValueTreeTestingNetwork }
 import it.unibo.scafi.xc.engine.context.exchange.BasicExchangeCalculusContext
 import it.unibo.scafi.xc.language.semantics.exchange.ExchangeCalculusSemantics
 import it.unibo.scafi.xc.engine.network.Export
 import it.unibo.scafi.xc.language.libraries.All.{ *, given }
 
 trait BranchingTests:
-  this: UnitTest & ProbingContextMixin & BasicFactoryMixin =>
+  this: UnitTest & ValueTreeProbingContextMixin & BasicFactoryMixin =>
 
   def branchingSemantics(): Unit =
     def branchingProgram(using BasicExchangeCalculusContext[Int]): Unit =
@@ -19,12 +19,12 @@ trait BranchingTests:
       } {
         exchange(200)(x => x)
       }
-    val exportProbeEven: Export[Int, ValueTree[InvocationCoordinate, Any]] = probe(
+    val exportProbeEven: Export[Int, ExportValue] = probe(
       localId = 142,
       factory = factory,
       program = branchingProgram,
     )
-    val exportProbeOdd: Export[Int, ValueTree[InvocationCoordinate, Any]] = probe(
+    val exportProbeOdd: Export[Int, ExportValue] = probe(
       localId = 143,
       factory = factory,
       program = branchingProgram,
@@ -44,7 +44,7 @@ trait BranchingTests:
       } {
         exchange(200)(x => x)
       }
-    val crossingMessagesProbe: Export[Int, ValueTree[InvocationCoordinate, Any]] = probe(
+    val crossingMessagesProbe: Export[Int, ExportValue] = probe(
       localId = 0,
       factory = factory,
       program = branchingProgramWithSideEffect,
