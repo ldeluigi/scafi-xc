@@ -17,7 +17,7 @@ class AlchemistContext[Position <: AlchemistPosition[Position]](
     with AlchemistActuators
     with AlchemistSensors:
 
-  def me: Node[Any] = environment.getNodeByID(deviceId).nn
+  private def me: Node[Any] = environment.getNodeByID(deviceId).nn
 
   @SuppressWarnings(Array("DisableSyntax.asInstanceOf"))
   override def sense[Value](name: String): Value =
@@ -27,7 +27,6 @@ class AlchemistContext[Position <: AlchemistPosition[Position]](
     environment.getNodeByID(deviceId).nn.setConcentration(SimpleMolecule(name), value)
 
   override def senseDistance: AggregateValue[Double] =
-    val me = environment.getNodeByID(deviceId)
     val myPosition = environment.getPosition(me).nn
     val distances = environment
       .getNeighborhood(me)
